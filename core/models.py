@@ -26,7 +26,12 @@ class Article(models.Model):
         on_delete=models.CASCADE,
         related_name='articles'
     )
-    category = models.ForeignKey(Category, related_name='articles')
+    category = models.ForeignKey(
+        Category,
+        related_name='articles',
+        null=True,
+        on_delete=models.SET_NULL
+    )
     voters = models.ManyToManyField(BlogUser, related_name='voted_articles', blank=True)
     title = models.CharField(max_length=255)
     posted_at = models.DateTimeField(auto_now_add=True, null=True)

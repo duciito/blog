@@ -26,15 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     """Login credentials serializer."""
 
-    email = serializers.EmailField(
+    email = serializers.CharField(
         max_length=300,
         required=True,
-        validators=[
-            validators.UniqueValidator(
-                queryset=BlogUser.objects.all(),
-                message='A user with this email address already exists.',
-            )
-        ]
     )
     password = serializers.CharField(required=True, write_only=True)
 
@@ -73,8 +67,11 @@ class AuthUserSerializer(UserSerializer):
     auth_token = serializers.SerializerMethodField()
 
     def get_auth_token(self, user):
-        token = Token.objects.get_or_create(user=user)
+        token, created = Token.objects.get_or_create(user=user)
         return token.key
+
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + ('auth_token',)
 
 
 class PasswordChangeSerializer(serializers.Serializer):

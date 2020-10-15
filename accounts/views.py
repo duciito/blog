@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth import authenticate, logout
 from rest_framework import serializers, status, viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -39,6 +39,13 @@ class AuthViewSet(viewsets.GenericViewSet):
     def logout(self, request):
         logout(request)
         return Response(data={'success': 'Logged out successfully!'})
+
+    @action(methods=['POST'], permission_classes=[IsAuthenticated])
+    def password_change(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

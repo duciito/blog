@@ -94,3 +94,8 @@ class PasswordChangeSerializer(serializers.Serializer):
 
         password_validation.validate_password(value)
         return value
+
+    def create(self, validated_data):
+        # Update password through serializer save.
+        user = self.context['request'].user
+        user.set_password(validated_data['new_password'])

@@ -1,5 +1,5 @@
 from django.core.exceptions import ImproperlyConfigured
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate
 from rest_framework import serializers, status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
@@ -14,6 +14,7 @@ from accounts.models import BlogUser
 
 class AuthViewSet(viewsets.GenericViewSet):
     queryset = BlogUser.objects.all()
+    serializer_class = serializers.Serializer
     permission_classes = (AllowAny,)
     serializer_classes = {
         'login': LoginSerializer,
@@ -41,7 +42,8 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(methods=['POST'], detail=False)
     def logout(self, request):
-        logout(request)
+        # Delete the token to force a login.
+        request.user.auth_token.delete()
         return Response(data={'success': 'Logged out successfully!'})
 
     @action(methods=['POST'], permission_classes=[IsAuthenticated], detail=False)
@@ -60,7 +62,6 @@ class AuthViewSet(viewsets.GenericViewSet):
         return super().get_serializer_class()
 
     def _get_and_auth_user(self, email, password):
-        print(email,password)
         user = authenticate(username=email, password=password)
 
         if not user:

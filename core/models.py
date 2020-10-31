@@ -34,11 +34,11 @@ class Article(EditableModel):
     )
     voters = models.ManyToManyField(BlogUser, related_name='liked_articles', blank=True)
     title = models.CharField(max_length=255)
-    thumbnail_url = models.URLField(
-        max_length=500,
-        blank=True,
-        default=f'{settings.SITE_URL}{settings.STATIC_URL}images/default-article.png'
-    )
+    thumbnail = models.FileField(blank=True)
+
+    @property
+    def total_votes(self):
+        return self.voters.count()
 
 
 class ArticleContent(models.Model):

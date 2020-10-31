@@ -3,7 +3,7 @@ from core.models import Category, Article
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    """Category serializer that also lists related aritcles."""
+    """Category serializer that also lists related articles."""
 
     class Meta:
         model = Category
@@ -20,3 +20,12 @@ class CategorySerializer(serializers.ModelSerializer):
             ])
 
         return category
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    """Article serializer. Serializes text and computes votes number."""
+    total_votes = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Article
+        exclude = ('voters',)

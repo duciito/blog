@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 
-from core.serializers import CategorySerializer
-from core.models import Category
+from core.serializers import CategorySerializer, ArticleSerializer
+from core.models import Category, Article
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -12,3 +12,8 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def articles(self, request):
         pass
+
+
+class ArticlesViewSet(viewsets.ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer

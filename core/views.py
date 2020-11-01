@@ -17,3 +17,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 class ArticlesViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+
+    def create(self, request, *args, **kwargs):
+        request.data.setdefault('creator', request.user.pk)
+        return super().create(request, *args, **kwargs)

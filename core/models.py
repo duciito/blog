@@ -43,6 +43,9 @@ class Article(EditableModel):
     def total_votes(self):
         return self.voters.count()
 
+    def __str__(self):
+        return f"{self.title} by {self.creator}"
+
 
 class ArticleContent(models.Model):
     # Content type choices.

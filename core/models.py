@@ -54,9 +54,8 @@ class ArticleContent(models.Model):
 
     article = models.ForeignKey(Article, related_name='contents', on_delete=models.CASCADE)
     content_type = models.CharField(max_length=20, choices=CONTENT_TYPES)
-    url = models.URLField(max_length=500)
+    file = models.FileField()
     guid = models.UUIDField(null=True, default=uuid.uuid4, unique=True)
-    order_index = models.PositiveIntegerField()
 
 
 class Comment(EditableModel):

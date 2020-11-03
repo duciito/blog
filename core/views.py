@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import response, viewsets, status
 from rest_framework.decorators import action
 
 from core.serializers import (
@@ -23,6 +23,22 @@ class ArticlesViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data.setdefault('creator', request.user.pk)
         return super().create(request, *args, **kwargs)
+
+    @action(detail=True, methods=['post'])
+    def vote(self, request, pk=None):
+        article = self.get_object()
+        article.voters.add(request.user)
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['post'])
+    def unvote(self, request, pk=None):
+        article = self.get_object()
+        article.voters.remove(request.user)
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['post'])
+    def hot(self, request):
+        pass
 
 
 class ArticleContentsViewSet(viewsets.ModelViewSet):

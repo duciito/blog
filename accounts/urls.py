@@ -1,8 +1,11 @@
 # accounts/urls.py
 from rest_framework import routers
-from accounts.views import AuthViewSet
+from accounts.views import AuthViewSet, UsersViewSet
 
-router = routers.DefaultRouter(trailing_slash=False)
-router.register('', AuthViewSet, basename='auth')
+app_name = 'accounts'
+
+router = routers.DefaultRouter()
+router.register('auth', AuthViewSet, basename='auth')
+router.register('users', UsersViewSet, basename='users')
 
 urlpatterns = router.urls

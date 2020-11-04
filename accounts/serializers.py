@@ -19,7 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
                 'email',
                 'profile_description',
                 'joined_at',
-                'followed_users')
+                'followed_users',
+                'saved_articles')
         read_only_fields = ('is_active', 'joined_at', )
 
 

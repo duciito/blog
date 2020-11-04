@@ -6,8 +6,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from accounts.serializers import (
-    LoginSerializer, SignupSerializer, AuthUserSerializer,
-    PasswordChangeSerializer
+    AuthUserSerializer, LoginSerializer,
+    PasswordChangeSerializer, SignupSerializer,
+    UserSerializer
 )
 from accounts.models import BlogUser
 
@@ -68,3 +69,8 @@ class AuthViewSet(viewsets.GenericViewSet):
             raise serializers.ValidationError("Invalid username/password.")
 
         return user
+
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = BlogUser.objects.all()
+    serializer_class = UserSerializer

@@ -74,3 +74,21 @@ class AuthViewSet(viewsets.GenericViewSet):
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = BlogUser.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        followers_only = self.request.query_params.get('followers_only')
+        if followers_only:
+            queryset = queryset.filter(
+                followed_users=self.request.user
+            )
+
+        return queryset
+
+    @action(detail=True, methods=['post'])
+    def follow(self, request, pk=None):
+        """Follow an user."""
+        user = self.get_object()
+        user.followers.add(request.user)
+        return Response(status=status.HTTP_204_NO_CONTENT)

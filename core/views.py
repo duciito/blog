@@ -45,6 +45,13 @@ class ArticlesViewSet(viewsets.ModelViewSet):
         article.voters.remove(request.user)
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=['post'])
+    def save(self, request, pk=None):
+        """Save an article."""
+        article = self.get_object()
+        article.users_saved.add(request.user)
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=False, methods=['get'])
     def hot(self, request):
         """Get articles that have gained popularity quickly."""

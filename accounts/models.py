@@ -12,6 +12,11 @@ class BlogUser(AbstractUser):
         symmetrical=False,
         blank=True
     )
+    saved_articles = models.ManyToManyField(
+        'core.Article',
+        related_name='users_saved',
+        blank=True
+    )
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

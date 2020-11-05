@@ -24,6 +24,17 @@ class ArticlesViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
 
+    def get_queryset(self):
+        queryset = self.queryset
+
+        category = self.request.query_params.get('category')
+        if category:
+            queryset = queryset.filter(
+                category=category
+            )
+
+        return queryset
+
     def create(self, request, *args, **kwargs):
         request.data.setdefault('creator', request.user.pk)
         return super().create(request, *args, **kwargs)

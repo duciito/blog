@@ -42,7 +42,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Pop contents before saving to avoid unknown field error.
-        article_contents = validated_data.pop('article_contents')
+        article_contents = validated_data.pop('article_contents', [])
         article = Article.objects.create(**validated_data)
 
         ArticleContent.objects.bulk_create([

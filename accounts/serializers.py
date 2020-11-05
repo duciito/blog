@@ -9,6 +9,18 @@ from django.contrib.auth import password_validation
 class UserSerializer(serializers.ModelSerializer):
     """Base user serializer."""
 
+    def __init__(self, *args, **kwargs):
+        # Add unnecessary stuff only if needed.
+        super().__init__(*args, **kwargs)
+
+        extra_info = self.context.get('request').query_params.get('extra_info')
+        if extra_info:
+            self.Meta.fields = list(self.Meta.fields)
+            self.Meta.fields.extend([
+                'followed_users',
+                'saved_articles'
+            ])
+
     class Meta:
         model = BlogUser
         fields = ('id',
@@ -18,9 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'is_active',
                 'email',
                 'profile_description',
-                'joined_at',
-                'followed_users',
-                'saved_articles')
+                'joined_at',)
         read_only_fields = ('is_active', 'joined_at', )
 
 

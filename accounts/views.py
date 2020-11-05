@@ -11,6 +11,7 @@ from accounts.serializers import (
     UserSerializer
 )
 from accounts.models import BlogUser
+from django.db.models import Count
 
 
 class AuthViewSet(viewsets.GenericViewSet):
@@ -92,3 +93,19 @@ class UsersViewSet(viewsets.ModelViewSet):
         user = self.get_object()
         user.followers.add(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'])
+    def popular(self, request):
+        """Get popular users that have gained a number of followers."""
+        serializer = self.get_serializer_class()
+        queryset = self.get_queryset()
+
+        queryset = queryset.annotate(
+            num_followers=Count('followers'),
+        ).filter(
+            num_followers__gte=5,
+        )
+
+        # Serialize new queryset using view's serializer.
+        result = serializer(queryset, many=True)
+        return Response(result.data)

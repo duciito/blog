@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Category, Article, ArticleContent
+from core.models import Article, ArticleContent, Category, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -31,10 +31,22 @@ class ArticleContentSerializer(serializers.ModelSerializer):
         read_only_fields = ('guid',)
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    """Comment serializer. You can only comment on articles."""
+
+    total_votes = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Comment
+        exclude = ('voters',)
+
+
 class ArticleSerializer(serializers.ModelSerializer):
     """Article serializer. Serializes text and computes votes number."""
     total_votes = serializers.ReadOnlyField()
-    article_contents = ArticleContentSerializer(many=True, required=False)
+
+    contents = ArticleContentSerializer(many=True, required=False)
+    comments = CommentSerializer(many=True, required=False)
 
     class Meta:
         model = Article
@@ -42,7 +54,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Pop contents before saving to avoid unknown field error.
-        article_contents = validated_data.pop('article_contents', [])
+        article_contents = validated_data.pop('contents', [])
         article = Article.objects.create(**validated_data)
 
         ArticleContent.objects.bulk_create([

@@ -68,3 +68,7 @@ class Comment(EditableModel):
         related_name='comments'
     )
     voters = models.ManyToManyField(BlogUser, related_name='liked_comments', blank=True)
+
+    @property
+    def total_votes(self):
+        return self.voters.count()

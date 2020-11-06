@@ -13,13 +13,15 @@ class UserSerializer(serializers.ModelSerializer):
         # Add unnecessary stuff only if needed.
         super().__init__(*args, **kwargs)
 
-        extra_info = self.context.get('request').query_params.get('extra_info')
-        if extra_info:
-            self.Meta.fields = list(self.Meta.fields)
-            self.Meta.fields.extend([
-                'followed_users',
-                'saved_articles'
-            ])
+        request = self.context.get('request')
+        if request:
+            extra_info = request.query_params.get('extra_info')
+            if extra_info:
+                self.Meta.fields = list(self.Meta.fields)
+                self.Meta.fields.extend([
+                    'followed_users',
+                    'saved_articles'
+                ])
 
     class Meta:
         model = BlogUser

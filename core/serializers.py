@@ -36,6 +36,14 @@ class CommentSerializer(serializers.ModelSerializer):
 
     total_votes = serializers.ReadOnlyField()
 
+    def __init__(self, *args, **kwargs):
+        # Remove article id if used for nested data.
+        nested = kwargs.pop('nested', None)
+        super().__init__(*args, **kwargs)
+
+        if nested:
+            self.fields.pop('article')
+
     class Meta:
         model = Comment
         exclude = ('voters',)
@@ -45,16 +53,19 @@ class ArticleSerializer(serializers.ModelSerializer):
     """Article serializer. Serializes text and computes votes number."""
     total_votes = serializers.ReadOnlyField()
 
-    contents = ArticleContentSerializer(many=True, required=False)
-    comments = CommentSerializer(many=True, required=False)
+    article_contents = ArticleContentSerializer(many=True, required=False)
+    comments = CommentSerializer(many=True, required=False, nested=True)
 
     class Meta:
         model = Article
         exclude = ('voters',)
+        extra_kwargs = {
+            'contents': {'write_only': True}
+        }
 
     def create(self, validated_data):
         # Pop contents before saving to avoid unknown field error.
-        article_contents = validated_data.pop('contents', [])
+        article_contents = validated_data.pop('article_contents', [])
         article = Article.objects.create(**validated_data)
 
         ArticleContent.objects.bulk_create([

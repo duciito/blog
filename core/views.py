@@ -2,13 +2,14 @@ from datetime import timedelta
 
 from django.db.models import Count
 from django.utils import timezone
-from rest_framework import response, viewsets, status
+from rest_framework import response, viewsets, status, generics
 from rest_framework.decorators import action
 
 from core.serializers import (
-    CategorySerializer, ArticleSerializer, ArticleContentSerializer
+    ArticleContentSerializer, ArticleSerializer, 
+    CategorySerializer, CommentSerializer
 )
-from core.models import Category, Article, ArticleContent
+from core.models import Article, ArticleContent, Category, Comment
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -87,3 +88,8 @@ class ArticlesViewSet(viewsets.ModelViewSet):
 class ArticleContentsViewSet(viewsets.ModelViewSet):
     queryset = ArticleContent.objects.all()
     serializer_class = ArticleContentSerializer
+
+
+class CommentsCreateView(generics.CreateAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()

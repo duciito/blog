@@ -2,7 +2,7 @@
 from rest_framework import routers
 from core.views import (
     CategoriesViewSet, ArticlesViewSet, ArticleContentsViewSet,
-    CommentsCreateView
+    CommentsView
 )
 from django.conf.urls import url
 
@@ -12,8 +12,6 @@ router = routers.DefaultRouter()
 router.register('categories', CategoriesViewSet, basename='categories')
 router.register('articles', ArticlesViewSet, basename='articles')
 router.register('article_contents', ArticleContentsViewSet, basename='articles-contents')
+router.register('comments', CommentsView, basename='comments')
 
 urlpatterns = router.urls
-urlpatterns.extend([
-    url('comments', CommentsCreateView.as_view())
-])

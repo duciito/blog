@@ -11,6 +11,7 @@ from core.serializers import (
     LightArticleSerializer
 )
 from core.models import Article, ArticleContent, Category, Comment
+from core.mixins import VotableContentMixin
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -22,7 +23,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
         pass
 
 
-class ArticlesViewSet(viewsets.ModelViewSet):
+class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     # Actions that require only essential data.
@@ -31,7 +32,7 @@ class ArticlesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
 
-        category = self.request.query_params.get('category')
+        category = self.request.query_params.get('category_id')
         if category:
             queryset = queryset.filter(
                 category=category
@@ -54,23 +55,6 @@ class ArticlesViewSet(viewsets.ModelViewSet):
         """Get articles that have gained popularity quickly."""
         article = self.get_object()
         return response.Response(article.text)
-
-    @action(detail=True, methods=['post'])
-    def vote(self, request, pk=None):
-        """Vote for an article."""
-        article = self.get_object()
-        article.voters.add(request.user)
-        return response.Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(detail=True, methods=['post'])
-    def unvote(self, request, pk=None):
-        """
-        Remove vote for an article.
-        Doesn't thrown an exception if the user hasn't voted.
-        """
-        article = self.get_object()
-        article.voters.remove(request.user)
-        return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])
     def save(self, request, pk=None):
@@ -109,9 +93,9 @@ class ArticleContentsViewSet(viewsets.ModelViewSet):
         Restricts contents to a given article.
         """
         queryset = self.queryset
-        article_id = self.request.query_params.get('article_id', None)
-        if article_id:
-            return queryset.filter(article=article_id)
+        article = self.request.query_params.get('article_id', None)
+        if article:
+            return queryset.filter(article=article)
         return None
 
     def list(self, request, *args, **kwargs):
@@ -126,6 +110,15 @@ class ArticleContentsViewSet(viewsets.ModelViewSet):
         return response.Response(serializer.data)
 
 
-class CommentsCreateView(generics.CreateAPIView):
-    serializer_class = CommentSerializer
+class CommentsView(VotableContentMixin, viewsets.ModelViewSet):
     queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        article = self.request.query_params.get('article_id')
+        if article:
+            queryset = queryset.filter(article=article)
+
+        return queryset

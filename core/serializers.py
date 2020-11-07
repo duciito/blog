@@ -49,19 +49,22 @@ class CommentSerializer(serializers.ModelSerializer):
         exclude = ('voters',)
 
 
-class ArticleSerializer(serializers.ModelSerializer):
-    """Article serializer. Serializes text and computes votes number."""
+class LightArticleSerializer(serializers.ModelSerializer):
+    """Article serializer used for serializing only the essentials."""
     total_votes = serializers.ReadOnlyField()
-
-    article_contents = ArticleContentSerializer(many=True, required=False)
-    comments = CommentSerializer(many=True, required=False, nested=True)
 
     class Meta:
         model = Article
+        exclude = ('voters', 'text')
+
+
+class ArticleSerializer(LightArticleSerializer):
+    """Article serializer. Serializes text and computes votes number."""
+
+    article_contents = ArticleContentSerializer(many=True, required=False)
+
+    class Meta(LightArticleSerializer.Meta):
         exclude = ('voters',)
-        extra_kwargs = {
-            'contents': {'write_only': True}
-        }
 
     def create(self, validated_data):
         # Pop contents before saving to avoid unknown field error.

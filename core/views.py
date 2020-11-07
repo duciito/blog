@@ -6,8 +6,9 @@ from rest_framework import response, viewsets, status, generics
 from rest_framework.decorators import action
 
 from core.serializers import (
-    ArticleContentSerializer, ArticleSerializer, 
-    CategorySerializer, CommentSerializer
+    ArticleContentSerializer, ArticleSerializer,
+    CategorySerializer, CommentSerializer,
+    LightArticleSerializer
 )
 from core.models import Article, ArticleContent, Category, Comment
 
@@ -24,6 +25,8 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 class ArticlesViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    # Actions that require only essential data.
+    light_actions = ('list', 'hot', 'retrieve')
 
     def get_queryset(self):
         queryset = self.queryset
@@ -36,9 +39,21 @@ class ArticlesViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    def get_serializer_class(self):
+        # Avoid serializing heavy data in list get.
+        if self.action in self.light_actions:
+            return LightArticleSerializer
+        return ArticleSerializer
+
     def create(self, request, *args, **kwargs):
         request.data.setdefault('creator', request.user.pk)
         return super().create(request, *args, **kwargs)
+
+    @action(detail=True, methods=['get'])
+    def text(self, request, pk=None):
+        """Get articles that have gained popularity quickly."""
+        article = self.get_object()
+        return response.Response(article.text)
 
     @action(detail=True, methods=['post'])
     def vote(self, request, pk=None):

@@ -11,7 +11,7 @@ app_name = 'core'
 router = routers.DefaultRouter()
 router.register('categories', CategoriesViewSet, basename='categories')
 router.register('articles', ArticlesViewSet, basename='articles')
-router.register('articles_contents', ArticleContentsViewSet, basename='articles-contents')
+router.register('article_contents', ArticleContentsViewSet, basename='articles-contents')
 
 urlpatterns = router.urls
 urlpatterns.extend([

@@ -104,6 +104,27 @@ class ArticleContentsViewSet(viewsets.ModelViewSet):
     queryset = ArticleContent.objects.all()
     serializer_class = ArticleContentSerializer
 
+    def get_queryset(self):
+        """
+        Restricts contents to a given article.
+        """
+        queryset = self.queryset
+        article_id = self.request.query_params.get('article_id', None)
+        if article_id:
+            return queryset.filter(article=article_id)
+        return None
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        if queryset is None:
+            return response.Response(
+                data="You need to pass `article_id` when getting the article contents",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return response.Response(serializer.data)
+
 
 class CommentsCreateView(generics.CreateAPIView):
     serializer_class = CommentSerializer

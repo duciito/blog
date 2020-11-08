@@ -7,7 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = '__all__'
+        exclude = ('followers',)
 
     def create(self, validated_data):
         # Allow passing nested articles with category creation.

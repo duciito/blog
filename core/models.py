@@ -23,6 +23,11 @@ class EditableModel(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
+    followers = models.ManyToManyField(
+        BlogUser,
+        related_name='followed_categories',
+        blank=True
+    )
 
     def __str__(self):
         return self.name

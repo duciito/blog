@@ -12,6 +12,7 @@ from core.serializers import (
 )
 from core.models import Article, ArticleContent, Category, Comment
 from core.mixins import VotableContentMixin
+from accounts.serializers import UserSerializer
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -22,6 +23,19 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     def articles(self, request):
         pass
 
+    @action(detail=True, methods=['post'])
+    def follow(self, request, pk=None):
+        """Start following a category."""
+        category = self.get_object()
+        category.followers.add(request.user)
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get'])
+    def followers(self, request, pk=None):
+        """Get all followers for a category."""
+        category = self.get_object()
+        followers = UserSerializer(category.followers, many=True)
+        return response.Response(followers.data)
 
 class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
     queryset = Article.objects.all()
@@ -52,7 +66,7 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def text(self, request, pk=None):
-        """Get articles that have gained popularity quickly."""
+        """Get the text content of an article. Could be raw HTML."""
         article = self.get_object()
         return response.Response(article.text)
 

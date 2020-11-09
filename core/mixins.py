@@ -10,17 +10,17 @@ class VotableContentMixin:
     """
     @action(detail=True, methods=['post'])
     def vote(self, request, pk=None):
-        """Vote for an article."""
-        article = self.get_object()
-        article.voters.add(request.user)
+        """Increment votes for an object."""
+        obj = self.get_object()
+        obj.voters.add(request.user)
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])
     def unvote(self, request, pk=None):
         """
-        Remove vote for an article.
+        Remove vote for an object.
         Doesn't thrown an exception if the user hasn't voted.
         """
-        article = self.get_object()
-        article.voters.remove(request.user)
+        obj = self.get_object()
+        obj.voters.remove(request.user)
         return response.Response(status=status.HTTP_204_NO_CONTENT)

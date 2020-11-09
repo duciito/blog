@@ -149,17 +149,45 @@ class SearchView(generics.ListAPIView):
 
     def get_queryset(self):
         content_type = self.request.query_params.get('content_type')
-        search_expression = self.request.query_params.get('content_type')
+        search_expression = self.request.query_params.get('search_expression')
         queryset = None
 
         if content_type and search_expression:
             if content_type == 'article':
-                queryset = filter_articles(Article.objects.all())
+                queryset = filter_articles(
+                    Article.objects.all(),
+                    search_expression
+                )
             elif content_type == 'category':
-                queryset = filter_categories(Category.objects.all())
+                queryset = filter_categories(
+                    Category.objects.all(),
+                    search_expression
+                )
             elif content_type == 'user':
-                queryset = filter_users(BlogUser.objects.all())
+                queryset = filter_users(
+                    BlogUser.objects.all(),
+                    search_expression
+                )
 
         return queryset
 
+    def get_serializer_class(self):
+        content_type = self.request.query_params.get('content_type')
+
+        if content_type in self.serializer_classes:
+            return self.serializer_classes[content_type]
+
+        return super().get_serializer_class()
+
+    def list(self, request, *args, **kwargs):
+        """Dynamically return a filtered queryset depending on the content type passed."""
+        queryset = self.filter_queryset(self.get_queryset())
+        if queryset is None:
+            return response.Response(
+                data="Wrong parameters provided. You need to pass valid `content_type` and `search_expression`",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = self.get_serializer(queryset, many=True)
+        return response.Response(serializer.data)
 

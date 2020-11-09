@@ -12,7 +12,9 @@ from core.serializers import (
 )
 from core.models import Article, ArticleContent, Category, Comment
 from core.mixins import VotableContentMixin
+from core.search import filter_articles, filter_categories, filter_users
 from accounts.serializers import UserSerializer
+from accounts.models import BlogUser
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -136,3 +138,28 @@ class CommentsView(VotableContentMixin, viewsets.ModelViewSet):
             queryset = queryset.filter(article=article)
 
         return queryset
+
+
+class SearchView(generics.ListAPIView):
+    serializer_classes = {
+        'article': ArticleSerializer,
+        'category': CategorySerializer,
+        'user': UserSerializer
+    }
+
+    def get_queryset(self):
+        content_type = self.request.query_params.get('content_type')
+        search_expression = self.request.query_params.get('content_type')
+        queryset = None
+
+        if content_type and search_expression:
+            if content_type == 'article':
+                queryset = filter_articles(Article.objects.all())
+            elif content_type == 'category':
+                queryset = filter_categories(Category.objects.all())
+            elif content_type == 'user':
+                queryset = filter_users(BlogUser.objects.all())
+
+        return queryset
+
+

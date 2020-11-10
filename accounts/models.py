@@ -23,3 +23,9 @@ class BlogUser(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ()
+
+
+class PasswordResetData(models.Model):
+    token = models.CharField(max_length=255, unique=True)
+    email = models.EmailField()
+    date_sent = models.DateTimeField(auto_now_add=True)

@@ -147,4 +147,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 SITE_URL = 'http://localhost:8000'
 # During development only
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django_ses.SESBackend'

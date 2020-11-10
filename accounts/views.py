@@ -1,5 +1,7 @@
+import logging
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth import authenticate
+from django.db.models import Count
 from rest_framework import serializers, status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
@@ -11,7 +13,9 @@ from accounts.serializers import (
     UserSerializer
 )
 from accounts.models import BlogUser
-from django.db.models import Count
+from services.aws_utils import ses_verify_email_address
+
+logger = logging.getLogger(__name__)
 
 
 class AuthViewSet(viewsets.GenericViewSet):
@@ -40,6 +44,11 @@ class AuthViewSet(viewsets.GenericViewSet):
 
         user = serializer.save()
         success_data = AuthUserSerializer(user).data
+        try:
+            ses_verify_email_address(user.email)
+        except:
+            logger.warning(f'Could not verify {user}\'s email for SES handling.')
+
         return Response(data=success_data, status=status.HTTP_201_CREATED)
 
     @action(methods=['POST'], detail=False)
@@ -54,6 +63,14 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['POST'], detail=False)
+    def password_reset(self, request):
+        email = request.POST.get('email')
+        user_exists = BlogUser.objects.filter(email=email).exists()
+
+        if user_exists:
+            pass
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

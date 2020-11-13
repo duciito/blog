@@ -65,6 +65,7 @@ class ArticleSerializer(LightArticleSerializer):
 
     class Meta(LightArticleSerializer.Meta):
         exclude = ('voters',)
+        read_only_fields = ('creator',)
 
     def create(self, validated_data):
         # Pop contents before saving to avoid unknown field error.

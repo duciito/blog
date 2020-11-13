@@ -62,9 +62,9 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
             return LightArticleSerializer
         return ArticleSerializer
 
-    def create(self, request, *args, **kwargs):
-        request.data.setdefault('creator', request.user.pk)
-        return super().create(request, *args, **kwargs)
+    def perform_create(self, serializer):
+        # Creator should be only the user the request is coming from.
+        serializer.save(creator=self.request.user)
 
     @action(detail=True, methods=['get'])
     def text(self, request, pk=None):

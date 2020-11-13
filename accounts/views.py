@@ -2,6 +2,8 @@ import logging
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth import authenticate
 from django.db.models import Count
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import smart_bytes
 from rest_framework import serializers, status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
@@ -66,11 +68,15 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(methods=['POST'], detail=False)
     def password_reset(self, request):
-        email = request.POST.get('email')
-        user_exists = BlogUser.objects.filter(email=email).exists()
+        email = request.data.get('email')
+        user_query = BlogUser.objects.filter(email=email)
 
-        if user_exists:
-            pass
+        if user_query.exists():
+            user = user_query.get()
+            # Safely encode user id in base64
+            user_id_base64 = urlsafe_base64_encode(smart_bytes(user.id))
+
+        return Response()
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

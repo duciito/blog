@@ -1,6 +1,7 @@
 import logging
 
 from django.core.exceptions import ImproperlyConfigured
+from django.core.mail import send_mail
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
@@ -34,6 +35,14 @@ class AuthViewSet(viewsets.GenericViewSet):
         'signup': SignupSerializer,
         'password_change': PasswordChangeSerializer
     }
+
+    def get_serializer_class(self):
+        if not isinstance(self.serializer_classes, dict):
+            raise ImproperlyConfigured('serializer_classes should be a dict.')
+
+        if self.action in self.serializer_classes:
+            return self.serializer_classes[self.action]
+        return super().get_serializer_class()
 
     @action(methods=['POST'], detail=False)
     def login(self, request):
@@ -82,29 +91,20 @@ class AuthViewSet(viewsets.GenericViewSet):
             user_id_base64 = urlsafe_base64_encode(smart_bytes(user.id))
             # Generate a one-time token that expires in 24h.
             token = PasswordResetTokenGenerator().make_token(user)
-            current_site = get_current_site(request).domain
-            # Build custom url with uid and token get params.
-            confirm_link = build_url(
-                'auth-password-verify',
-                get={
-                    'uidb64': user_id_base64,
-                    'token': token
-                }
+            # Get the confirm url.
+            absolute_url = self._build_password_reset_url(user_id_base64, token)
+            # Send the actual email.
+            send_mail(
+                subject='Reset your password',
+                message=f'Click the link below to reset password.\n{absolute_url}',
+                recipient_list=[user.email]
             )
 
-        return Response()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['GET'], detail=False, url_name='auth-password-verify')
     def password_reset_verify(self, request):
         pass
-
-    def get_serializer_class(self):
-        if not isinstance(self.serializer_classes, dict):
-            raise ImproperlyConfigured('serializer_classes should be a dict.')
-
-        if self.action in self.serializer_classes:
-            return self.serializer_classes[self.action]
-        return super().get_serializer_class()
 
     def _get_and_auth_user(self, email, password):
         user = authenticate(username=email, password=password)
@@ -113,6 +113,18 @@ class AuthViewSet(viewsets.GenericViewSet):
             raise serializers.ValidationError("Invalid username/password.")
 
         return user
+
+    def _build_password_reset_url(self, uid, token):
+        current_site = get_current_site(self.request).domain
+        # Build custom url with uid and token get params.
+        confirm_link = build_url(
+            'auth-password-verify',
+            get={
+                'uidb64': uid,
+                'token': token
+            }
+        )
+        return f'http://{current_site}/{confirm_link}'
 
 
 class UsersViewSet(viewsets.ModelViewSet):

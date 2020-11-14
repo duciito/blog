@@ -146,5 +146,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 SITE_URL = 'http://localhost:8000'
+DEFAULT_FROM_EMAIL = 'duciito@gmail.com'
 # During development only
 EMAIL_BACKEND = 'django_ses.SESBackend'
+

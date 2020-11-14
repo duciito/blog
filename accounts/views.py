@@ -1,9 +1,13 @@
 import logging
+
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Count
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import smart_bytes
+from django.urls import reverse
 from rest_framework import serializers, status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
@@ -15,6 +19,7 @@ from accounts.serializers import (
     UserSerializer
 )
 from accounts.models import BlogUser
+from accounts.utils import build_url
 from services.aws_utils import ses_verify_email_address
 
 logger = logging.getLogger(__name__)
@@ -75,8 +80,23 @@ class AuthViewSet(viewsets.GenericViewSet):
             user = user_query.get()
             # Safely encode user id in base64
             user_id_base64 = urlsafe_base64_encode(smart_bytes(user.id))
+            # Generate a one-time token that expires in 24h.
+            token = PasswordResetTokenGenerator().make_token(user)
+            current_site = get_current_site(request).domain
+            # Build custom url with uid and token get params.
+            confirm_link = build_url(
+                'auth-password-verify',
+                get={
+                    'uidb64': user_id_base64,
+                    'token': token
+                }
+            )
 
         return Response()
+
+    @action(methods=['GET'], detail=False, url_name='auth-password-verify')
+    def password_reset_verify(self, request):
+        pass
 
     def get_serializer_class(self):
         if not isinstance(self.serializer_classes, dict):

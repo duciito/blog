@@ -21,6 +21,7 @@ from accounts.serializers import (
 )
 from accounts.models import BlogUser
 from accounts.utils import build_url
+from config import settings
 from services.aws_utils import ses_verify_email_address
 
 logger = logging.getLogger(__name__)
@@ -97,12 +98,13 @@ class AuthViewSet(viewsets.GenericViewSet):
             send_mail(
                 subject='Reset your password',
                 message=f'Click the link below to reset password.\n{absolute_url}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email]
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(methods=['GET'], detail=False, url_name='auth-password-verify')
+    @action(methods=['GET'], detail=False, url_name='password-verify')
     def password_reset_verify(self, request):
         pass
 
@@ -118,13 +120,13 @@ class AuthViewSet(viewsets.GenericViewSet):
         current_site = get_current_site(self.request).domain
         # Build custom url with uid and token get params.
         confirm_link = build_url(
-            'auth-password-verify',
-            get={
+            'accounts:auth-password-verify',
+            get_params={
                 'uidb64': uid,
                 'token': token
             }
         )
-        return f'http://{current_site}/{confirm_link}'
+        return f'http://{current_site}{confirm_link}'
 
 
 class UsersViewSet(viewsets.ModelViewSet):

@@ -1,4 +1,5 @@
 import logging
+from functools import partial
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import send_mail
@@ -6,8 +7,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Count
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import smart_bytes
+from django.shortcuts import redirect
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import DjangoUnicodeDecodeError, smart_bytes, smart_str
 from django.urls import reverse
 from rest_framework import serializers, status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -112,7 +114,47 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(methods=['GET'], detail=False, url_name='password-verify')
     def password_reset_verify(self, request):
-        pass
+        uidb64 = request.query_params.get('uidb64')
+        token = request.query_params.get('token')
+        redirect_url = request.query_params.get('redirect_url')
+
+        try:
+            # Decode information back
+            uid = smart_str(urlsafe_base64_decode(uidb64))
+            user = BlogUser.objects.get(id=uid)
+            # Saves some typing to bind some repetitive arguments
+            redirect_url_with_params = partial(
+                build_url,
+                redirect_url,
+                fixed_url=True
+            )
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                return redirect(redirect_url_with_params(
+                    get_params={
+                        'token_valid': False,
+                        'reason': 'Token has expired!'
+                    }
+                ))
+
+            # If it's valid, pass the uid and token one more time,
+            # since we're gonna need them (when a new password is finally
+            # submitted) to once again make sure the token has not expired.
+            return redirect(redirect_url_with_params(
+                get_params={
+                    'token_valid': True,
+                    'uidb64': uidb64,
+                    'token': token
+                }
+            ))
+
+        except (TypeError, ValueError, DjangoUnicodeDecodeError) as e:
+            return redirect(redirect_url_with_params(
+                get_params={
+                    'token_valid': False,
+                    'reason': 'Token is invalid.'
+                }
+            ))
 
     @action(methods=['POST'], detail=False)
     def password_reset_data(self, request):

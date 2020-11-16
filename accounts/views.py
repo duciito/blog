@@ -92,8 +92,14 @@ class AuthViewSet(viewsets.GenericViewSet):
             user_id_base64 = urlsafe_base64_encode(smart_bytes(user.id))
             # Generate a one-time token that expires in 24h.
             token = PasswordResetTokenGenerator().make_token(user)
+            # Get a redirect url for when it's a valid token.
+            redirect_url = request.data.get('redirect_url', '')
             # Get the confirm url.
-            absolute_url = self._build_password_reset_url(user_id_base64, token)
+            absolute_url = self._build_password_reset_url(
+                user_id_base64,
+                token,
+                redirect_url
+            )
             # Send the actual email.
             send_mail(
                 subject='Reset your password',
@@ -108,6 +114,10 @@ class AuthViewSet(viewsets.GenericViewSet):
     def password_reset_verify(self, request):
         pass
 
+    @action(methods=['POST'], detail=False)
+    def password_reset_data(self, request):
+        pass
+
     def _get_and_auth_user(self, email, password):
         user = authenticate(username=email, password=password)
 
@@ -116,14 +126,15 @@ class AuthViewSet(viewsets.GenericViewSet):
 
         return user
 
-    def _build_password_reset_url(self, uid, token):
+    def _build_password_reset_url(self, uid, token, redirect_url):
         current_site = get_current_site(self.request).domain
         # Build custom url with uid and token get params.
         confirm_link = build_url(
             'accounts:auth-password-verify',
             get_params={
                 'uidb64': uid,
-                'token': token
+                'token': token,
+                'redirect_url': redirect_url
             }
         )
         return f'http://{current_site}{confirm_link}'

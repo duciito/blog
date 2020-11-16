@@ -1,9 +1,13 @@
-from rest_framework.authtoken.models import Token
 from rest_framework import serializers, validators
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import AuthenticationFailed
 
 from accounts.models import BlogUser
-from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth import password_validation
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import smart_str
+from django.utils.http import urlsafe_base64_decode
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -111,3 +115,38 @@ class PasswordChangeSerializer(serializers.Serializer):
         user.set_password(validated_data['new_password'])
         user.save()
         return user
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    password = serializers.CharField(required=True, write_only=True)
+    uidb64 = serializers.CharField(write_only=True)
+    token = serializers.CharField(write_only=True)
+
+    def validate_password(self, value):
+        password_validation.validate_password(value)
+        return value
+
+    def validate(self, data):
+        validated_data = super().validate(data)
+
+        password = validated_data['password']
+        uidb64 = validated_data['uidb64']
+        token = validated_data['token']
+
+        try:
+            # Decode the user id
+            uid = smart_str(urlsafe_base64_decode(uidb64))
+            user = BlogUser.objects.get(id=uid)
+
+            # Check if token's still valid
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise AuthenticationFailed('The reset link is not valid!', 401)
+
+            # If all goes ok, set new password
+            user.set_password(password)
+            user.save()
+
+        except BlogUser.DoesNotExist:
+            raise serializers.ValidationError('User with that id not found!')
+        except:
+            raise AuthenticationFailed('The reset link is not valid!', 401)

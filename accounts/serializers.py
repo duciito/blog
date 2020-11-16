@@ -142,11 +142,16 @@ class PasswordResetSerializer(serializers.Serializer):
             if not PasswordResetTokenGenerator().check_token(user, token):
                 raise AuthenticationFailed('The reset link is not valid!', 401)
 
-            # If all goes ok, set new password
-            user.set_password(password)
-            user.save()
-
         except BlogUser.DoesNotExist:
             raise serializers.ValidationError('User with that id not found!')
         except:
             raise AuthenticationFailed('The reset link is not valid!', 401)
+
+        return data
+
+    def create(self, validated_data):
+        # If all validation has passed up to this point, set the new password
+        user = self.context['request'].user
+        user.set_password(validated_data['password'])
+        user.save()
+        return user

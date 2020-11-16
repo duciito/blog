@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from accounts.serializers import (
     AuthUserSerializer, LoginSerializer,
     PasswordChangeSerializer, SignupSerializer,
-    UserSerializer
+    UserSerializer, PasswordResetSerializer
 )
 from accounts.models import BlogUser
 from accounts.utils import build_url
@@ -36,7 +36,8 @@ class AuthViewSet(viewsets.GenericViewSet):
     serializer_classes = {
         'login': LoginSerializer,
         'signup': SignupSerializer,
-        'password_change': PasswordChangeSerializer
+        'password_change': PasswordChangeSerializer,
+        'password_reset_data': PasswordResetSerializer
     }
 
     def get_serializer_class(self):

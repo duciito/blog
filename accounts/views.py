@@ -158,7 +158,10 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(methods=['POST'], detail=False)
     def password_reset_data(self, request):
-        pass
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def _get_and_auth_user(self, email, password):
         user = authenticate(username=email, password=password)

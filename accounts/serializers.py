@@ -136,6 +136,8 @@ class PasswordResetSerializer(serializers.Serializer):
         try:
             # Decode the user id
             uid = smart_str(urlsafe_base64_decode(uidb64))
+            # Create an entry with the plain user id.
+            validated_data['uid'] = uid
             user = BlogUser.objects.get(id=uid)
 
             # Check if token's still valid
@@ -151,7 +153,7 @@ class PasswordResetSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         # If all validation has passed up to this point, set the new password
-        user = self.context['request'].user
+        user = BlogUser.objects.get(id=validated_data['uid'])
         user.set_password(validated_data['password'])
         user.save()
         return user

@@ -80,7 +80,7 @@ class ArticleSerializer(LightArticleSerializer):
                 article = Article.objects.create(**validated_data)
                 # Bulk save all article contents and upload them to s3.
                 ArticleContent.objects.bulk_create([
-                    ArticleContent(**data) for data in article_contents
+                    ArticleContent(article=article, **data) for data in article_contents
                 ])
         except IntegrityError:
             raise serializers.ValidationError('Article couldn\'t save. Please \

@@ -118,17 +118,16 @@ class AuthViewSet(viewsets.GenericViewSet):
         uidb64 = request.query_params.get('uidb64')
         token = request.query_params.get('token')
         redirect_url = request.query_params.get('redirect_url')
+        # Saves some typing to bind some repetitive arguments
+        redirect_url_with_params = partial(
+            build_url,
+            url=redirect_url
+        )
 
         try:
             # Decode information back
             uid = smart_str(urlsafe_base64_decode(uidb64))
             user = BlogUser.objects.get(id=uid)
-            # Saves some typing to bind some repetitive arguments
-            redirect_url_with_params = partial(
-                build_url,
-                redirect_url,
-                fixed_url=True
-            )
 
             if not PasswordResetTokenGenerator().check_token(user, token):
                 return redirect(redirect_url_with_params(
@@ -149,11 +148,11 @@ class AuthViewSet(viewsets.GenericViewSet):
                 }
             ))
 
-        except (TypeError, ValueError, DjangoUnicodeDecodeError) as e:
+        except (AttributeError, TypeError, ValueError, DjangoUnicodeDecodeError) as e:
             return redirect(redirect_url_with_params(
                 get_params={
                     'token_valid': False,
-                    'reason': 'Token is invalid.'
+                    'reason': 'Token or user id is invalid.'
                 }
             ))
 

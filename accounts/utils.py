@@ -7,9 +7,9 @@ def build_url(*args, **kwargs):
     get_params = kwargs.pop('get_params', None)
     # Provide fixed url if you need to build a url for external sites.
     # Else, each site point should be reversible through route names.
-    fixed_url = kwargs.pop('fixed_url', None)
+    url = kwargs.pop('url', None)
 
-    if not fixed_url:
+    if url is None:
         url = reverse(*args, **kwargs)
 
     if get_params:

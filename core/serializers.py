@@ -1,4 +1,6 @@
+from django.db import IntegrityError, transaction
 from rest_framework import serializers
+
 from core.models import Article, ArticleContent, Category, Comment
 
 
@@ -70,10 +72,18 @@ class ArticleSerializer(LightArticleSerializer):
     def create(self, validated_data):
         # Pop contents before saving to avoid unknown field error.
         article_contents = validated_data.pop('article_contents', [])
-        article = Article.objects.create(**validated_data)
 
-        ArticleContent.objects.bulk_create([
-            ArticleContent(**data) for data in article_contents
-        ])
+        try:
+            # Either all contents save along with the article,
+            # or nothing is saved at all.
+            with transaction.atomic():
+                article = Article.objects.create(**validated_data)
+                # Bulk save all article contents and upload them to s3.
+                ArticleContent.objects.bulk_create([
+                    ArticleContent(**data) for data in article_contents
+                ])
+        except IntegrityError:
+            raise serializers.ValidationError('Article couldn\'t save. Please \
+                    check you\'re attaching valid media.')
 
         return article

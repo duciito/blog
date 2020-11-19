@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth import password_validation
@@ -95,14 +95,17 @@ class AuthUserSerializer(UserSerializer):
         expiration_time = settings.TOKEN_EXPIRATION_TIME
 
         # If token exists but it has expired, generate a new one.
-        if not created and token.created < utc_now - expiration_time:
+        if (
+            not created
+            and token.created < utc_now - timedelta(seconds=expiration_time)
+        ):
             token.delete()
             token = Token.objects.create(user=user)
             # Force tz aware datetime.
             token.created = datetime.utcnow().replace(tzinfo=utc)
             token.save()
 
-        return token
+        return token.key
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ('auth_token',)

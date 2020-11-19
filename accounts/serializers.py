@@ -1,13 +1,19 @@
-from rest_framework import serializers, validators
-from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import AuthenticationFailed
+from datetime import datetime
 
-from accounts.models import BlogUser
+from django.conf import settings
 from django.contrib.auth import password_validation
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils import timezone
 from django.utils.encoding import smart_str
 from django.utils.http import urlsafe_base64_decode
+
+from rest_framework import serializers, validators
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import AuthenticationFailed
+from pytz import utc
+
+from accounts.models import BlogUser
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -85,7 +91,18 @@ class AuthUserSerializer(UserSerializer):
 
     def get_auth_token(self, user):
         token, created = Token.objects.get_or_create(user=user)
-        return token.key
+        utc_now = timezone.now()
+        expiration_time = settings.TOKEN_EXPIRATION_TIME
+
+        # If token exists but it has expired, generate a new one.
+        if not created and token.created < utc_now - expiration_time:
+            token.delete()
+            token = Token.objects.create(user=user)
+            # Force tz aware datetime.
+            token.created = datetime.utcnow().replace(tzinfo=utc)
+            token.save()
+
+        return token
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ('auth_token',)

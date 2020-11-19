@@ -126,6 +126,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.BlogUser'
+# Auth token expiration time in seconds.
+TOKEN_EXPIRATION_TIME = 86400
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

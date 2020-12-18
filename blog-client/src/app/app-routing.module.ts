@@ -9,7 +9,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   // TODO: add profile component
-  {path: 'profile', component: null, canActivate: [AuthGuard]},
+  /* {path: 'profile', component: null, canActivate: [AuthGuard]}, */
   // Redirect to home for all undefined paths.
   {path: '**', redirectTo: ''}
 ];

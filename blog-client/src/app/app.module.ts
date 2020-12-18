@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {TokenInterceptor} from './helpers/token.interceptor';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import {TokenInterceptor} from './helpers/token.interceptor';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    ReactiveFormsModule,
     NoopAnimationsModule,
     MatToolbarModule,
     MatButtonModule,

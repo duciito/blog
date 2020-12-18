@@ -2,10 +2,10 @@ export interface User {
   id: number;
   username: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  profileDescription: string;
-  joinedAt: Date;
+  profile_description: string;
+  joined_at: Date;
   token: string;
 }

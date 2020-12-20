@@ -63,12 +63,12 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.save()
-        success_data = AuthUserSerializer(user).data
         try:
             ses_verify_email_address(user.email)
         except:
             logger.warning(f'Could not verify {user}\'s email for SES handling.')
 
+        success_data = AuthUserSerializer(user).data
         return Response(data=success_data, status=status.HTTP_201_CREATED)
 
     @action(methods=['POST'], detail=False)

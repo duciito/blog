@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators, FormGroup} from '@angular/forms';
 import {AccountService} from '../services/account.service';
 import {Router} from '@angular/router';
+import {User} from '../models/user';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-register',
@@ -29,4 +31,31 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  get f() { return this.form.controls; }
+
+  submit() {
+    if (this.form.invalid) {
+      return;
+    }
+
+    const formData = this.form.value;
+    const user: User = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      profile_description: formData.profileDescription,
+    };
+
+    this.accountService.register(user)
+      .pipe(first())
+      .subscribe(data => {
+        // check if needed.
+        // this.form.reset();
+        this.router.navigate(['login']);
+      })
+
+    console.log(this.form.value);
+  }
 }

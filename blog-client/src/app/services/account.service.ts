@@ -20,7 +20,7 @@ export class AccountService {
 
   getLocalToken(): string {
     const user: User = JSON.parse(localStorage.getItem('user'));
-    return user.token;
+    return user ? user.token : null;
   }
 
   login(email: string, password: string) {
@@ -37,7 +37,7 @@ export class AccountService {
   }
 
   register(user: User){
-    return this.http.post(`${this.authEndpoint}/signup/`, user);
+    return this.http.post(`${this.authEndpoint}signup/`, user);
   }
 
   logout() {

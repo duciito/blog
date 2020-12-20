@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'core',
     'accounts',
     'rest_framework',
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -151,3 +153,5 @@ SITE_URL = 'http://localhost:8000'
 DEFAULT_FROM_EMAIL = 'duciito@gmail.com'
 # During development only
 EMAIL_BACKEND = 'django_ses.SESBackend'
+# Enable CORS for all
+CORS_ORIGIN_ALLOW_ALL = True

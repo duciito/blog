@@ -7,7 +7,7 @@ import {first} from 'rxjs/operators';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss', '../../styles/common/auth-form.scss']
 })
 export class LoginComponent implements OnInit {
 
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.accountService.login(this.f.username.value, this.f.password.value)
+    this.accountService.login(this.f.email.value, this.f.password.value)
       .pipe(first())
       .subscribe(
         data => {

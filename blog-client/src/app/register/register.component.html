@@ -1,15 +1,18 @@
-<div class="register-container">
-    <h2 class="mat-display-2">Sign up</h2>
+<div class="auth-image-container">
+    <img src="https://cdn.dribbble.com/users/360356/screenshots/14799186/media/eb26eb739c5a4143fdff8725729d8445.png?compress=1&resize=1000x750" alt="">
+</div>
+<div class="auth-content">
+    <h2 class="mat-display-1">Sign up</h2>
     <div class="form-container">
         <form [formGroup]="form" (ngSubmit)="submit()">
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Username</mat-label>
                 <input matInput formControlName="username" placeholder="Enter a username" required>
                 <mat-error *ngIf="f.username.hasError('required')">
                     Username is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Email</mat-label>
                 <input matInput formControlName="email" placeholder="Enter your email" required>
                 <mat-error *ngIf="f.email.hasError('required')">
@@ -19,21 +22,21 @@
                     Please enter a valid email address
                 </mat-error>
             </mat-form-field>
-            <mat-form-field class="half-flex-child" appearance="fill">
+            <mat-form-field class="half-flex-child" appearance="outline">
                 <mat-label>First name</mat-label>
                 <input matInput formControlName="firstName" placeholder="Enter your first name" required>
                 <mat-error *ngIf="f.firstName.hasError('required')">
                     First name is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
-            <mat-form-field class="half-flex-child" appearance="fill">
+            <mat-form-field class="half-flex-child" appearance="outline">
                 <mat-label>Last name</mat-label>
                 <input matInput formControlName="lastName" placeholder="Enter your last name" required>
                 <mat-error *ngIf="f.lastName.hasError('required')">
                     Last name is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
-            <mat-form-field hintLabel="Min 6 characters" appearance="fill">
+            <mat-form-field hintLabel="Min 6 characters" appearance="outline">
                 <mat-label>Password</mat-label>
                 <input matInput formControlName="password" type="password" required>
                 <mat-error *ngIf="f.password.hasError('required')">
@@ -43,7 +46,7 @@
                     Password needs to be at least <strong>6</strong> characters long
                 </mat-error>
             </mat-form-field>
-            <mat-form-field hintLabel="At least 50 characters" appearance="fill">
+            <mat-form-field hintLabel="At least 50 characters" appearance="outline">
                 <mat-label>Profile description</mat-label>
                 <textarea #profDesc matInput formControlName="profileDescription"></textarea>
                 <mat-hint align="end">{{profDesc.value?.length || 0}}/50</mat-hint>
@@ -54,7 +57,7 @@
                     Profile description needs to be at least <strong>50</strong> characters long
                 </mat-error>
             </mat-form-field>
-            <button mat-flat-button color="primary" type="submit">Submit</button>
+            <button [disabled]="form.invalid" mat-flat-button color="primary" type="submit">Submit</button>
         </form>
     </div>
 </div>

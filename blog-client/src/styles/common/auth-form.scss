@@ -1,0 +1,32 @@
+@import 'src/styles/globals/colors';
+
+.auth-content {
+    color: $primary;
+    max-width: 28rem;
+    margin: 12vh auto;
+    padding: 0 3vw;
+
+    h2 {
+        text-align: center;
+    }
+}
+
+.form-container form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    mat-form-field {
+        flex-basis: 100%;
+        margin: 0.22rem 0;
+    }
+}
+
+.half-flex-child {
+    max-width: calc(50% - 10px);
+}
+
+button[type="submit"] {
+    margin-top: 1.2rem;
+    width: 12rem;
+}

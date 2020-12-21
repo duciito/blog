@@ -8,11 +8,12 @@ import {first} from 'rxjs/operators';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss', '../../styles/common/auth-form.scss']
 })
 export class RegisterComponent implements OnInit {
 
   form: FormGroup;
+  serverErrors: any = {};
 
   constructor(
     private accountService: AccountService,
@@ -50,12 +51,16 @@ export class RegisterComponent implements OnInit {
 
     this.accountService.register(user)
       .pipe(first())
-      .subscribe(data => {
-        // check if needed.
-        // this.form.reset();
-        this.router.navigate(['login']);
-      })
-
-    console.log(this.form.value);
+      .subscribe(
+        data => {
+          // TODO: check if needed.
+          // this.form.reset();
+          this.router.navigate(['login'], {queryParams: {afterSignUp: true}});
+        },
+        error => {
+          this.serverErrors = error.error;
+          console.log(this.serverErrors);
+        }
+      )
   }
 }

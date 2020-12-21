@@ -25,7 +25,7 @@ export class AccountService {
 
   login(email: string, password: string) {
     return this.http.post<User>(
-      `${this.authEndpoint}/login/`,
+      `${this.authEndpoint}login/`,
       { email, password }
     ).pipe(
       map((user: User) => {

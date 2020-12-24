@@ -1,22 +1,30 @@
-<div class="auth-content">
-    <h2 class="mat-display-1">Login</h2>
-    <div class="form-container">
-        <form [formGroup]="form" (ngSubmit)="submit()">
-            <mat-form-field appearance="outline">
-                <mat-label>Email</mat-label>
-                <input matInput formControlName="email" placeholder="Enter your email" required>
-                <mat-error *ngIf="f.email.hasError('required')">
-                    Email is <strong>required</strong>
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Password</mat-label>
-                <input matInput formControlName="password" type="password" required>
-                <mat-error *ngIf="f.password.hasError('required')">
-                    Password is <strong>required</strong>
-                </mat-error>
-            </mat-form-field>
-            <button [disabled]="form.invalid" mat-flat-button color="primary" type="submit">Submit</button>
-        </form>
+<div class="auth-container">
+    <div class="auth-image-container"></div>
+    <div class="auth-content">
+        <h2 class="mat-display-1">Login</h2>
+        <div class="form-container">
+            <form [formGroup]="form" (ngSubmit)="submit()">
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" placeholder="Enter your email" required>
+                    <mat-error *ngIf="f.email.hasError('required')">
+                        Email is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input matInput formControlName="password" type="password" required>
+                    <mat-error *ngIf="f.password.hasError('required')">
+                        Password is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <button [disabled]="form.invalid" mat-flat-button color="primary" type="submit">Submit</button>
+            </form>
+        </div>
     </div>
 </div>
+
+<p class="auth-redirect">
+    Not a member?
+    <a routerLink="/register">Sign up</a>.
+</p>

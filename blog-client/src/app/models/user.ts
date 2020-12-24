@@ -7,5 +7,5 @@ export interface User {
   email: string;
   profile_description: string;
   joined_at?: Date;
-  token?: string;
+  auth_token?: string;
 }

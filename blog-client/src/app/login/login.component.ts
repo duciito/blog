@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     });
 
     // Get return url or redirect to home if none
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
   }
 
   get f() {return this.form.controls;}

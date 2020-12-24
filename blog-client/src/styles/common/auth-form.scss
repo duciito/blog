@@ -1,9 +1,29 @@
 @import 'src/styles/globals/colors';
 
+button[type="submit"] {
+    margin-top: 1.2rem;
+    width: 12rem;
+}
+
+.auth-container,
+.auth-content,
+.form-container form {
+    display: flex;
+}
+
+.auth-image-container {
+    height: 100vh;
+    background-size: cover;
+}
+
 .auth-content {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     color: $primary;
+    font-size: .84rem;
     max-width: 28rem;
-    margin: 12vh auto;
+    margin: 0 auto;
     padding: 0 3vw;
 
     h2 {
@@ -12,7 +32,6 @@
 }
 
 .form-container form {
-    display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 
@@ -26,7 +45,9 @@
     max-width: calc(50% - 10px);
 }
 
-button[type="submit"] {
-    margin-top: 1.2rem;
-    width: 12rem;
+.auth-redirect {
+    position: absolute;
+    top: 2vh;
+    right: 2vw;
+    font-size: 0.84rem;
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {environment} from 'src/environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../models/user';
-import {Observable} from 'rxjs';
+import {Observable, BehaviorSubject} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Router} from '@angular/router';
 
@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 export class AccountService {
 
   private authEndpoint: string = `${environment.baseApiUrl}/auth/`;
+  private loggedIn = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -20,7 +21,11 @@ export class AccountService {
 
   getLocalToken(): string {
     const user: User = JSON.parse(localStorage.getItem('user'));
-    return user ? user.token : null;
+    return user ? user.auth_token : null;
+  }
+
+  get isLoggedIn() {
+    return this.loggedIn.asObservable();
   }
 
   login(email: string, password: string) {
@@ -31,6 +36,7 @@ export class AccountService {
       map((user: User) => {
         // Save the user in local storage
         localStorage.setItem('user', JSON.stringify(user));
+        this.loggedIn.next(true);
         return user;
       })
     );
@@ -43,6 +49,7 @@ export class AccountService {
   logout() {
     // Remove from local storage instead of deauthing with the server.
     localStorage.removeItem('user');
+    this.loggedIn.next(false);
     this.router.navigate(['login'])
   }
 }

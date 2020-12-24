@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {AccountService} from './services/account.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'blog-client';
+  isLoggedIn$: Observable<boolean> = this.accountService.isLoggedIn;
+
+  constructor(private accountService: AccountService) {}
 }

@@ -4,6 +4,7 @@ import {AccountService} from '../services/account.service';
 import {Router} from '@angular/router';
 import {User} from '../models/user';
 import {first} from 'rxjs/operators';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -13,12 +14,12 @@ import {first} from 'rxjs/operators';
 export class RegisterComponent implements OnInit {
 
   form: FormGroup;
-  serverErrors: any = {};
 
   constructor(
     private accountService: AccountService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -58,8 +59,11 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['login'], {queryParams: {afterSignUp: true}});
         },
         error => {
-          this.serverErrors = error.error;
-          console.log(this.serverErrors);
+          const errors: any = [...Object.values(error.error || error)].reduce(
+            (acc: string[], val: string) => acc.concat(val), []
+          );
+
+          errors.forEach(error => this.toastr.error(error));
         }
       )
   }

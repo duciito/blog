@@ -10,6 +10,7 @@ import { RegisterComponent } from './register/register.component';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {TokenInterceptor} from './helpers/token.interceptor';
 import {ReactiveFormsModule} from '@angular/forms';
+import {ToastrModule} from 'ngx-toastr';
 import { HomeComponent } from './home/home.component';
 
 @NgModule({
@@ -26,6 +27,11 @@ import { HomeComponent } from './home/home.component';
     ReactiveFormsModule,
     NoopAnimationsModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 6300,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true
+    }),
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,

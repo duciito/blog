@@ -3,6 +3,7 @@ import {AccountService} from '../services/account.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
 import {first} from 'rxjs/operators';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
     private accountService: AccountService,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -43,6 +45,13 @@ export class LoginComponent implements OnInit {
       .subscribe(
         data => {
           this.router.navigate([this.returnUrl]);
+        },
+        error => {
+          const errors: any = [...Object.values(error.error || error)].reduce(
+            (acc: string[], val: string) => acc.concat(val), []
+          );
+
+          errors.forEach(error => this.toastr.error(error));
         }
       )
   }

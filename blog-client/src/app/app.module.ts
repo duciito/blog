@@ -15,6 +15,7 @@ import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {TokenInterceptor} from './helpers/token.interceptor';
 import {ReactiveFormsModule} from '@angular/forms';
 import {ToastrModule} from 'ngx-toastr';
+import {QuillModule} from 'ngx-quill';
 import { HomeComponent } from './home/home.component';
 
 @NgModule({
@@ -36,6 +37,7 @@ import { HomeComponent } from './home/home.component';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true
     }),
+    QuillModule.forRoot(),
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,

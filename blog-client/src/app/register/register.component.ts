@@ -56,7 +56,7 @@ export class RegisterComponent implements OnInit {
         data => {
           // TODO: check if needed.
           // this.form.reset();
-          this.router.navigate(['login'], {queryParams: {afterSignUp: true}});
+          this.router.navigate(['login', {afterSignUp: true}]);
         },
         error => {
           const errors: any = [...Object.values(error.error || error)].reduce(

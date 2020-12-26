@@ -31,6 +31,10 @@ export class LoginComponent implements OnInit {
 
     // Get return url or redirect to home if none
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
+
+    if (this.route.snapshot.params['afterSignUp']) {
+      this.toastr.success("You registered successfully. You can now login.");
+    }
   }
 
   get f() {return this.form.controls;}

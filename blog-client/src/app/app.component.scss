@@ -1,7 +1,21 @@
+@import '../../src/styles/globals/colors';
+
 mat-toolbar {
     padding: 0 10%;
+
+    h1 {
+        cursor: pointer;
+    }
+
+    a[mat-button] {
+        font-weight: normal;
+    }
 }
 
 .menu-spacer {
     flex: 1 1 auto;
+}
+
+#logoutButton {
+    color: $accent;
 }

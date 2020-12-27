@@ -1,6 +1,6 @@
 <mat-toolbar *ngIf="isLoggedIn$ | async" color="primary">
     <mat-toolbar-row>
-        <h1>blog</h1>
+        <h1 routerLink="/home">blog</h1>
         <span class="menu-spacer"></span>
 
         <div>
@@ -10,6 +10,7 @@
             <a mat-button routerLink="/saved">saved</a>
             <a mat-button routerLink="/notifications">notifications</a>
             <a mat-button routerLink="/profile">profile</a>
+            <a id="logoutButton" mat-button (click)="logout()">log out</a>
         </div>
     </mat-toolbar-row>
 </mat-toolbar>

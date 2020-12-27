@@ -11,4 +11,8 @@ export class AppComponent {
   isLoggedIn$: Observable<boolean> = this.accountService.isLoggedIn;
 
   constructor(private accountService: AccountService) {}
+
+  logout() {
+    this.accountService.logout();
+  }
 }

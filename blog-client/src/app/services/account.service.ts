@@ -17,7 +17,11 @@ export class AccountService {
   constructor(
     private http: HttpClient,
     private router: Router
-  ) { }
+  ) {
+    if (this.getLocalToken()) {
+      this.loggedIn.next(true);
+    }
+  }
 
   getLocalToken(): string {
     const user: User = JSON.parse(localStorage.getItem('user'));

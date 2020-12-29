@@ -1,0 +1,16 @@
+<div class="create-post-container">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="standard">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter a title" required>
+            <mat-error *ngIf="f.title.hasError('required')">
+                Title is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="f.title.hasError('minlength')">
+                Title needs to be at least <strong>10</strong> characters long
+            </mat-error>
+        </mat-form-field>
+        <quill-editor></quill-editor>
+        <button [disabled]="form.invalid" mat-flat-button color="primary" type="submit">Submit</button>
+    </form>
+</div>

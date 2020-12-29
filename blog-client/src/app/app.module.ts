@@ -17,13 +17,15 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {ToastrModule} from 'ngx-toastr';
 import {QuillModule} from 'ngx-quill';
 import { HomeComponent } from './home/home.component';
+import { CreatePostComponent } from './create-post/create-post.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    CreatePostComponent
   ],
   imports: [
     BrowserModule,

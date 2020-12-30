@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {FileValidator} from 'ngx-material-file-input';
 import {ToastrService} from 'ngx-toastr';
 import {Observable} from 'rxjs';
 import {Category} from '../models/category';
@@ -29,8 +30,12 @@ export class CreatePostComponent implements OnInit {
     this.form = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(10)]],
       category_id: [null, Validators.required],
-      thumbnail: [null, Validators.required],
-      text: ['', Validators.required]
+      thumbnail: [null, [
+        Validators.required,
+        // Max 5MB for thumbnails
+        FileValidator.maxContentSize(5242880)
+      ]],
+      text: ['']
     });
 
     this.categories$ = this.categoryService.getAll();

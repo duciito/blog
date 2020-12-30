@@ -10,7 +10,33 @@
                 Title needs to be at least <strong>10</strong> characters long
             </mat-error>
         </mat-form-field>
-        <quill-editor></quill-editor>
+        <mat-form-field appearance="standard">
+            <mat-label>Category</mat-label>
+            <mat-select required formControlName="category_id">
+                <mat-option *ngFor="let cat of categories$ | async" [value]="cat.id">
+                    {{cat.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="standard">
+            <mat-label>Thumbnail</mat-label>
+            <ngx-mat-file-input
+                formControlName="thumbnail"
+                valuePlaceholder="No image selected"
+                accept="image/png, image/jpeg"
+                required>
+            </ngx-mat-file-input>
+            <mat-icon matSuffix>image</mat-icon>
+            <mat-error *ngIf="f.thumbnail.hasError('required')">
+                Please select a file
+            </mat-error>
+            <mat-error *ngIf="f.thumbnail.hasError('maxContentSize')">
+                The image must not exceed 5MB
+            </mat-error>
+        </mat-form-field>
+        <div class="text-editor">
+            <quill-editor id="text" formControlName="text" [required]="true"></quill-editor>
+        </div>
         <button [disabled]="form.invalid" mat-flat-button color="primary" type="submit">Submit</button>
     </form>
 </div>

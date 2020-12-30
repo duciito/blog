@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +19,7 @@ import {ToastrModule} from 'ngx-toastr';
 import {QuillModule} from 'ngx-quill';
 import { HomeComponent } from './home/home.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import {MaterialFileInputModule} from 'ngx-material-file-input';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { CreatePostComponent } from './create-post/create-post.component';
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule,
+    MaterialFileInputModule
   ],
   providers: [
     {

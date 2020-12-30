@@ -19,7 +19,7 @@ export class TokenInterceptor {
 
     req = req.clone({
       setHeaders: {
-        Authorization: `Bearer: ${token}`
+        Authorization: `Bearer ${token}`
       }
     });
     return next.handle(req);

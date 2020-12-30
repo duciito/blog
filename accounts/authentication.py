@@ -8,6 +8,8 @@ from rest_framework.exceptions import AuthenticationFailed
 
 class ExpiringTokenAuthentication(TokenAuthentication):
     """Override drf's default token authentication to expire in set time."""
+    keyword = 'Bearer'
+
     def authenticate_credentials(self, key):
         print(key)
         model = self.get_model()

@@ -7,6 +7,12 @@ import {Observable} from 'rxjs';
 import {Category} from '../models/category';
 import {BlogPostService} from '../services/blog-post.service';
 import {CategoryService} from '../services/category.service';
+import Quill from 'quill';
+import {ImageHandler, Options} from 'ngx-quill-upload';
+import {ArticleContent} from '../models/article-content';
+import {first} from 'rxjs/operators';
+
+Quill.register('modules/imageHandler', ImageHandler);
 
 @Component({
   selector: 'app-create-post',
@@ -17,6 +23,33 @@ export class CreatePostComponent implements OnInit {
 
   form: FormGroup;
   categories$: Observable<Category[]>;
+  temporaryContents: ArticleContent[] = [];
+
+  quillOptions = {
+    imageHandler: {
+      upload: file => {
+        console.log(file);
+        const articleContent = {
+          file: file,
+          content_type: "image"
+        } as ArticleContent;
+
+        // Image handler only works with promises
+        return new Promise((resolve, reject) => {
+          return this.blogPostService.uploadContent(articleContent)
+            .pipe(first())
+            .subscribe(
+              (content: ArticleContent) => {
+                this.temporaryContents.push(content);
+                resolve(content.file);
+              },
+              error => {}
+            )
+        });
+      },
+      accepts: ['png', 'jpg', 'jpeg']
+    } as Options
+  };
 
   constructor(
     private blogPostService: BlogPostService,

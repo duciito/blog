@@ -1,8 +1,9 @@
 import {Injectable} from "@angular/core";
 import {AccountService} from '../services/account.service';
-import {HttpRequest, HttpHandler} from '@angular/common/http';
+import {HttpRequest, HttpHandler, HttpErrorResponse} from '@angular/common/http';
 import {isNullOrUndefined} from 'util';
 import {User} from '../models/user';
+import {tap} from 'rxjs/operators';
 
 @Injectable()
 export class TokenInterceptor {
@@ -22,6 +23,17 @@ export class TokenInterceptor {
         Authorization: `Bearer ${token}`
       }
     });
-    return next.handle(req);
+
+    return next.handle(req).pipe(
+      tap(
+        () => {},
+        (err: any) => {
+          if (err instanceof HttpErrorResponse && err.status == 401) {
+            // Token has expired.
+            this.accountService.logout();
+          }
+        }
+      )
+    );
   }
 }

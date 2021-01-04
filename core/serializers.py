@@ -63,7 +63,7 @@ class LightArticleSerializer(serializers.ModelSerializer):
 class ArticleSerializer(LightArticleSerializer):
     """Article serializer. Serializes text and computes votes number."""
 
-    article_contents = ArticleContentSerializer(many=True, required=False)
+    article_content_ids = serializers.ListField(child=serializers.IntegerField())
 
     class Meta(LightArticleSerializer.Meta):
         exclude = ('voters',)
@@ -71,17 +71,17 @@ class ArticleSerializer(LightArticleSerializer):
 
     def create(self, validated_data):
         # Pop contents before saving to avoid unknown field error.
-        article_contents = validated_data.pop('article_contents', [])
+        article_contents = validated_data.pop('article_content_ids', [])
 
         try:
             # Either all contents save along with the article,
             # or nothing is saved at all.
             with transaction.atomic():
                 article = Article.objects.create(**validated_data)
-                # Bulk save all article contents and upload them to s3.
-                ArticleContent.objects.bulk_create([
-                    ArticleContent(article=article, **data) for data in article_contents
-                ])
+                # Bulk update all article contents to point to the right article.
+                ArticleContent.objects.filter(id__in=article_contents).update(
+                    article=article
+                )
         except IntegrityError:
             raise serializers.ValidationError('Article couldn\'t save. Please \
                     check you\'re attaching valid media.')

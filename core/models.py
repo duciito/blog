@@ -60,7 +60,7 @@ class ArticleContent(models.Model):
         ('video', 'Video'),
     )
 
-    article = models.ForeignKey(Article, related_name='contents', on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, null=True, related_name='contents', on_delete=models.CASCADE)
     content_type = models.CharField(max_length=20, choices=CONTENT_TYPES)
     file = models.FileField()
     guid = models.UUIDField(null=True, default=uuid.uuid4, unique=True)

@@ -21,6 +21,7 @@ Quill.register('modules/imageHandler', ImageHandler);
 })
 export class CreatePostComponent implements OnInit {
 
+  readonly acceptedImgFormats: string[] = ['image/png', 'image/jpg', 'image/jpeg'];
   form: FormGroup;
   categories$: Observable<Category[]>;
   temporaryContents: ArticleContent[] = [];
@@ -28,28 +29,38 @@ export class CreatePostComponent implements OnInit {
   quillOptions = {
     imageHandler: {
       upload: file => {
-        console.log(file);
-        const articleContent = {
-          file: file,
-          content_type: "image"
-        } as ArticleContent;
-
         // Image handler only works with promises
         return new Promise((resolve, reject) => {
-          return this.blogPostService.uploadContent(articleContent)
+          if (this.acceptedImgFormats.includes(file.type)) {
+            const articleContent = {
+              file: file,
+              content_type: "image"
+            } as ArticleContent;
+
+            return this.blogPostService.uploadContent(articleContent)
             .pipe(first())
             .subscribe(
               (content: ArticleContent) => {
                 this.temporaryContents.push(content);
                 resolve(content.file);
               },
-              error => {}
+              error => {
+                reject("Image failed to upload.");
+                this.toastr.error("Image failed to upload. Please try again.");
+              }
             )
+          }
+          else {
+            reject("Unsupported format");
+            this.toastr.error("Unsupported image format.");
+          }
         });
       },
-      accepts: ['png', 'jpg', 'jpeg']
+      accepts: this.acceptedImgFormats
     } as Options
   };
+
+  contentChanged($event) {console.log($event);}
 
   constructor(
     private blogPostService: BlogPostService,

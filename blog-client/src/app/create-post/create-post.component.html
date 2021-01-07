@@ -35,7 +35,7 @@
             </mat-error>
         </mat-form-field>
         <div class="text-editor">
-            <quill-editor id="text" [modules]="quillOptions" formControlName="text" [required]="true"></quill-editor>
+            <quill-editor (onContentChanged)="contentChanged($event)" id="text" [modules]="quillOptions" formControlName="text" [required]="true"></quill-editor>
         </div>
         <button [disabled]="form.invalid" mat-flat-button color="primary" type="submit">Submit</button>
     </form>

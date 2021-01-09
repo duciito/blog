@@ -1,7 +1,10 @@
 import uuid
 
 from django.db import models
+from django.db.models.signals import pre_delete
 from django.conf import settings
+
+from core.utils import file_cleanup
 from accounts.models import BlogUser
 
 
@@ -77,3 +80,8 @@ class Comment(EditableModel):
     @property
     def total_votes(self):
         return self.voters.count()
+
+
+# Signals
+pre_delete.connect(file_cleanup, sender=Article)
+pre_delete.connect(file_cleanup, sender=ArticleContent)

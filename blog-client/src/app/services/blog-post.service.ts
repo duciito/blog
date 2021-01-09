@@ -19,7 +19,7 @@ export class BlogPostService {
   ) { }
 
   create(post: Post) {
-    return this.http.post(this.articlesEndpoint, post);
+    return this.http.post<Post>(this.articlesEndpoint, post);
   }
 
   uploadContent(articleContent: ArticleContent) {
@@ -34,5 +34,9 @@ export class BlogPostService {
     }
 
     return this.http.post(this.articleContentEndpoint, formData);
+  }
+
+  removeContent(id: number) {
+    return this.http.delete(this.articleContentEndpoint + id);
   }
 }

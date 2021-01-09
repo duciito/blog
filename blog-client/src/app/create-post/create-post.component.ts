@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {FileValidator} from 'ngx-material-file-input';
@@ -21,7 +21,7 @@ Quill.register('modules/imageResize', ImageResize);
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.scss']
 })
-export class CreatePostComponent implements OnInit {
+export class CreatePostComponent implements OnInit, OnDestroy {
 
   readonly acceptedImgFormats: string[] = ['image/png', 'image/jpg', 'image/jpeg'];
   form: FormGroup;
@@ -94,5 +94,17 @@ export class CreatePostComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+  }
+
+  cleanUpImgOrphans() {
+    if (this.temporaryContents.length) {
+      for (const content of this.temporaryContents) {
+        this.blogPostService.removeContent(content.id).subscribe();
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    this.cleanUpImgOrphans();
   }
 }

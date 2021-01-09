@@ -104,18 +104,13 @@ class ArticleContentsViewSet(viewsets.ModelViewSet):
     queryset = ArticleContent.objects.all()
     serializer_class = ArticleContentSerializer
 
-    def get_queryset(self):
-        """
-        Restricts contents to a given article.
-        """
-        queryset = self.queryset
-        article = self.request.query_params.get('article_id', None)
-        if article:
-            return queryset.filter(article=article)
-        return None
-
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        article = self.request.query_params.get('article_id', None)
+        queryset = None
+
+        if article:
+            queryset = self.filter_queryset(self.queryset.filter(article=article))
+
         if queryset is None:
             return response.Response(
                 data="You need to pass `article_id` when getting the article contents",

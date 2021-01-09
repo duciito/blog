@@ -10,9 +10,11 @@ import {CategoryService} from '../services/category.service';
 import Quill from 'quill';
 import {ImageHandler, Options} from 'ngx-quill-upload';
 import {ArticleContent} from '../models/article-content';
+import ImageResize from 'quill-image-resize';
 import {first} from 'rxjs/operators';
 
 Quill.register('modules/imageHandler', ImageHandler);
+Quill.register('modules/imageResize', ImageResize);
 
 @Component({
   selector: 'app-create-post',
@@ -57,7 +59,8 @@ export class CreatePostComponent implements OnInit {
         });
       },
       accepts: this.acceptedImgFormats
-    } as Options
+    } as Options,
+    imageResize: true
   };
 
   contentChanged($event) {console.log($event);}

@@ -63,7 +63,7 @@ class LightArticleSerializer(serializers.ModelSerializer):
 class ArticleSerializer(LightArticleSerializer):
     """Article serializer. Serializes text and computes votes number."""
 
-    article_content_ids = serializers.ListField(child=serializers.IntegerField())
+    article_content_ids = serializers.ListField(child=serializers.IntegerField(), required=False)
 
     class Meta(LightArticleSerializer.Meta):
         exclude = ('voters',)

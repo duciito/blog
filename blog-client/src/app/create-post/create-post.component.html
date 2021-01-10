@@ -1,28 +1,29 @@
 <div class="create-post-container">
     <form [formGroup]="form" (ngSubmit)="submit()">
-        <mat-form-field appearance="standard">
+        <mat-form-field appearance="outline">
             <mat-label>Title</mat-label>
             <input matInput formControlName="title" placeholder="Enter a title" required>
             <mat-error *ngIf="f.title.hasError('required')">
                 Title is <strong>required</strong>
             </mat-error>
             <mat-error *ngIf="f.title.hasError('minlength')">
-                Title needs to be at least <strong>10</strong> characters long
+                Title needs to be at least <strong>3</strong> characters long
             </mat-error>
         </mat-form-field>
-        <mat-form-field appearance="standard">
+        <mat-form-field class="half-flex-child" appearance="outline">
             <mat-label>Category</mat-label>
-            <mat-select required formControlName="category_id">
+            <mat-select required formControlName="category">
                 <mat-option *ngFor="let cat of categories$ | async" [value]="cat.id">
                     {{cat.name}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="standard">
+        <mat-form-field class="half-flex-child" appearance="outline">
             <mat-label>Thumbnail</mat-label>
             <ngx-mat-file-input
                 formControlName="thumbnail"
                 valuePlaceholder="No image selected"
+                (change)="onThumbnailSelect($event)"
                 accept="image/png, image/jpeg"
                 required>
             </ngx-mat-file-input>
@@ -35,7 +36,7 @@
             </mat-error>
         </mat-form-field>
         <div class="text-editor">
-            <quill-editor (onContentChanged)="contentChanged($event)" id="text" [modules]="quillOptions" formControlName="text" [required]="true"></quill-editor>
+            <quill-editor id="text" [modules]="quillOptions" formControlName="text" [required]="true"></quill-editor>
         </div>
         <button [disabled]="form.invalid" mat-flat-button color="primary" type="submit">Submit</button>
     </form>

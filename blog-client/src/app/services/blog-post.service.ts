@@ -19,24 +19,33 @@ export class BlogPostService {
   ) { }
 
   create(post: Post) {
-    return this.http.post<Post>(this.articlesEndpoint, post);
+    const formData = this._transformToFormData(post);
+    console.log(post);
+    return this.http.post<Post>(this.articlesEndpoint, formData);
   }
 
   uploadContent(articleContent: ArticleContent) {
-    const formData = new FormData();
-
-    for (const key in articleContent) {
-      if (key == 'file') {
-        const file = articleContent[key];
-        formData.append(key, file, file.name);
-      }
-      formData.append(key, articleContent[key]);
-    }
-
+    const formData = this._transformToFormData(articleContent);
     return this.http.post(this.articleContentEndpoint, formData);
   }
 
   removeContent(id: number) {
     return this.http.delete(this.articleContentEndpoint + id);
+  }
+
+  _transformToFormData(content: any): FormData {
+    // Transform object/model to formData.
+    const formData = new FormData();
+
+    for (const key in content) {
+      if (content[key] instanceof File) {
+        const file = content[key];
+        formData.append(key, file, file.name);
+      }
+      formData.append(key, content[key]);
+    }
+
+    return formData;
+
   }
 }

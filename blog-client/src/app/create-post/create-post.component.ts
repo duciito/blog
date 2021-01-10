@@ -12,6 +12,7 @@ import {ImageHandler, Options} from 'ngx-quill-upload';
 import {ArticleContent} from '../models/article-content';
 import ImageResize from 'quill-image-resize';
 import {first} from 'rxjs/operators';
+import {Post} from '../models/post';
 
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/imageResize', ImageResize);
@@ -27,6 +28,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
   form: FormGroup;
   categories$: Observable<Category[]>;
   temporaryContents: ArticleContent[] = [];
+  thumbnailFile: File;
 
   quillOptions = {
     imageHandler: {
@@ -75,8 +77,8 @@ export class CreatePostComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.minLength(10)]],
-      category_id: [null, Validators.required],
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      category: [null, Validators.required],
       thumbnail: [null, [
         Validators.required,
         // Max 5MB for thumbnails
@@ -93,6 +95,37 @@ export class CreatePostComponent implements OnInit, OnDestroy {
   submit() {
     if (this.form.invalid) {
       return;
+    }
+
+    const formData = Object.assign(
+      this.form.value,
+      {thumbnail: this.thumbnailFile}
+    );
+
+    const post = this.temporaryContents.length 
+      ? Object.assign(
+          // Asssign all images uploaded in editor
+          // to associate with the newly created article
+          // on the back-end.
+          {article_content_ids: this.temporaryContents.map(content => content.id)},
+          formData
+        ) as Post
+      : formData;
+
+    this.blogPostService.create(post)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate(['']);
+          this.toastr.success("Successfully created a new blog post!");
+        }
+      )
+  }
+
+  onThumbnailSelect(event) {
+    // Write thumbnail to actual File object on change.
+    if (event.target.files.length) {
+      this.thumbnailFile = event.target.files[0];
     }
   }
 

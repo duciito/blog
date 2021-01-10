@@ -1,0 +1,29 @@
+.create-post-container {
+    margin: 5vh auto;
+    padding: 0 1vw;
+    max-width: 58rem;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+button[type="submit"] {
+    margin-top: 6rem;
+    width: 12rem;
+}
+
+
+mat-form-field, .text-editor {
+    flex-basis: 100%;
+}
+
+.text-editor {
+    height: 30rem;
+}
+
+.half-flex-child {
+    max-width: calc(50% - 10px);
+}

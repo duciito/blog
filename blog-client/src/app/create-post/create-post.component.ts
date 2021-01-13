@@ -8,6 +8,7 @@ import {Category} from '../models/category';
 import {BlogPostService} from '../services/blog-post.service';
 import {CategoryService} from '../services/category.service';
 import Quill from 'quill';
+import {ImageFormat} from './image-format';
 import {ImageHandler, Options} from 'ngx-quill-upload';
 import {ArticleContent} from '../models/article-content';
 import ImageResize from 'quill-image-resize';
@@ -16,6 +17,7 @@ import {Post} from '../models/post';
 
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/imageResize', ImageResize);
+Quill.register(ImageFormat, true);
 
 // Force quill to use inline styling.
 const DirectionAttribute = Quill.import('attributors/attribute/direction');

@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {User} from '../models/user';
 import {first} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
+import {defaultErrorHandler} from '../helpers/default-error-handler';
 
 @Component({
   selector: 'app-register',
@@ -58,13 +59,7 @@ export class RegisterComponent implements OnInit {
           // this.form.reset();
           this.router.navigate(['login', {afterSignUp: true}]);
         },
-        error => {
-          const errors: any = [...Object.values(error.error || error)].reduce(
-            (acc: string[], val: string) => acc.concat(val), []
-          );
-
-          errors.forEach(error => this.toastr.error(error));
-        }
+        error => defaultErrorHandler(error, this.toastr)
       )
   }
 }

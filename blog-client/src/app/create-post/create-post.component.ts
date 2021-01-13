@@ -14,6 +14,7 @@ import {ArticleContent} from '../models/article-content';
 import ImageResize from 'quill-image-resize';
 import {first} from 'rxjs/operators';
 import {Post} from '../models/post';
+import {defaultErrorHandler} from '../helpers/default-error-handler';
 
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/imageResize', ImageResize);
@@ -163,6 +164,17 @@ export class CreatePostComponent implements OnInit, OnDestroy {
           this.temporaryContents = [];
           this.router.navigate(['']);
           this.toastr.success("Successfully created a new blog post!");
+        },
+        error => {
+          if (error.status.startsWith('5')) {
+            // There may be some cases where it's already been cleand up
+            // by the server since it's an atomic transaction.
+            this.cleanUpImgOrphans();
+            this.toastr.error('Please try again later', 'Server error');
+          }
+          else {
+            defaultErrorHandler(error, this.toastr);
+          }
         }
       )
   }

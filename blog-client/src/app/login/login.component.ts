@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
 import {first} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
+import {defaultErrorHandler} from '../helpers/default-error-handler';
 
 @Component({
   selector: 'app-login',
@@ -50,13 +51,7 @@ export class LoginComponent implements OnInit {
         data => {
           this.router.navigate([this.returnUrl]);
         },
-        error => {
-          const errors: any = [...Object.values(error.error || error)].reduce(
-            (acc: string[], val: string) => acc.concat(val), []
-          );
-
-          errors.forEach(error => this.toastr.error(error));
-        }
+        error => defaultErrorHandler(error, this.toastr)
       )
   }
 

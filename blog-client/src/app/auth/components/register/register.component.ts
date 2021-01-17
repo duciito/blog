@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators, FormGroup} from '@angular/forms';
-import {AccountService} from '../services/account.service';
 import {Router} from '@angular/router';
-import {User} from '../models/user';
 import {first} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
-import {defaultErrorHandler} from '../helpers/default-error-handler';
+import {AccountService} from 'src/app/core/services/account.service';
+import {User} from 'src/app/core/models/user';
+import {defaultErrorHandler} from 'src/app/shared/utils/default-error-handler';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss', '../../styles/common/auth-form.scss']
+  styleUrls: ['./register.component.scss', '../../../../styles/common/auth-form.scss']
 })
 export class RegisterComponent implements OnInit {
 
@@ -57,7 +57,7 @@ export class RegisterComponent implements OnInit {
         data => {
           // TODO: check if needed.
           // this.form.reset();
-          this.router.navigate(['login', {afterSignUp: true}]);
+          this.router.navigate(['auth/login', {afterSignUp: true}]);
         },
         error => defaultErrorHandler(error, this.toastr)
       )

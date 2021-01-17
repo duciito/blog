@@ -1,19 +1,31 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {LoginComponent} from './login/login.component';
-import {RegisterComponent} from './register/register.component';
-import {AuthGuard} from './helpers/auth.guard';
+import {AuthGuard} from './core/guards/auth.guard';
+import {LoggedinGuard} from './core/guards/loggedin.guard';
 import {HomeComponent} from './home/home.component';
-import {LoggedinGuard} from './helpers/loggedin.guard';
-import {CreatePostComponent} from './create-post/create-post.component';
 
 
 const routes: Routes = [
-  {path: '' , redirectTo: '/home', pathMatch: 'full'},
-  {path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
-  {path: 'create-post', component: CreatePostComponent, canActivate: [AuthGuard]},
-  {path: 'login', component: LoginComponent, canActivate: [LoggedinGuard]},
-  {path: 'register', component: RegisterComponent, canActivate: [LoggedinGuard]},
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('src/app/auth/auth.module').then(m => m.AuthModule),
+    canActivate: [LoggedinGuard]
+  },
+  {
+    path: 'posts',
+    loadChildren: () => import('src/app/posts/posts.module').then(m => m.PostsModule),
+    canActivate: [AuthGuard]
+  },
   // TODO: add profile component
   /* {path: 'profile', component: null, canActivate: [AuthGuard]}, */
   // Redirect to home for all undefined paths.

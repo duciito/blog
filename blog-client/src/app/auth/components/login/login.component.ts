@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {AccountService} from '../services/account.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
 import {first} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
-import {defaultErrorHandler} from '../helpers/default-error-handler';
+import {AccountService} from 'src/app/core/services/account.service';
+import {defaultErrorHandler} from 'src/app/shared/utils/default-error-handler';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss', '../../styles/common/auth-form.scss']
+  styleUrls: ['./login.component.scss', '../../../../styles/common/auth-form.scss']
 })
 export class LoginComponent implements OnInit {
 

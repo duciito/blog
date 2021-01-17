@@ -54,6 +54,6 @@ export class AccountService {
     // Remove from local storage instead of deauthing with the server.
     localStorage.removeItem('user');
     this.loggedIn.next(false);
-    this.router.navigate(['login'])
+    this.router.navigate(['auth/login'])
   }
 }

@@ -3,59 +3,26 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
-import {TokenInterceptor} from './helpers/token.interceptor';
-import {ReactiveFormsModule} from '@angular/forms';
 import {ToastrModule} from 'ngx-toastr';
-import {QuillModule} from 'ngx-quill';
 import { HomeComponent } from './home/home.component';
-import { CreatePostComponent } from './create-post/create-post.component';
-import {MaterialFileInputModule} from 'ngx-material-file-input';
+import {CoreModule} from './core/core.module';
+import {MaterialModule} from './shared/modules/material.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    HomeComponent,
-    CreatePostComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    NoopAnimationsModule,
-    BrowserAnimationsModule,
+    CoreModule,
     ToastrModule.forRoot({
       timeOut: 6300,
       positionClass: 'toast-bottom-right',
       preventDuplicates: true
     }),
-    QuillModule.forRoot(),
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MaterialFileInputModule
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    }
+    MaterialModule
   ],
   bootstrap: [AppComponent]
 })

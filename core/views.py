@@ -57,10 +57,12 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
         return queryset
 
     def get_serializer_class(self):
-        # Avoid serializing heavy data in list get.
-        if self.action in self.light_actions:
-            return LightArticleSerializer
-        return ArticleSerializer
+        # Avoid serializing heavy data in list get unless specified otherwise.
+        full_data = self.request.query_params.get('full_data')
+        if full_data or self.action not in self.light_actions:
+            return ArticleSerializer
+
+        return LightArticleSerializer
 
     def perform_create(self, serializer):
         # Creator should be only the user the request is coming from.

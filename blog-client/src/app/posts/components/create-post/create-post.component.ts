@@ -162,10 +162,10 @@ export class CreatePostComponent implements OnInit, OnDestroy {
           // Empty temporary contents so that they don't get deleted
           // when the redirect below happens (it calls ngOnDestroy).
           this.temporaryContents = [];
+          this.toastr.success("Successfully created a new blog post!");
           this.router.navigate([`posts/${data.id}`], {
             state: {createdPost: data}
           });
-          this.toastr.success("Successfully created a new blog post!");
         },
         error => {
           if (error.status.startsWith('5')) {

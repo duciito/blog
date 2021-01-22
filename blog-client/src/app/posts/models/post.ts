@@ -1,6 +1,6 @@
 export interface Post {
   id?: number;
-  creator_id: number;
+  creator: number;
   category?: number;
   title: string;
   // Most of the time text is only needed for detail pages.

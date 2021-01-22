@@ -1,1 +1,15 @@
-<p>view-post works!</p>
+<div class="post-container" *ngIf="{
+     post: post$ | async,
+     creator: creator$ | async,
+     category: category$ | async
+    } as data">
+    <h2 class="mat-display-1">{{data.post?.title}}</h2>
+    <p class="post-info">
+        <!-- TODO: add a follow button here -->
+        Created by <a [routerLink]="'/users/' + data.creator?.id">
+            {{data.creator?.username}}
+        </a>
+    </p>
+    <p class="post-info">{{data.post?.posted_at | date: 'mm/D/yyyy'}}</p>
+    <p class="post-info">{{data.category?.name}}</p>
+</div>

@@ -22,7 +22,7 @@ export class UserService {
   }
 
   get(id: number, extraParams?: any): Observable<User> {
-    let url = this._addExtraParams(this.usersEndpoint + id, extraParams);
+    let url = this._addExtraParams(`${this.usersEndpoint}${id}/`, extraParams);
     return this.http.get<User>(url);
   }
 

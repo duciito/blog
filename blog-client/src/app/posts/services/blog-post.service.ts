@@ -1,6 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
 import {ArticleContent} from '../models/article-content';
 import {Post} from '../models/post';
@@ -23,12 +24,12 @@ export class BlogPostService {
     return this.http.post<Post>(this.articlesEndpoint, formData);
   }
 
-  get(id: number, ...extraParams) {
-    let url = this.articlesEndpoint + id;
+  get(id: number, extraParams?: any): Observable<Post> {
+    let url = `${this.articlesEndpoint}${id}/`;
 
     if (extraParams) {
-      for (const param of extraParams) {
-        url += `?${param}`;
+      for (const key in extraParams) {
+        url += `?${key}=${extraParams[key]}`;
       }
     }
 

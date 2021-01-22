@@ -9,13 +9,17 @@ import {Category} from '../models/category';
 })
 export class CategoryService {
 
-  private articlesEndpoint: string = `${environment.baseApiUrl}/categories/`;
+  private categoriesEndpoint: string = `${environment.baseApiUrl}/categories/`;
 
   constructor(
     private http: HttpClient
   ) { }
 
   getAll(): Observable<Category[]> {
-    return this.http.get<Category[]>(this.articlesEndpoint);
+    return this.http.get<Category[]>(this.categoriesEndpoint);
+  }
+
+  get(id: number): Observable<Category> {
+    return this.http.get<Category>(`${this.categoriesEndpoint}${id}/`);
   }
 }

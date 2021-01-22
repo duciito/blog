@@ -7,11 +7,13 @@ import {CreatePostComponent} from './components/create-post/create-post.componen
 import {MaterialModule} from '../shared/modules/material.module';
 import {HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
+import { ViewPostComponent } from './components/view-post/view-post.component';
 
 
 @NgModule({
   declarations: [
-    CreatePostComponent
+    CreatePostComponent,
+    ViewPostComponent
   ],
   imports: [
     CommonModule,

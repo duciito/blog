@@ -20,8 +20,23 @@ export class BlogPostService {
 
   create(post: Post) {
     const formData = this._transformToFormData(post);
-    console.log(post);
     return this.http.post<Post>(this.articlesEndpoint, formData);
+  }
+
+  get(id: number, ...extraParams) {
+    let url = this.articlesEndpoint + id;
+
+    if (extraParams) {
+      for (const param of extraParams) {
+        url += `?${param}`;
+      }
+    }
+
+    return this.http.get<Post>(url);
+  }
+
+  getArticleText(id: number) {
+    return this.http.get<string>(`${this.articlesEndpoint}${id}/text`);
   }
 
   uploadContent(articleContent: ArticleContent) {
@@ -46,6 +61,5 @@ export class BlogPostService {
     }
 
     return formData;
-
   }
 }

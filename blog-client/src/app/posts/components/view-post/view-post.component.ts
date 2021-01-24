@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Subject, Observable} from 'rxjs';
-import {first} from 'rxjs/operators';
+import {Observable, BehaviorSubject} from 'rxjs';
+import {filter, first} from 'rxjs/operators';
 import {Category} from 'src/app/categories/models/category';
 import {CategoryService} from 'src/app/categories/services/category.service';
 import {User} from 'src/app/core/models/user';
@@ -17,7 +17,7 @@ import {BlogPostService} from '../../services/blog-post.service';
 export class ViewPostComponent implements OnInit {
 
   _routerStatePost: Post;
-  post$: Subject<Post> = new Subject<Post>();
+  post$: BehaviorSubject<Post> = new BehaviorSubject<Post>(null);
   creator$: Observable<User>;
   category$: Observable<Category>;
 
@@ -40,7 +40,7 @@ export class ViewPostComponent implements OnInit {
     const id = this.route.snapshot.params['id'];
 
     this.post$.asObservable()
-      .pipe(first())
+      .pipe(filter(post => post !== null), first())
       .subscribe(post => {
         this.setRelatedData(post);
       });

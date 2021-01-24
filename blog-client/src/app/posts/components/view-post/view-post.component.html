@@ -3,13 +3,25 @@
      creator: creator$ | async,
      category: category$ | async
     } as data">
-    <h2 class="mat-display-1">{{data.post?.title}}</h2>
-    <p class="post-info">
-        <!-- TODO: add a follow button here -->
-        Created by <a [routerLink]="'/users/' + data.creator?.id">
-            {{data.creator?.username}}
-        </a>
-    </p>
-    <p class="post-info">{{data.post?.posted_at | date: 'mm/D/yyyy'}}</p>
-    <p class="post-info">{{data.category?.name}}</p>
+    <div class="post-header">
+        <h2 class="mat-display-2">{{data.post?.title}}</h2>
+        <div class="post-info-left">
+            <p class="post-info mat-body">
+            <!-- TODO: add a follow button here -->
+            Created by <a class="profile-link" [routerLink]="'/users/' + data.creator?.id">
+                {{data.creator?.username}}
+            </a>
+            </p>
+            <p class="post-info mat-body">{{data.post?.posted_at | date: 'fullDate'}}</p>
+        </div>
+        <div class="post-info-right">
+            <p class="post-votes post-info mat-body">
+                <mat-icon>favorite</mat-icon>
+                {{data.post?.total_votes}} votes
+            </p>
+            <button class="post-category" color="primary" mat-stroked-button>{{data.category?.name}}</button>
+        </div>
+    </div>
+    <img class="post-thumbnail" [src]="data.post?.thumbnail" alt="Article thumbnail">
+    <div [innerHtml]="data.post?.text"></div>
 </div>

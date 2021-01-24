@@ -1,0 +1,59 @@
+@import 'src/styles/globals/colors';
+
+h2 {
+    margin-bottom: 2.6rem;
+}
+
+.post-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 40vw;
+    margin: 10vh auto;
+    padding: 0 2vw 2vh;
+}
+
+.post-header {
+    .post-info-left {
+        float: left;
+    }
+
+    .post-info-right {
+        float: right;
+    }
+
+    .post-info {
+        margin-top: -0.6rem;
+        color: lighten($color: #000, $amount: 35);
+    }
+
+    .post-votes {
+        margin-right: 1rem;
+
+        mat-icon {
+            font-size: 18px;
+            height: 18px;
+            width: 20px;
+            vertical-align: text-bottom;
+        }
+    }
+
+    .post-votes, .post-category {
+        display: inline-block;
+    }
+
+    .profile-link {
+        color: $primary;
+        text-decoration: none;
+        font-weight: 500;
+    }
+}
+
+.post-thumbnail {
+    margin: 2rem 0;
+    max-width: 100%;
+    max-height: 25rem;
+    align-self: center;
+    clear: both;
+}
+

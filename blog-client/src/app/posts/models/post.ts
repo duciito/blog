@@ -9,4 +9,5 @@ export interface Post {
   edited_at?: Date;
   thumbnail: File | string;
   article_content_ids?: number[];
+  total_votes?: number;
 }

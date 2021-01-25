@@ -8,12 +8,14 @@ import {MaterialModule} from '../shared/modules/material.module';
 import {HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ViewPostComponent } from './components/view-post/view-post.component';
+import { NoSanitizePipe } from './pipes/no-sanitize.pipe';
 
 
 @NgModule({
   declarations: [
     CreatePostComponent,
-    ViewPostComponent
+    ViewPostComponent,
+    NoSanitizePipe
   ],
   imports: [
     CommonModule,

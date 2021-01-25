@@ -23,5 +23,5 @@
         </div>
     </div>
     <img class="post-thumbnail" [src]="data.post?.thumbnail" alt="Article thumbnail">
-    <div class="post-text" [innerHtml]="data.post?.text"></div>
+    <div class="post-text" [innerHtml]="data.post?.text | noSanitize"></div>
 </div>

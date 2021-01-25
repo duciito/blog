@@ -18,7 +18,7 @@ import {defaultErrorHandler} from 'src/app/shared/utils/default-error-handler';
 
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/imageResize', ImageResize);
-Quill.register(ImageFormat, true);
+Quill.register('formats/image', ImageFormat);
 
 // Force quill to use inline styling.
 const DirectionAttribute = Quill.import('attributors/attribute/direction');

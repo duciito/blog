@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {FileValidator} from 'ngx-material-file-input';
@@ -108,7 +108,26 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     imageResize: true
   };
 
-  contentChanged($event) {console.log($event);}
+  /* Custom delete handler for editor images */
+  @HostListener('window:keyup.delete')
+  @HostListener('window:keyup.backspace')
+  onContentDelete() {
+    const rawText = this.form.get('text').value;
+    const contentsToDelete = this.temporaryContents.filter(
+      // If the image was the only content then `rawText
+      // would be `null` so we consider it deleted.
+      content => !rawText || !rawText.includes(content.file)
+    );
+
+    for (const content of contentsToDelete) {
+      this.blogPostService.removeContent(content.id)
+        .subscribe(resp => {
+          this.temporaryContents.splice(
+            this.temporaryContents.indexOf(content), 1
+          );
+        });
+    }
+  }
 
   constructor(
     private blogPostService: BlogPostService,

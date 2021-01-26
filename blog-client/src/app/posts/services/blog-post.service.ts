@@ -46,7 +46,7 @@ export class BlogPostService {
   }
 
   removeContent(id: number) {
-    return this.http.delete(this.articleContentEndpoint + id);
+    return this.http.delete(`${this.articleContentEndpoint}${id}/`);
   }
 
   _transformToFormData(content: any): FormData {

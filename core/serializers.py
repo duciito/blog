@@ -54,10 +54,16 @@ class CommentSerializer(serializers.ModelSerializer):
 class LightArticleSerializer(serializers.ModelSerializer):
     """Article serializer used for serializing only the essentials."""
     total_votes = serializers.ReadOnlyField()
+    voted = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
         exclude = ('voters', 'text')
+
+    def get_voted(self, obj):
+        user = self.context['request'].user
+        return Article.objects.filter(id=obj.id, voters=user).exists()
+
 
 
 class ArticleSerializer(LightArticleSerializer):

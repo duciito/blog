@@ -1,27 +1,23 @@
-<div class="post-container" *ngIf="{
-     post: post$ | async,
-     creator: creator$ | async,
-     category: category$ | async
-    } as data">
+<div class="post-container">
     <div class="post-header">
-        <h2 class="mat-display-2">{{data.post?.title}}</h2>
+        <h2 class="mat-display-2">{{post?.title}}</h2>
         <div class="post-info-left">
             <p class="post-info mat-body">
             <!-- TODO: add a follow button here -->
-            Created by <a class="profile-link" [routerLink]="'/users/' + data.creator?.id">
-                {{data.creator?.username}}
+            Created by <a class="profile-link" [routerLink]="'/users/' + creator?.id">
+                {{creator?.username}}
             </a>
             </p>
-            <p class="post-info mat-body">{{data.post?.posted_at | date: 'fullDate'}}</p>
+            <p class="post-info mat-body">{{post?.posted_at | date: 'fullDate'}}</p>
         </div>
         <div class="post-info-right">
             <p class="post-votes post-info mat-body">
-                <mat-icon (click)="vote()" [class.voted]="data.post?.voted">favorite</mat-icon>
-                {{data.post?.total_votes}} vote(s)
+                <mat-icon (click)="vote()" [class.voted]="post?.voted">favorite</mat-icon>
+                {{post?.total_votes}} vote(s)
             </p>
-            <button class="post-category" color="primary" mat-stroked-button>{{data.category?.name}}</button>
+            <button class="post-category" color="primary" mat-stroked-button>{{category?.name}}</button>
         </div>
     </div>
-    <img class="post-thumbnail" [src]="data.post?.thumbnail" alt="Article thumbnail">
-    <div class="post-text" [innerHtml]="data.post?.text | noSanitize"></div>
+    <img class="post-thumbnail" [src]="post?.thumbnail" alt="Article thumbnail">
+    <div class="post-text" [innerHtml]="post?.text | noSanitize"></div>
 </div>

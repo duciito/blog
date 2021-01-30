@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable, BehaviorSubject} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
 import {Category} from 'src/app/categories/models/category';
 import {CategoryService} from 'src/app/categories/services/category.service';
 import {User} from 'src/app/core/models/user';
@@ -16,10 +14,9 @@ import {BlogPostService} from '../../services/blog-post.service';
 })
 export class ViewPostComponent implements OnInit {
 
-  _routerStatePost: Post;
-  post$: BehaviorSubject<Post> = new BehaviorSubject<Post>(null);
-  creator$: Observable<User>;
-  category$: Observable<Category>;
+  post: Post;
+  creator: User;
+  category: Category;
 
   constructor(
     private router: Router,
@@ -28,46 +25,60 @@ export class ViewPostComponent implements OnInit {
     private userService: UserService,
     private categoryService: CategoryService
   ) {
+    // Test if some post data has already been sent with route.
     const routerState = this.router.getCurrentNavigation().extras.state;
 
     if (routerState && routerState.createdPost) {
-      this._routerStatePost = routerState.createdPost;
+      this.post = routerState.createdPost;
     }
   }
 
   ngOnInit(): void {
-    // Test if some post data has already been sent with route.
     const id = this.route.snapshot.params['id'];
 
-    this.post$.asObservable()
-      .pipe(filter(post => post !== null), first())
-      .subscribe(post => {
-        this.setRelatedData(post);
-      });
-
-    if (this._routerStatePost) {
+    if (this.post) {
       // Populates user and category
-      this.post$.next(this._routerStatePost);
+      this.setRelatedData();
 
     }
     else if (id) {
-      this.blogPostService.get(id, {full_data: true}).subscribe(this.post$);
+      // Do a full fetch of the article.
+      this.blogPostService.get(id, {full_data: true})
+        .subscribe(post => {
+          this.post = post;
+          this.setRelatedData();
+        });
     }
   }
 
-  setRelatedData(post: Post) {
-    if (!post.text) {
-      this.blogPostService.getArticleText(post.id)
+  setRelatedData() {
+    if (!this.post.text) {
+      this.blogPostService.getArticleText(this.post.id)
         .subscribe(text => {
-          // Set text and update.
-          post.text = text;
-          this.post$.next(post);
+          this.post.text = text;
         });
     }
 
-    this.creator$ = this.userService.get(post.creator);
-    if (post.category) {
-      this.category$ = this.categoryService.get(post.category);
+    this.userService.get(this.post.creator)
+      .subscribe(user => this.creator = user);
+
+    if (this.post.category) {
+      this.categoryService.get(this.post.category)
+      .subscribe(category => this.category = category);
     }
+  }
+
+  vote() {
+    const voteFunc = (this.post.voted
+      ? this.blogPostService.unvote
+      : this.blogPostService.vote).bind(this.blogPostService);
+
+    voteFunc(this.post.id)
+      .subscribe(
+        () => {
+          this.blogPostService.get(this.post.id, {full_data: true})
+            .subscribe(post => this.post = post);
+        }
+      );
   }
 }

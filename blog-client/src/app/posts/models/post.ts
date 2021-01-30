@@ -10,4 +10,5 @@ export interface Post {
   thumbnail: File | string;
   article_content_ids?: number[];
   total_votes?: number;
+  voted?: boolean;
 }

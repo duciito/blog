@@ -16,8 +16,8 @@
         </div>
         <div class="post-info-right">
             <p class="post-votes post-info mat-body">
-                <mat-icon>favorite</mat-icon>
-                {{data.post?.total_votes}} votes
+                <mat-icon (click)="vote()" [class.voted]="data.post?.voted">favorite</mat-icon>
+                {{data.post?.total_votes}} vote(s)
             </p>
             <button class="post-category" color="primary" mat-stroked-button>{{data.category?.name}}</button>
         </div>

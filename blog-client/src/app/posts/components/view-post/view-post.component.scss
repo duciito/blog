@@ -35,10 +35,14 @@ h2 {
         margin-right: 1rem;
 
         mat-icon {
+            cursor: pointer;
             font-size: 18px;
             height: 18px;
             width: 20px;
             vertical-align: text-bottom;
+            &.voted {
+                color: $accent;
+            }
         }
     }
 

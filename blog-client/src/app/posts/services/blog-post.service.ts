@@ -44,6 +44,14 @@ export class BlogPostService {
     return this.http.post(`${this.articlesEndpoint}${id}/unvote/`, null);
   }
 
+  save(id: number) {
+    return this.http.post(`${this.articlesEndpoint}${id}/save/`, null);
+  }
+
+  unsave(id: number) {
+    return this.http.post(`${this.articlesEndpoint}${id}/unsave/`, null);
+  }
+
   getArticleText(id: number) {
     return this.http.get<string>(`${this.articlesEndpoint}${id}/text`);
   }

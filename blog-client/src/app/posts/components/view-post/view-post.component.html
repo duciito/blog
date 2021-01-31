@@ -19,16 +19,25 @@
             <p class="post-info mat-body">{{post?.posted_at | date: 'fullDate'}}</p>
         </div>
         <div class="post-info-right">
-            <p class="post-votes post-info mat-body">
             <button
-                class="post-vote-button"
+                class="post-save-button"
                 mat-icon-button
-                (click)="vote()"
-                [color]="post?.voted ? 'accent' : null">
-                    <mat-icon>favorite</mat-icon>
+                (click)="save()"
+                [color]="post?.saved ? 'accent' : null">
+                <mat-icon>bookmark</mat-icon>
+            </button>
+            &middot;
+            <p class="post-votes post-info mat-body">
+                <button
+                    class="post-vote-button"
+                    mat-icon-button
+                    (click)="vote()"
+                    [color]="post?.voted ? 'accent' : null">
+                        <mat-icon>favorite</mat-icon>
                 </button>
                 {{post?.total_votes}} vote(s)
             </p>
+            &middot;
             <button class="post-category" color="primary" mat-stroked-button>{{category?.name}}</button>
         </div>
     </div>

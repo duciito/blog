@@ -11,4 +11,5 @@ export interface Post {
   article_content_ids?: number[];
   total_votes?: number;
   voted?: boolean;
+  saved?: boolean;
 }

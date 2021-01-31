@@ -121,4 +121,21 @@ export class ViewPostComponent implements OnInit {
         );
       });
   }
+
+  save() {
+    const saveFunc = (this.post.saved
+      ? this.blogPostService.unsave
+      : this.blogPostService.save).bind(this.blogPostService);
+
+    saveFunc(this.post.id)
+      .subscribe(success => {
+        this.post.saved = !this.post.saved;
+        this.toastr.info(
+          `"${this.post.title}" has been
+          ${this.post.saved ? 'added to' : 'removed from'} your saved articles`,
+          'Article saved'
+        );
+      });
+
+  }
 }

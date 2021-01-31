@@ -81,6 +81,13 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
         article.users_saved.add(request.user)
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=['post'])
+    def unsave(self, request, pk=None):
+        """Remove article from saved."""
+        article = self.get_object()
+        article.users_saved.remove(request.user)
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=False, methods=['get'])
     def hot(self, request):
         """Get articles that have gained popularity quickly."""

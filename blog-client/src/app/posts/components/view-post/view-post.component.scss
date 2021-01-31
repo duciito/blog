@@ -31,22 +31,30 @@ h2 {
         color: lighten($color: #000, $amount: 35);
     }
 
-    .post-votes {
-        margin-right: 1rem;
-
-        .post-vote-button {
-            height: 30px;
-            width: 30px;
-            line-height: 26px;
-        }
-    }
-
-    .post-votes, .post-category {
-        display: inline-block;
+    .post-vote-button,
+    .post-save-button {
+        height: 30px;
+        width: 30px;
+        line-height: 26px;
     }
 
     .post-follow-button {
         margin-left: -3px;
+    }
+
+    .post-votes,
+    .post-category,
+    .post-save-button {
+        display: inline-block;
+    }
+
+    .post-category {
+        line-height: 1.8rem;
+        margin-left: 0.2rem;
+    }
+
+    .post-votes {
+        margin-right: 0.2rem;
     }
 
     .profile-link {

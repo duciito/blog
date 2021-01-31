@@ -38,7 +38,9 @@
                 {{post?.total_votes}} vote(s)
             </p>
             &middot;
-            <button class="post-category" color="primary" mat-stroked-button>{{category?.name}}</button>
+            <button [routerLink]="'/categories/' + category?.id" class="post-category" color="primary" mat-stroked-button>
+                {{category?.name}}
+            </button>
         </div>
     </div>
     <img class="post-thumbnail" [src]="post?.thumbnail" alt="Article thumbnail">

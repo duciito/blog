@@ -192,9 +192,16 @@ class UsersViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def follow(self, request, pk=None):
-        """Follow an user."""
+        """Follow a user."""
         user = self.get_object()
         user.followers.add(request.user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['post'])
+    def unfollow(self, request, pk=None):
+        """Unfollow a user."""
+        user = self.get_object()
+        user.followers.remove(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'])

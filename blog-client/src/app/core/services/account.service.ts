@@ -23,8 +23,12 @@ export class AccountService {
     }
   }
 
+  getLoggedInUser(): User {
+    return JSON.parse(localStorage.getItem('user'));
+  }
+
   getLocalToken(): string {
-    const user: User = JSON.parse(localStorage.getItem('user'));
+    const user = this.getLoggedInUser();
     return user ? user.auth_token : null;
   }
 

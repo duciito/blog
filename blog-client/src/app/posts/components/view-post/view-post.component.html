@@ -7,6 +7,14 @@
             Created by <a class="profile-link" [routerLink]="'/users/' + creator?.id">
                 {{creator?.username}}
             </a>
+            <button
+                class="post-follow-button"
+                *ngIf="creator?.id != loggedUserId"
+                mat-icon-button
+                (click)="followCreator()"
+                [color]="(following$ | async) ? 'accent' : null">
+                <mat-icon>person_add</mat-icon>
+            </button>
             </p>
             <p class="post-info mat-body">{{post?.posted_at | date: 'fullDate'}}</p>
         </div>

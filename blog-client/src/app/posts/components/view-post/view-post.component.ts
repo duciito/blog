@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
+import {BehaviorSubject} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {Category} from 'src/app/categories/models/category';
 import {CategoryService} from 'src/app/categories/services/category.service';
 import {User} from 'src/app/core/models/user';
+import {AccountService} from 'src/app/core/services/account.service';
 import {UserService} from 'src/app/users/services/user.service';
 import {Post} from '../../models/post';
 import {BlogPostService} from '../../services/blog-post.service';
@@ -17,13 +21,17 @@ export class ViewPostComponent implements OnInit {
   post: Post;
   creator: User;
   category: Category;
+  following$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  loggedUserId: number;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private blogPostService: BlogPostService,
     private userService: UserService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private accountService: AccountService,
+    private toastr: ToastrService
   ) {
     // Test if some post data has already been sent with route.
     const routerState = this.router.getCurrentNavigation().extras.state;
@@ -49,6 +57,8 @@ export class ViewPostComponent implements OnInit {
           this.setRelatedData();
         });
     }
+
+    this.loggedUserId = this.accountService.getLoggedInUser().id;
   }
 
   setRelatedData() {
@@ -59,8 +69,20 @@ export class ViewPostComponent implements OnInit {
         });
     }
 
+    // Set creator and then get logged user's additional info.
     this.userService.get(this.post.creator)
-      .subscribe(user => this.creator = user);
+      .pipe(
+        switchMap(creator => {
+          this.creator = creator;
+          return this.userService.get(this.loggedUserId, {extra_info: true});
+        })
+      )
+      .subscribe(user => {
+        // Update following button content
+        if (user.followed_users.includes(this.creator.id)) {
+          this.following$.next(true);
+        }
+      })
 
     if (this.post.category) {
       this.categoryService.get(this.post.category)
@@ -80,5 +102,23 @@ export class ViewPostComponent implements OnInit {
             .subscribe(post => this.post = post);
         }
       );
+  }
+
+  followCreator() {
+    const following = this.following$.value;
+    const followFunc = (following
+      ? this.userService.unfollow
+      : this.userService.follow).bind(this.userService);
+
+    // Follow/unfollow based on subject value.
+    followFunc(this.creator.id)
+      .subscribe(success => {
+        this.following$.next(!following);
+        this.toastr.info(
+          `"${this.creator.username}" has been
+          ${following ? 'removed from' : 'added to'} your followed users`,
+          'Followed user'
+        );
+      });
   }
 }

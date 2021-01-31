@@ -8,4 +8,5 @@ export interface User {
   profile_description: string;
   joined_at?: Date;
   auth_token?: string;
+  followed_users?: number[];
 }

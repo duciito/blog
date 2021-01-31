@@ -26,6 +26,16 @@ export class UserService {
     return this.http.get<User>(url);
   }
 
+  follow(id: number) {
+    let url = `${this.usersEndpoint}${id}/follow/`;
+    return this.http.post(url, null);
+  }
+
+  unfollow(id: number) {
+    let url = `${this.usersEndpoint}${id}/unfollow/`;
+    return this.http.post(url, null);
+  }
+
   _addExtraParams(url, extraParams) {
     if (extraParams) {
       for (const key in extraParams) {

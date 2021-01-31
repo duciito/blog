@@ -12,7 +12,13 @@
         </div>
         <div class="post-info-right">
             <p class="post-votes post-info mat-body">
-                <mat-icon (click)="vote()" [class.voted]="post?.voted">favorite</mat-icon>
+            <button
+                class="post-vote-button"
+                mat-icon-button
+                (click)="vote()"
+                [color]="post?.voted ? 'accent' : null">
+                    <mat-icon>favorite</mat-icon>
+                </button>
                 {{post?.total_votes}} vote(s)
             </p>
             <button class="post-category" color="primary" mat-stroked-button>{{category?.name}}</button>

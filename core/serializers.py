@@ -55,6 +55,7 @@ class LightArticleSerializer(serializers.ModelSerializer):
     """Article serializer used for serializing only the essentials."""
     total_votes = serializers.ReadOnlyField()
     voted = serializers.SerializerMethodField()
+    saved = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
@@ -64,6 +65,9 @@ class LightArticleSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         return Article.objects.filter(id=obj.id, voters=user).exists()
 
+    def get_saved(self, obj):
+        user = self.context['request'].user
+        return Article.objects.filter(id=obj.id, users_saved=user).exists()
 
 
 class ArticleSerializer(LightArticleSerializer):

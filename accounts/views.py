@@ -25,6 +25,7 @@ from accounts.models import BlogUser
 from accounts.utils import build_url
 from config import settings
 from services.aws_utils import ses_verify_email_address
+from core.serializers import LightArticleSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -189,23 +190,34 @@ class UsersViewSet(viewsets.ModelViewSet):
     queryset = BlogUser.objects.all()
     serializer_class = UserSerializer
 
-    def get_queryset(self):
-        queryset = self.queryset
-
-        followers_only = self.request.query_params.get('followers_only')
-        if followers_only:
-            queryset = queryset.filter(
-                followed_users=self.request.user
-            )
-
-        return queryset
-
     @action(detail=True, methods=['post'])
     def follow(self, request, pk=None):
         """Follow an user."""
         user = self.get_object()
         user.followers.add(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get'])
+    def followers(self, request, pk=None):
+        """Get all followers for a user."""
+        user = self.get_object()
+        serializer = self.get_serializer_class()
+        followers = serializer(user.followers, many=True)
+        return Response(followers.data)
+
+    @action(detail=True, methods=['get'])
+    def saved_articles(self, request, pk=None):
+        """Get all saved articles for the logged in user."""
+        if request.user.id == int(pk):
+            user = self.get_object()
+            saved_articles = LightArticleSerializer(
+                user.saved_articles,
+                many=True,
+                context={'request': request}
+            )
+            return Response(saved_articles.data)
+        # Can't access other users' saved articles.
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
     @action(detail=False, methods=['get'])
     def popular(self, request):

@@ -29,8 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             if extra_info:
                 self.Meta.fields = list(self.Meta.fields)
                 self.Meta.fields.extend([
-                    'followed_users',
-                    'saved_articles'
+                    'followed_users'
                 ])
 
     class Meta:

@@ -1,48 +1,54 @@
-<div class="post-container">
-    <div class="post-header">
-        <h2 class="mat-display-2">{{post?.title}}</h2>
-        <div class="post-info-left">
-            <p class="post-info mat-body">
-            <!-- TODO: add a follow button here -->
-            Created by <a class="profile-link" [routerLink]="'/users/' + creator?.id">
-                {{creator?.username}}
-            </a>
-            <button
-                class="post-follow-button"
-                *ngIf="creator?.id != loggedUserId"
-                mat-icon-button
-                (click)="followCreator()"
-                [color]="(following$ | async) ? 'accent' : null">
-                <mat-icon>person_add</mat-icon>
-            </button>
-            </p>
-            <p class="post-info mat-body">{{post?.posted_at | date: 'fullDate'}}</p>
-        </div>
-        <div class="post-info-right">
-            <button
-                class="post-save-button"
-                mat-icon-button
-                (click)="save()"
-                [color]="post?.saved ? 'accent' : null">
-                <mat-icon>bookmark</mat-icon>
-            </button>
-            &middot;
-            <p class="post-votes post-info mat-body">
+<div class="main-container">
+    <div class="post-container">
+        <div class="post-header">
+            <h2 class="mat-display-2">{{post?.title}}</h2>
+            <div class="post-info-left">
+                <p class="post-info mat-body">
+                <!-- TODO: add a follow button here -->
+                Created by <a class="profile-link" [routerLink]="'/users/' + creator?.id">
+                    {{creator?.username}}
+                </a>
+                <button
+                    class="post-follow-button"
+                    *ngIf="creator?.id != loggedUser.id"
+                    mat-icon-button
+                    (click)="followCreator()"
+                    [color]="(following$ | async) ? 'accent' : null">
+                    <mat-icon>person_add</mat-icon>
+                </button>
+                </p>
+                <p class="post-info mat-body">{{post?.posted_at | date: 'fullDate'}}</p>
+            </div>
+            <div class="post-info-right">
+                <button
+                    class="post-save-button"
+                    mat-icon-button
+                    (click)="save()"
+                    [color]="post?.saved ? 'accent' : null">
+                    <mat-icon>bookmark</mat-icon>
+                </button>
+                &middot;
+                <p class="post-votes post-info mat-body">
                 <button
                     class="post-vote-button"
                     mat-icon-button
                     (click)="vote()"
                     [color]="post?.voted ? 'accent' : null">
-                        <mat-icon>favorite</mat-icon>
+                    <mat-icon>favorite</mat-icon>
                 </button>
                 {{post?.total_votes}} vote(s)
-            </p>
-            &middot;
-            <button [routerLink]="'/categories/' + category?.id" class="post-category" color="primary" mat-stroked-button>
-                {{category?.name}}
-            </button>
+                </p>
+                &middot;
+                <button [routerLink]="'/categories/' + category?.id" class="post-category" color="primary" mat-stroked-button>
+                    {{category?.name}}
+                </button>
+            </div>
         </div>
+        <img class="post-thumbnail" [src]="post?.thumbnail" alt="Article thumbnail">
+        <div class="post-text" [innerHtml]="post?.text | noSanitize"></div>
     </div>
-    <img class="post-thumbnail" [src]="post?.thumbnail" alt="Article thumbnail">
-    <div class="post-text" [innerHtml]="post?.text | noSanitize"></div>
+    <div *ngIf="loggedUser?.id && post?.id" class="comments-container">
+        <app-create-comment [loggedUser]="loggedUser" [articleId]="post.id">
+        </app-create-comment>
+    </div>
 </div>

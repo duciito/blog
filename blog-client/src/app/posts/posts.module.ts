@@ -9,6 +9,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ViewPostComponent } from './components/view-post/view-post.component';
 import { NoSanitizePipe } from './pipes/no-sanitize.pipe';
+import {CommentsModule} from '../comments/comments.module';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { NoSanitizePipe } from './pipes/no-sanitize.pipe';
     PostsRoutingModule,
     ReactiveFormsModule,
     QuillModule.forRoot(),
-    MaterialModule
+    MaterialModule,
+    CommentsModule
   ]
 })
 export class PostsModule { }

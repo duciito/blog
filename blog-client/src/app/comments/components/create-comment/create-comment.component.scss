@@ -1,0 +1,14 @@
+form {
+    margin-top: 0.5rem;
+}
+
+form mat-form-field {
+    width: 100%;
+}
+
+.creator-name {
+    position: relative;
+    bottom: 5px;
+    left: 2px;
+    color: lighten($color: #000, $amount: 35);
+}

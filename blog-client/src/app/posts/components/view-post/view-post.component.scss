@@ -9,12 +9,18 @@ h2 {
     max-height: 25rem;
 }
 
+.main-container {
+    width: 40vw;
+    margin: 8vh auto 6vh;
+}
+
 .post-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 40vw;
-    margin: 10vh auto;
+    border-bottom: 2px solid rgba($color: #595959, $alpha: 0.2);
+    padding-bottom: 3.5vh;
+    margin-bottom: 5vh;
 }
 
 .post-header {

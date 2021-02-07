@@ -22,7 +22,7 @@ export class ViewPostComponent implements OnInit {
   creator: User;
   category: Category;
   following$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  loggedUserId: number;
+  loggedUser: User;
 
   constructor(
     private router: Router,
@@ -58,7 +58,7 @@ export class ViewPostComponent implements OnInit {
         });
     }
 
-    this.loggedUserId = this.accountService.getLoggedInUser().id;
+    this.loggedUser = this.accountService.getLoggedInUser();
   }
 
   setRelatedData() {
@@ -74,7 +74,7 @@ export class ViewPostComponent implements OnInit {
       .pipe(
         switchMap(creator => {
           this.creator = creator;
-          return this.userService.get(this.loggedUserId, {extra_info: true});
+          return this.userService.get(this.loggedUser.id, {extra_info: true});
         })
       )
       .subscribe(user => {

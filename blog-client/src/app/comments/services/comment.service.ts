@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {addExtraParams} from 'src/app/shared/utils/add-extra-params';
 import {environment} from 'src/environments/environment';
+import {Comment} from '../models/comment';
 
 @Injectable({
   providedIn: 'root'

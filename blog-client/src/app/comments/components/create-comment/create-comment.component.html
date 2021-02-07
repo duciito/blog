@@ -1,0 +1,23 @@
+<div class="create-comment-container">
+    <div class="creator-info">
+        <mat-icon color="primary">account_circle</mat-icon>
+        <span class="creator-name">
+            {{loggedUser.first_name}} {{loggedUser.last_name}}
+            ({{loggedUser.username}})
+        </span>
+    </div>
+    <form #commentForm="ngForm" (ngSubmit)="submit(commentForm)">
+        <mat-form-field [hideRequiredMarker]="true" appearance="outline">
+            <textarea
+                rows="5"
+                matInput
+                placeholder="Write a comment"
+                #text="ngModel"
+                [(ngModel)]="comment.text"
+                name="text">
+            </textarea>
+            <mat-hint align="end">{{comment?.text.length || 0}}/250</mat-hint>
+        </mat-form-field>
+        <button [disabled]="text.value?.length < 1 || text.value?.length > 250" mat-flat-button color="primary" type="submit">Submit</button>
+    </form>
+</div>

@@ -21,7 +21,6 @@ export class CreateCommentComponent implements OnInit {
 
   ngOnInit(): void {
     this.comment = {
-      text: '',
       creator: this.loggedUser.id,
       article: this.articleId
     } as Comment;
@@ -32,7 +31,7 @@ export class CreateCommentComponent implements OnInit {
       this.commentService.create(this.comment)
         .subscribe(success => {
           // Reset for subsequent comments if any.
-          this.comment.text = '';
+          this.comment.text = undefined;
         });
     }
   }

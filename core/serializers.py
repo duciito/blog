@@ -2,6 +2,7 @@ from django.db import IntegrityError, transaction
 from rest_framework import serializers
 
 from core.models import Article, ArticleContent, Category, Comment
+from accounts.serializers import UserSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -45,6 +46,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
         if nested:
             self.fields.pop('article')
+
+        if self.context['request'].query_params.get('nested_creator'):
+            self.fields['creator'] = UserSerializer(read_only=True)
 
     class Meta:
         model = Comment

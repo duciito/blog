@@ -2,14 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {BehaviorSubject} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {Category} from 'src/app/categories/models/category';
 import {CategoryService} from 'src/app/categories/services/category.service';
+import {CommentService} from 'src/app/comments/services/comment.service';
 import {User} from 'src/app/core/models/user';
 import {AccountService} from 'src/app/core/services/account.service';
 import {UserService} from 'src/app/users/services/user.service';
 import {Post} from '../../models/post';
 import {BlogPostService} from '../../services/blog-post.service';
+import {Comment} from 'src/app/comments/models/comment';
 
 @Component({
   selector: 'app-view-post',
@@ -23,6 +25,7 @@ export class ViewPostComponent implements OnInit {
   category: Category;
   following$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   loggedUser: User;
+  comments: Comment[];
 
   constructor(
     private router: Router,
@@ -31,6 +34,7 @@ export class ViewPostComponent implements OnInit {
     private userService: UserService,
     private categoryService: CategoryService,
     private accountService: AccountService,
+    private commentService: CommentService,
     private toastr: ToastrService
   ) {
     // Test if some post data has already been sent with route.
@@ -69,6 +73,11 @@ export class ViewPostComponent implements OnInit {
         });
     }
 
+    if (this.post.category) {
+      this.categoryService.get(this.post.category)
+      .subscribe(category => this.category = category);
+    }
+
     // Set creator and then get logged user's additional info.
     this.userService.get(this.post.creator)
       .pipe(
@@ -84,10 +93,21 @@ export class ViewPostComponent implements OnInit {
         }
       })
 
-    if (this.post.category) {
-      this.categoryService.get(this.post.category)
-      .subscribe(category => this.category = category);
-    }
+    // Get post's comments and sort them by date.
+    this.commentService.getAll({
+      article_id: this.post.id,
+      nested_creator: true
+    })
+      .pipe(
+        tap(
+          (comments: Comment[]) => {
+            return comments.sort(
+              (c1, c2) => new Date(c2.posted_at).getTime() - new Date(c1.posted_at).getTime()
+            );
+          }
+        )
+      )
+      .subscribe(comments => this.comments = comments);
   }
 
   vote() {
@@ -137,5 +157,13 @@ export class ViewPostComponent implements OnInit {
         );
       });
 
+  }
+
+  onCommentCreated(comment: Comment) {
+    // Add comment on top of list.
+    if (typeof(comment.creator) !== 'object') {
+      comment.creator = this.loggedUser;
+    }
+    this.comments.unshift(comment);
   }
 }

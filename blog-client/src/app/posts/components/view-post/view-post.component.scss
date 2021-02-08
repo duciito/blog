@@ -81,3 +81,14 @@ h2 {
 .post-text {
     line-height: 1.5rem;
 }
+
+.comments-container {
+    h2 {
+        margin-top: 2.5rem;
+    }
+
+    app-comment {
+        display: block;
+        margin: 1rem 0;
+    }
+}

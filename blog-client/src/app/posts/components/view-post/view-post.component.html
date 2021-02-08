@@ -48,7 +48,15 @@
         <div class="post-text" [innerHtml]="post?.text | noSanitize"></div>
     </div>
     <div *ngIf="loggedUser?.id && post?.id" class="comments-container">
-        <app-create-comment [loggedUser]="loggedUser" [articleId]="post.id">
+        <app-create-comment
+            [loggedUser]="loggedUser"
+            [articleId]="post.id"
+            (commentCreated)="onCommentCreated($event)">
         </app-create-comment>
+        <h2 class="mat-title">Comments</h2>
+        <app-comment
+            *ngFor="let comment of comments"
+            [comment]="comment">
+        </app-comment>
     </div>
 </div>

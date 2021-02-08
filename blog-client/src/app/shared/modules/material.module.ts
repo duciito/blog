@@ -6,6 +6,7 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card'; 
 import {MaterialFileInputModule} from 'ngx-material-file-input';
 
 const modules = [
@@ -15,7 +16,8 @@ const modules = [
   MatFormFieldModule,
   MatInputModule,
   MatSelectModule,
-  MaterialFileInputModule
+  MaterialFileInputModule,
+  MatCardModule
 ]
 
 @NgModule({

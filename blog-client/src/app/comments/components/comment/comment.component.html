@@ -1,0 +1,13 @@
+<mat-card>
+    <mat-card-header *ngIf="$any(comment.creator) as creator">
+        <img mat-card-avatar src="/assets/images/profile.png" alt="Profile icon">
+        <mat-card-title>{{creator.first_name}} {{creator.last_name}}</mat-card-title>
+        <mat-card-subtitle>{{comment.posted_at | date: 'medium'}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <p>{{comment.text}}</p>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button>LIKE</button>
+    </mat-card-actions>
+</mat-card>

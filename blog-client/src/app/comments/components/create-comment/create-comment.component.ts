@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {User} from 'src/app/core/models/user';
 import {Comment} from '../../models/comment';
@@ -13,6 +13,7 @@ export class CreateCommentComponent implements OnInit {
 
   @Input() loggedUser: User;
   @Input() articleId: number;
+  @Output() commentCreated = new EventEmitter<Comment>();
   comment: Comment;
 
   constructor(
@@ -29,9 +30,10 @@ export class CreateCommentComponent implements OnInit {
   submit(form: NgForm) {
     if (form.valid) {
       this.commentService.create(this.comment)
-        .subscribe(success => {
+        .subscribe((comment: Comment) => {
           // Reset for subsequent comments if any.
           this.comment.text = undefined;
+          this.commentCreated.emit(comment);
         });
     }
   }

@@ -2,6 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
+import {VotableServiceMixin} from 'src/app/shared/mixins/votable-service-mixin';
 import {addExtraParams} from 'src/app/shared/utils/add-extra-params';
 import {environment} from 'src/environments/environment';
 import {ArticleContent} from '../models/article-content';
@@ -10,44 +11,45 @@ import {Post} from '../models/post';
 @Injectable({
   providedIn: 'root'
 })
-export class BlogPostService {
+export class BlogPostService extends VotableServiceMixin {
 
-  private articlesEndpoint: string = `${environment.baseApiUrl}/articles/`;
   private articleContentEndpoint: string = `${environment.baseApiUrl}/article_contents/`;
 
   constructor(
-    private http: HttpClient,
-    private router: Router
-  ) { }
+    private router: Router,
+    http: HttpClient
+  ) {
+    super(http, `${environment.baseApiUrl}/articles/`);
+  }
 
   create(post: Post) {
     const formData = this._transformToFormData(post);
-    return this.http.post<Post>(this.articlesEndpoint, formData);
+    return this.http.post<Post>(this.endpoint, formData);
   }
 
   get(id: number, extraParams?: any): Observable<Post> {
-    let url = addExtraParams(`${this.articlesEndpoint}${id}/`, extraParams);
+    let url = addExtraParams(`${this.endpoint}${id}/`, extraParams);
     return this.http.get<Post>(url);
   }
 
   vote(id: number) {
-    return this.http.post(`${this.articlesEndpoint}${id}/vote/`, null);
+    return this.http.post(`${this.endpoint}${id}/vote/`, null);
   }
 
   unvote(id: number) {
-    return this.http.post(`${this.articlesEndpoint}${id}/unvote/`, null);
+    return this.http.post(`${this.endpoint}${id}/unvote/`, null);
   }
 
   save(id: number) {
-    return this.http.post(`${this.articlesEndpoint}${id}/save/`, null);
+    return this.http.post(`${this.endpoint}${id}/save/`, null);
   }
 
   unsave(id: number) {
-    return this.http.post(`${this.articlesEndpoint}${id}/unsave/`, null);
+    return this.http.post(`${this.endpoint}${id}/unsave/`, null);
   }
 
   getArticleText(id: number) {
-    return this.http.get<string>(`${this.articlesEndpoint}${id}/text`);
+    return this.http.get<string>(`${this.endpoint}${id}/text`);
   }
 
   uploadContent(articleContent: ArticleContent) {

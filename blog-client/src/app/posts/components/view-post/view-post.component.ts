@@ -79,7 +79,7 @@ export class ViewPostComponent implements OnInit {
     }
 
     // Set creator and then get logged user's additional info.
-    this.userService.get(this.post.creator)
+    this.userService.get(this.post.creator as number)
       .pipe(
         switchMap(creator => {
           this.creator = creator;

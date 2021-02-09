@@ -56,7 +56,9 @@
         <h2 class="mat-title">Comments</h2>
         <app-comment
             *ngFor="let comment of comments"
-            [comment]="comment">
+            [comment]="comment"
+            [loggedUserId]="loggedUser.id"
+            [articleCreatorId]="post.id">
         </app-comment>
     </div>
 </div>

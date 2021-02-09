@@ -1,0 +1,15 @@
+@import 'src/styles/globals/colors';
+
+.comment-user-label {
+    flex: 1;
+    text-align: right;
+    margin-top: 2px;
+    font-weight: 500;
+    font-variant: small-caps;
+    &.you {
+        color: $accent;
+    }
+    &.author {
+        color: $primary;
+    }
+}

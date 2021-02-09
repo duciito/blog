@@ -3,6 +3,9 @@
         <img mat-card-avatar src="/assets/images/profile.png" alt="Profile icon">
         <mat-card-title>{{creator.first_name}} {{creator.last_name}}</mat-card-title>
         <mat-card-subtitle>{{comment.posted_at | date: 'medium'}}</mat-card-subtitle>
+        <span *ngIf="userType" class="comment-user-label {{userType}}">
+            {{userType}}
+        </span>
     </mat-card-header>
     <mat-card-content>
         <p>{{comment.text}}</p>

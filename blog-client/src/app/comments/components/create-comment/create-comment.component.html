@@ -16,8 +16,8 @@
                 [(ngModel)]="comment.text"
                 name="text">
             </textarea>
-            <mat-hint align="end">{{comment.text?.length || 0}}/250</mat-hint>
+            <mat-hint align="end">{{comment.text?.length || 0}}/500</mat-hint>
         </mat-form-field>
-        <button [disabled]="text.value?.length < 1 || text.value?.length > 250" mat-flat-button color="primary" type="submit">Submit</button>
+        <button [disabled]="text.value?.length < 1 || text.value?.length > 500" mat-flat-button color="primary" type="submit">Submit</button>
     </form>
 </div>

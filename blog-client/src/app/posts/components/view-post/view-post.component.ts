@@ -137,7 +137,7 @@ export class ViewPostComponent implements OnInit {
         this.toastr.info(
           `"${this.creator.username}" has been
           ${following ? 'removed from' : 'added to'} your followed users`,
-          'Followed user'
+          'User action'
         );
       });
   }
@@ -153,7 +153,7 @@ export class ViewPostComponent implements OnInit {
         this.toastr.info(
           `"${this.post.title}" has been
           ${this.post.saved ? 'added to' : 'removed from'} your saved articles`,
-          'Article saved'
+          'Article action'
         );
       });
 

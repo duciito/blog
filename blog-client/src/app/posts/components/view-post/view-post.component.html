@@ -28,16 +28,11 @@
                     <mat-icon>bookmark</mat-icon>
                 </button>
                 &middot;
-                <p class="post-votes post-info mat-body">
-                <button
-                    class="post-vote-button"
-                    mat-icon-button
-                    (click)="vote()"
-                    [color]="post?.voted ? 'accent' : null">
-                    <mat-icon>favorite</mat-icon>
-                </button>
-                {{post?.total_votes}} vote(s)
-                </p>
+                <app-like-section
+                    class="post-info post-votes"
+                    [model]="post"
+                    [service]="blogPostService">
+                </app-like-section>
                 &middot;
                 <button [routerLink]="'/categories/' + category?.id" class="post-category" color="primary" mat-stroked-button>
                     {{category?.name}}

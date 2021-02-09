@@ -10,6 +10,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import { ViewPostComponent } from './components/view-post/view-post.component';
 import { NoSanitizePipe } from './pipes/no-sanitize.pipe';
 import {CommentsModule} from '../comments/comments.module';
+import {SharedModule} from '../shared/shared.module';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {CommentsModule} from '../comments/comments.module';
     ReactiveFormsModule,
     QuillModule.forRoot(),
     MaterialModule,
-    CommentsModule
+    CommentsModule,
+    SharedModule
   ]
 })
 export class PostsModule { }

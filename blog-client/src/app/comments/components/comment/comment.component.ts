@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {User} from 'src/app/core/models/user';
 import {Comment} from '../../models/comment';
+import {CommentService} from '../../services/comment.service';
 
 @Component({
   selector: 'app-comment',
@@ -14,7 +15,7 @@ export class CommentComponent implements OnInit {
   @Input() articleCreatorId: number;
   userType: string;
 
-  constructor() { }
+  constructor(public commentService: CommentService) { }
 
   ngOnInit(): void {
     const creator = this.comment.creator as User;

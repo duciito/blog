@@ -30,7 +30,7 @@ export class ViewPostComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private blogPostService: BlogPostService,
+    public blogPostService: BlogPostService,
     private userService: UserService,
     private categoryService: CategoryService,
     private accountService: AccountService,
@@ -108,20 +108,6 @@ export class ViewPostComponent implements OnInit {
         )
       )
       .subscribe(comments => this.comments = comments);
-  }
-
-  vote() {
-    const voteFunc = (this.post.voted
-      ? this.blogPostService.unvote
-      : this.blogPostService.vote).bind(this.blogPostService);
-
-    voteFunc(this.post.id)
-      .subscribe(
-        () => {
-          this.blogPostService.get(this.post.id, {full_data: true})
-            .subscribe(post => this.post = post);
-        }
-      );
   }
 
   followCreator() {

@@ -4,6 +4,7 @@ import { CreateCommentComponent } from './components/create-comment/create-comme
 import {FormsModule} from '@angular/forms';
 import {MaterialModule} from '../shared/modules/material.module';
 import { CommentComponent } from './components/comment/comment.component';
+import {SharedModule} from '../shared/shared.module';
 
 
 
@@ -12,7 +13,8 @@ import { CommentComponent } from './components/comment/comment.component';
   imports: [
     CommonModule,
     FormsModule,
-    MaterialModule
+    MaterialModule,
+    SharedModule
   ],
   exports: [
     CreateCommentComponent,

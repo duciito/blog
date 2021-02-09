@@ -1,0 +1,10 @@
+<div class="like-section mat-body">
+    <button
+        class="vote-button"
+        mat-icon-button
+        (click)="vote()"
+        [color]="model?.voted ? 'accent' : null">
+        <mat-icon>favorite</mat-icon>
+    </button>
+    {{model?.total_votes}} vote(s)
+</div>

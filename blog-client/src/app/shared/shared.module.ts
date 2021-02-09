@@ -1,12 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LikeSectionComponent } from './components/like-section/like-section.component';
+import {MaterialModule} from './modules/material.module';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [LikeSectionComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    MaterialModule
+  ],
+  exports: [
+    LikeSectionComponent
   ]
 })
 export class SharedModule { }

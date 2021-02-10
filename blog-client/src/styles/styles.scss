@@ -10,6 +10,11 @@ body {
     font-size: 16px;
 }
 
-.ngx-toastr {
+.mat-card {
+    border: 1px solid rgba($color: #595959, $alpha: 0.2);
+}
+
+.ngx-toastr,
+.mat-card {
     box-shadow: none !important;
 }

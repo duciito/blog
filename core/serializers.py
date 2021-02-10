@@ -38,6 +38,11 @@ class CommentSerializer(serializers.ModelSerializer):
     """Comment serializer. You can only comment on articles."""
 
     total_votes = serializers.ReadOnlyField()
+    voted = serializers.SerializerMethodField()
+
+    class Meta:
+            model = Comment
+            exclude = ('voters',)
 
     def __init__(self, *args, **kwargs):
         # Remove article id if used for nested data.
@@ -50,11 +55,11 @@ class CommentSerializer(serializers.ModelSerializer):
         if self.context['request'].query_params.get('nested_creator'):
             self.fields['creator'] = UserSerializer(read_only=True)
 
-    class Meta:
-        model = Comment
-        exclude = ('voters',)
+    def get_voted(self, obj):
+        user = self.context['request'].user
+        return Comment.objects.filter(id=obj.id, voters=user).exists()
 
-
+    
 class LightArticleSerializer(serializers.ModelSerializer):
     """Article serializer used for serializing only the essentials."""
     total_votes = serializers.ReadOnlyField()

@@ -12,6 +12,7 @@ import {UserService} from 'src/app/users/services/user.service';
 import {Post} from '../../models/post';
 import {BlogPostService} from '../../services/blog-post.service';
 import {Comment} from 'src/app/comments/models/comment';
+import {PaginatedResponse} from 'src/app/shared/models/paginated-response';
 
 @Component({
   selector: 'app-view-post',
@@ -94,12 +95,18 @@ export class ViewPostComponent implements OnInit {
       })
 
     // Get post's comments.
-    this.commentService.getAll({
+    this.getAllComments()
+      .subscribe((response: PaginatedResponse<Comment>) => {
+        this.comments = response.results;
+      });
+  }
+
+  getAllComments() {
+    return this.commentService.getAll({
       article_id: this.post.id,
       nested_creator: true,
       newest_first: true
-    })
-      .subscribe(response => this.comments = response.results);
+    });
   }
 
   followCreator() {
@@ -134,7 +141,6 @@ export class ViewPostComponent implements OnInit {
           'Article action'
         );
       });
-
   }
 
   onCommentCreated(comment: Comment) {
@@ -143,5 +149,9 @@ export class ViewPostComponent implements OnInit {
       comment.creator = this.loggedUser;
     }
     this.comments.unshift(comment);
+  }
+
+  onCommentsScroll() {
+    console.log('scrolledddd!!!');
   }
 }

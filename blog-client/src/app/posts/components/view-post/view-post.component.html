@@ -49,11 +49,17 @@
             (commentCreated)="onCommentCreated($event)">
         </app-create-comment>
         <h2 class="mat-title">Comments</h2>
-        <app-comment
-            *ngFor="let comment of comments"
-            [comment]="comment"
-            [loggedUserId]="loggedUser.id"
-            [articleCreatorId]="post.id">
-        </app-comment>
+        <div
+            infiniteScroll
+            [infiniteScrollDistance]="0.5"
+            [infiniteScrollThrottle]="50"
+            (scrolled)="onCommentsScroll()">
+            <app-comment
+                *ngFor="let comment of comments"
+                [comment]="comment"
+                [loggedUserId]="loggedUser.id"
+                [articleCreatorId]="post.id">
+            </app-comment>
+        </div>
     </div>
 </div>

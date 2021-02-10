@@ -11,6 +11,7 @@ import { ViewPostComponent } from './components/view-post/view-post.component';
 import { NoSanitizePipe } from './pipes/no-sanitize.pipe';
 import {CommentsModule} from '../comments/comments.module';
 import {SharedModule} from '../shared/shared.module';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {SharedModule} from '../shared/shared.module';
     QuillModule.forRoot(),
     MaterialModule,
     CommentsModule,
-    SharedModule
+    SharedModule,
+    InfiniteScrollModule
   ]
 })
 export class PostsModule { }

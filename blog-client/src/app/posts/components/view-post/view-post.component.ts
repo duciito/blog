@@ -93,21 +93,13 @@ export class ViewPostComponent implements OnInit {
         }
       })
 
-    // Get post's comments and sort them by date.
+    // Get post's comments.
     this.commentService.getAll({
       article_id: this.post.id,
-      nested_creator: true
+      nested_creator: true,
+      newest_first: true
     })
-      .pipe(
-        tap(
-          (comments: Comment[]) => {
-            return comments.sort(
-              (c1, c2) => new Date(c2.posted_at).getTime() - new Date(c1.posted_at).getTime()
-            );
-          }
-        )
-      )
-      .subscribe(comments => this.comments = comments);
+      .subscribe(response => this.comments = response.results);
   }
 
   followCreator() {

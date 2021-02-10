@@ -13,6 +13,7 @@ from core.serializers import (
 from core.models import Article, ArticleContent, Category, Comment
 from core.mixins import VotableContentMixin
 from core.search import filter_articles, filter_categories, filter_users
+from core.pagination import StandardResultsSetPagination
 from accounts.serializers import UserSerializer
 from accounts.models import BlogUser
 
@@ -133,6 +134,7 @@ class ArticleContentsViewSet(viewsets.ModelViewSet):
 class CommentsView(VotableContentMixin, viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    pagination_class =  StandardResultsSetPagination
 
     def get_queryset(self):
         queryset = self.queryset
@@ -140,6 +142,10 @@ class CommentsView(VotableContentMixin, viewsets.ModelViewSet):
         article = self.request.query_params.get('article_id')
         if article:
             queryset = queryset.filter(article=article)
+
+        newest_first = self.request.query_params.get('newest_first')
+        if newest_first:
+            queryset = queryset.order_by('-posted_at')
 
         return queryset
 

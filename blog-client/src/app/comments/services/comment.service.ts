@@ -2,6 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {VotableServiceMixin} from 'src/app/shared/mixins/votable-service-mixin';
+import {PaginatedResponse} from 'src/app/shared/models/paginated-response';
 import {addExtraParams} from 'src/app/shared/utils/add-extra-params';
 import {environment} from 'src/environments/environment';
 import {Comment} from '../models/comment';
@@ -21,8 +22,8 @@ export class CommentService extends VotableServiceMixin {
     return this.http.post(this.endpoint, comment);
   }
 
-  getAll(extraParams?: any): Observable<Comment[]> {
+  getAll(extraParams?: any): Observable<PaginatedResponse<Comment>> {
     const url = addExtraParams(this.endpoint, extraParams);
-    return this.http.get<Comment[]>(url);
+    return this.http.get<PaginatedResponse<Comment>>(url);
   }
 }

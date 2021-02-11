@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card'; 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import {MaterialFileInputModule} from 'ngx-material-file-input';
 
 const modules = [
@@ -17,7 +18,8 @@ const modules = [
   MatInputModule,
   MatSelectModule,
   MaterialFileInputModule,
-  MatCardModule
+  MatCardModule,
+  MatProgressSpinnerModule
 ]
 
 @NgModule({

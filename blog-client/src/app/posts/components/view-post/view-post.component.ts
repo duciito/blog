@@ -27,6 +27,8 @@ export class ViewPostComponent implements OnInit {
   following$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   loggedUser: User;
   comments: Comment[];
+  commentsPageUrl: string;
+  commentsLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -92,21 +94,7 @@ export class ViewPostComponent implements OnInit {
         if (user.followed_users.includes(this.creator.id)) {
           this.following$.next(true);
         }
-      })
-
-    // Get post's comments.
-    this.getAllComments()
-      .subscribe((response: PaginatedResponse<Comment>) => {
-        this.comments = response.results;
       });
-  }
-
-  getAllComments() {
-    return this.commentService.getAll({
-      article_id: this.post.id,
-      nested_creator: true,
-      newest_first: true
-    });
   }
 
   followCreator() {
@@ -152,6 +140,21 @@ export class ViewPostComponent implements OnInit {
   }
 
   onCommentsScroll() {
-    console.log('scrolledddd!!!');
+    // Load comments if scrolled down to section.
+    if (!this.commentsLoading && (this.commentsPageUrl || !this.comments)) {
+      this.commentsLoading = true;
+
+      this.commentService.getAll({
+        article_id: this.post.id,
+        nested_creator: true,
+        newest_first: true
+      }, this.commentsPageUrl || undefined)
+        .subscribe((response: PaginatedResponse<Comment>) => {
+          this.commentsLoading = false;
+          this.commentsPageUrl = response.next;
+          this.comments = (this.comments || []).concat(response.results);
+        });
+    }
+
   }
 }

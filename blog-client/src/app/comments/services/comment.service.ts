@@ -22,8 +22,8 @@ export class CommentService extends VotableServiceMixin {
     return this.http.post(this.endpoint, comment);
   }
 
-  getAll(extraParams?: any): Observable<PaginatedResponse<Comment>> {
-    const url = addExtraParams(this.endpoint, extraParams);
+  getAll(extraParams?: any, customUrl?: string): Observable<PaginatedResponse<Comment>> {
+    const url = customUrl || addExtraParams(this.endpoint, extraParams);
     return this.http.get<PaginatedResponse<Comment>>(url);
   }
 }

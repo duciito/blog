@@ -4,7 +4,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {TokenInterceptor} from './interceptors/token.interceptor';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [],
@@ -12,8 +12,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-b
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
-    NoopAnimationsModule
+    BrowserAnimationsModule
   ],
   providers: [
     {

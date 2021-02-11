@@ -11,7 +11,7 @@ h2 {
 
 .main-container {
     width: 40vw;
-    margin: 8vh auto 6vh;
+    margin: 8vh auto 0;
 }
 
 .post-container {
@@ -82,6 +82,8 @@ h2 {
 }
 
 .comments-container {
+    padding-bottom: 6vh;
+
     h2 {
         margin-top: 2.5rem;
         margin-bottom: 1.5rem;
@@ -90,5 +92,9 @@ h2 {
     app-comment {
         display: block;
         margin: 1rem 0;
+    }
+
+    mat-spinner {
+        margin: 2rem auto 0;
     }
 }

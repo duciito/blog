@@ -51,7 +51,7 @@
         <h2 class="mat-title">Comments</h2>
         <div
             infiniteScroll
-            [infiniteScrollDistance]="0.5"
+            [infiniteScrollDistance]="2"
             [infiniteScrollThrottle]="50"
             (scrolled)="onCommentsScroll()">
             <app-comment
@@ -61,5 +61,6 @@
                 [articleCreatorId]="post.id">
             </app-comment>
         </div>
+        <mat-spinner *ngIf="commentsLoading"></mat-spinner>
     </div>
 </div>

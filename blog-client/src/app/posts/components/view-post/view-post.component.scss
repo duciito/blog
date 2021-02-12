@@ -98,3 +98,9 @@ h2 {
         margin: 2rem auto 0;
     }
 }
+
+@media only screen and (max-width: 976px) {
+    .main-container {
+        width: 75vw;
+    }
+}

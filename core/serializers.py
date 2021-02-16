@@ -1,8 +1,29 @@
 from django.db import IntegrityError, transaction
 from rest_framework import serializers
 
-from core.models import Article, ArticleContent, Category, Comment
+from core.models import Article, ArticleContent, Category, Comment, EditableModel
 from accounts.serializers import UserSerializer
+
+
+class EditableModelSerializer(serializers.ModelSerializer):
+    """Base serializer for comments and posts."""
+    total_votes = serializers.ReadOnlyField()
+    voted = serializers.SerializerMethodField()
+
+    class Meta:
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+
+        if request and request.query_params.get('nested'):
+            self.fields['creator'] = UserSerializer(read_only=True)
+
+    def get_voted(self, obj):
+        user = self.context['request'].user
+        # TODO: May not be the safest way to go about this
+        return type(obj).objects.filter(id=obj.id, voters=user).exists()
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -34,45 +55,28 @@ class ArticleContentSerializer(serializers.ModelSerializer):
         read_only_fields = ('guid',)
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(EditableModelSerializer):
     """Comment serializer. You can only comment on articles."""
-
-    total_votes = serializers.ReadOnlyField()
-    voted = serializers.SerializerMethodField()
 
     class Meta:
             model = Comment
             exclude = ('voters',)
 
-    def __init__(self, *args, **kwargs):
-        # Remove article id if used for nested data.
-        nested = kwargs.pop('nested', None)
-        super().__init__(*args, **kwargs)
-
-        if nested:
-            self.fields.pop('article')
-
-        if self.context['request'].query_params.get('nested_creator'):
-            self.fields['creator'] = UserSerializer(read_only=True)
-
-    def get_voted(self, obj):
-        user = self.context['request'].user
-        return Comment.objects.filter(id=obj.id, voters=user).exists()
-
     
-class LightArticleSerializer(serializers.ModelSerializer):
+class LightArticleSerializer(EditableModelSerializer):
     """Article serializer used for serializing only the essentials."""
-    total_votes = serializers.ReadOnlyField()
-    voted = serializers.SerializerMethodField()
     saved = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
         exclude = ('voters', 'text')
 
-    def get_voted(self, obj):
-        user = self.context['request'].user
-        return Article.objects.filter(id=obj.id, voters=user).exists()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+
+        if request and request.query_params.get('nested'):
+            self.fields['category'] = CategorySerializer(read_only=True)
 
     def get_saved(self, obj):
         user = self.context['request'].user

@@ -1,1 +1,12 @@
-<p>home works!</p>
+<div class="main-container">
+    <h2 class="mat-headline">Popular posts</h2>
+    <div *ngIf="popularPosts; else emptyMessage" class="condensed-posts">
+        <app-post-condensed-card
+            *ngFor="let post of popularPosts"
+            [post]="post">
+        </app-post-condensed-card>
+    </div>
+    <ng-template #emptyMessage>
+        <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
+    </ng-template>
+</div>

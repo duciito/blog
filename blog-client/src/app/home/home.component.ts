@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Post} from '../posts/models/post';
 
 @Component({
   selector: 'app-home',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+  popularPosts: Post[];
 
   constructor() { }
 

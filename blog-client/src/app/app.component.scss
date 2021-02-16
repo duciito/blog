@@ -1,7 +1,7 @@
 @import '../../src/styles/globals/colors';
 
 mat-toolbar {
-    padding: 0 10%;
+    padding: 0 10vw;
 
     h1 {
         cursor: pointer;
@@ -12,10 +12,30 @@ mat-toolbar {
     }
 }
 
-.menu-spacer {
-    flex: 1 1 auto;
+footer {
+    flex: 0;
+    color: $primary;
+    background: rgba($color: #595959, $alpha: 0.1);
+    text-align: center;
+    padding: calc(0.5rem + 1.4%);
+    font-weight: 500;
+}
+
+#main-container {
+    flex: 1;
 }
 
 #logoutButton {
     color: $accent;
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 100%;
+}
+
+.menu-spacer {
+    flex: 1 1 auto;
 }

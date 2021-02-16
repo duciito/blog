@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {AuthGuard} from './core/guards/auth.guard';
 import {LoggedinGuard} from './core/guards/loggedin.guard';
-import {HomeComponent} from './home/home.component';
-
 
 const routes: Routes = [
   {
@@ -13,7 +11,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: HomeComponent,
+    loadChildren: () => import('src/app/home/home.module').then(m => m.HomeModule),
     canActivate: [AuthGuard]
   },
   {
@@ -26,8 +24,6 @@ const routes: Routes = [
     loadChildren: () => import('src/app/posts/posts.module').then(m => m.PostsModule),
     canActivate: [AuthGuard]
   },
-  // TODO: add profile component
-  /* {path: 'profile', component: null, canActivate: [AuthGuard]}, */
   // Redirect to home for all undefined paths.
   {path: '**', redirectTo: ''}
 ];

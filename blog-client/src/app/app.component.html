@@ -1,22 +1,28 @@
-<mat-toolbar *ngIf="isLoggedIn$ | async" color="primary">
-    <mat-toolbar-row>
-        <h1 routerLink="/home">blog</h1>
-        <span class="menu-spacer"></span>
+<div class="main-wrapper">
+    <mat-toolbar *ngIf="isLoggedIn$ | async" color="primary">
+        <mat-toolbar-row>
+            <h1 routerLink="/home">blog</h1>
+            <span class="menu-spacer"></span>
 
-        <div>
-            <a routerLink="posts/create" mat-icon-button>
-                <mat-icon>add</mat-icon>
-            </a>
-            <a mat-icon-button>
-                <mat-icon>notifications</mat-icon>
-            </a>
-            <a mat-button routerLink="/saved">saved</a>
-            <a mat-button routerLink="/profile">profile</a>
-            <a id="logoutButton" mat-button (click)="logout()">log out</a>
-        </div>
-    </mat-toolbar-row>
-</mat-toolbar>
+            <div>
+                <a routerLink="posts/create" mat-icon-button>
+                    <mat-icon>add</mat-icon>
+                </a>
+                <a mat-icon-button>
+                    <mat-icon>notifications</mat-icon>
+                </a>
+                <a mat-button routerLink="/saved">saved</a>
+                <a mat-button routerLink="/profile">profile</a>
+                <a id="logoutButton" mat-button (click)="logout()">log out</a>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
 
-<div id="main-container">
-    <router-outlet></router-outlet>
+    <div id="main-container">
+        <router-outlet></router-outlet>
+    </div>
+
+    <footer>
+        © 2021 All rights reserved
+    </footer>
 </div>

@@ -76,25 +76,41 @@ export class ViewPostComponent implements OnInit {
         });
     }
 
-    if (this.post.category) {
+    if (this.post.category && typeof(this.post.category) === 'number') {
       this.categoryService.get(this.post.category)
       .subscribe(category => this.category = category);
     }
+    else {
+      this.category = this.post.category as Category;
+    }
 
     // Set creator and then get logged user's additional info.
-    this.userService.get(this.post.creator as number)
-      .pipe(
-        switchMap(creator => {
-          this.creator = creator;
-          return this.userService.get(this.loggedUser.id, {extra_info: true});
-        })
-      )
-      .subscribe(user => {
-        // Update following button content
-        if (user.followed_users.includes(this.creator.id)) {
-          this.following$.next(true);
-        }
-      });
+    if (typeof(this.post.creator) === 'number') {
+      this.userService.get(this.post.creator)
+        .pipe(
+          switchMap((creator: User) => {
+            this.creator = creator;
+            return this.userService.get(this.loggedUser.id, {extra_info: true});
+          })
+        )
+        .subscribe(user => {
+          // Update following button content
+          if (user.followed_users.includes(this.creator.id)) {
+            this.following$.next(true);
+          }
+        });
+    }
+
+    else {
+      this.creator = this.post.creator;
+      this.userService.get(this.loggedUser.id, {extra_info: true})
+        .subscribe(user => {
+          // Update following button content
+          if (user.followed_users.includes(this.creator.id)) {
+            this.following$.next(true);
+          }
+        });
+    }
   }
 
   followCreator() {
@@ -146,7 +162,7 @@ export class ViewPostComponent implements OnInit {
 
       this.commentService.getAll({
         article_id: this.post.id,
-        nested_creator: true,
+        nested: true,
         newest_first: true
       }, this.commentsPageUrl || undefined)
         .subscribe((response: PaginatedResponse<Comment>) => {

@@ -1,6 +1,5 @@
 import {HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {VotableServiceMixin} from 'src/app/shared/mixins/votable-service-mixin';
 import {addExtraParams} from 'src/app/shared/utils/add-extra-params';
@@ -16,7 +15,6 @@ export class BlogPostService extends VotableServiceMixin {
   private articleContentEndpoint: string = `${environment.baseApiUrl}/article_contents/`;
 
   constructor(
-    private router: Router,
     http: HttpClient
   ) {
     super(http, `${environment.baseApiUrl}/articles/`);
@@ -28,16 +26,14 @@ export class BlogPostService extends VotableServiceMixin {
   }
 
   get(id: number, extraParams?: any): Observable<Post> {
-    let url = addExtraParams(`${this.endpoint}${id}/`, extraParams);
+    const url = addExtraParams(`${this.endpoint}${id}/`, extraParams);
     return this.http.get<Post>(url);
   }
 
-  vote(id: number) {
-    return this.http.post(`${this.endpoint}${id}/vote/`, null);
-  }
-
-  unvote(id: number) {
-    return this.http.post(`${this.endpoint}${id}/unvote/`, null);
+  hot(extraParams?: any): Observable<Post[]> {
+    // Gets popular posts as determined by the API.
+    const url = addExtraParams(this.endpoint + 'hot/', extraParams);
+    return this.http.get<Post[]>(url);
   }
 
   save(id: number) {

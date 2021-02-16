@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {Observable} from 'rxjs';
 import {Post} from '../posts/models/post';
+import {BlogPostService} from '../posts/services/blog-post.service';
 
 @Component({
   selector: 'app-home',
@@ -8,11 +10,14 @@ import {Post} from '../posts/models/post';
 })
 export class HomeComponent implements OnInit {
 
-  popularPosts: Post[];
+  popularPosts$: Observable<Post[]>;
 
-  constructor() { }
+  constructor(
+    private blogPostService: BlogPostService
+  ) { }
 
   ngOnInit() {
+    this.popularPosts$ = this.blogPostService.hot({nested: true});
   }
 
 }

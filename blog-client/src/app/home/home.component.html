@@ -1,8 +1,8 @@
 <div class="main-container">
     <h2 class="mat-headline">Popular posts</h2>
-    <div *ngIf="popularPosts; else emptyMessage" class="condensed-posts">
+    <div *ngIf="popularPosts$; else emptyMessage" class="condensed-posts">
         <app-condensed-post-card
-            *ngFor="let post of popularPosts"
+            *ngFor="let post of popularPosts$ | async"
             [post]="post">
         </app-condensed-post-card>
     </div>

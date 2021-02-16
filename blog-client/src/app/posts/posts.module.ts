@@ -12,15 +12,13 @@ import { NoSanitizePipe } from './pipes/no-sanitize.pipe';
 import {CommentsModule} from '../comments/comments.module';
 import {SharedModule} from '../shared/shared.module';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
-import { PostCondensedCardComponent } from './components/post-condensed-card/post-condensed-card.component';
 
 
 @NgModule({
   declarations: [
     CreatePostComponent,
     ViewPostComponent,
-    NoSanitizePipe,
-    PostCondensedCardComponent
+    NoSanitizePipe
   ],
   imports: [
     CommonModule,
@@ -31,9 +29,6 @@ import { PostCondensedCardComponent } from './components/post-condensed-card/pos
     CommentsModule,
     SharedModule,
     InfiniteScrollModule
-  ],
-  exports: [
-    PostCondensedCardComponent
   ]
 })
 export class PostsModule { }

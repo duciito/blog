@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PostCondensedCardComponent } from './post-condensed-card.component';
+import { CondensedPostCardComponent } from './condensed-post-card.component';
 
-describe('PostCondensedCardComponent', () => {
-  let component: PostCondensedCardComponent;
-  let fixture: ComponentFixture<PostCondensedCardComponent>;
+describe('CondensedPostCardComponent', () => {
+  let component: CondensedPostCardComponent;
+  let fixture: ComponentFixture<CondensedPostCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PostCondensedCardComponent ]
+      declarations: [ CondensedPostCardComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PostCondensedCardComponent);
+    fixture = TestBed.createComponent(CondensedPostCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

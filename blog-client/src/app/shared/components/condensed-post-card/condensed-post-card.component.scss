@@ -1,10 +1,53 @@
+@import 'src/styles/globals/colors';
+
 .condensed-post-card {
     display: flex;
     justify-content: space-between;
-    width: 34rem;
+    width: 30rem;
+}
+
+.post-info {
+    display: flex;
+    flex-direction: column;
+    padding-right: 2rem;
+}
+
+.post-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 1.25rem;
+    overflow: hidden;
+    line-height: 1.7rem;
+    margin-bottom: 0.5rem;
+}
+
+.post-author-category {
+    flex: 1;
+    margin: 0;
+
+    .author,
+    .category {
+        color: $primary;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .author {
+        margin-right: 0.2rem;
+        border-bottom: 2px solid $primary;
+    }
+
+    .category {
+        margin-left: 0.2rem;
+    }
+}
+
+.bottom-info {
+    flex: 0;
 }
 
 .post-thumbnail {
-    max-width: 10.5rem;
+    max-width: 11rem;
     height: auto;
 }

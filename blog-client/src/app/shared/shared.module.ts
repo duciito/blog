@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LikeSectionComponent } from './components/like-section/like-section.component';
 import {MaterialModule} from './modules/material.module';
 import { CondensedPostCardComponent } from './components/condensed-post-card/condensed-post-card.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -11,6 +12,7 @@ import { CondensedPostCardComponent } from './components/condensed-post-card/con
   ],
   imports: [
     CommonModule,
+    RouterModule,
     MaterialModule
   ],
   exports: [

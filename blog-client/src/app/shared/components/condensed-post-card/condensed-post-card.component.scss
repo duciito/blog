@@ -45,6 +45,14 @@
 
 .bottom-info {
     flex: 0;
+    font-size: 0.85rem;
+    color: #595959;
+    margin-left: -5px;
+
+    & * {
+        margin: 0 0.1rem;
+        display: inline-block;
+    }
 }
 
 .post-thumbnail {

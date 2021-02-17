@@ -15,6 +15,8 @@
                 [service]="blogPostService"
                 [compact]="true">
             </app-like-section>
+            &middot;
+            <p>{{post.posted_at | date: 'longDate'}}</p>
         </div>
     </div>
     <img class="post-thumbnail" [src]="post.thumbnail" alt="{{post.title}}">

@@ -11,6 +11,7 @@ export class LikeSectionComponent implements OnInit {
 
   @Input() model: EditableModel;
   @Input() service: VotableServiceMixin;
+  @Input() compact: boolean = false;
 
   constructor() { }
 

@@ -1,4 +1,4 @@
-<div class="like-section mat-body">
+<div [class.compact]="compact" class="like-section mat-body">
     <button
         class="vote-button"
         mat-icon-button
@@ -6,5 +6,5 @@
         [color]="model?.voted ? 'accent' : null">
         <mat-icon>favorite</mat-icon>
     </button>
-    {{model?.total_votes}} vote(s)
+    {{model?.total_votes}} <span *ngIf="!compact">vote(s)</span>
 </div>

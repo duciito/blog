@@ -1,5 +1,16 @@
 .vote-button {
-    height: 30px;
+    height: 0;
     width: 30px;
-    line-height: 26px;
+}
+
+.like-section.compact {
+    font-size: 0.85rem;
+
+    .vote-button {
+        width: 20px;
+    }
+
+    mat-icon {
+        font-size: 1rem;
+    }
 }

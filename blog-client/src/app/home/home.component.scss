@@ -1,5 +1,14 @@
+app-condensed-post-card {
+    display: block;
+    margin: 2rem 0;
+}
+
 .main-container {
-    padding: 3vh 3vw;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 8vh 4vw;
+    margin: 0 auto;
+    width: 75vw;
 }
 
 .empty-message {

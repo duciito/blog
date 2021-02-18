@@ -26,7 +26,7 @@ export class ViewPostComponent implements OnInit {
   category: Category;
   following$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   loggedUser: User;
-  comments: Comment[];
+  comments: Comment[] = [];
   commentsPageUrl: string;
   commentsLoading: boolean = false;
 
@@ -43,13 +43,14 @@ export class ViewPostComponent implements OnInit {
     // Test if some post data has already been sent with route.
     const routerState = this.router.getCurrentNavigation().extras.state;
 
-    if (routerState && routerState.createdPost) {
-      this.post = routerState.createdPost;
+    if (routerState && routerState.post) {
+      this.post = routerState.post;
     }
   }
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
+    this.loggedUser = this.accountService.getLoggedInUser();
 
     if (this.post) {
       // Populates user and category
@@ -64,8 +65,6 @@ export class ViewPostComponent implements OnInit {
           this.setRelatedData();
         });
     }
-
-    this.loggedUser = this.accountService.getLoggedInUser();
   }
 
   setRelatedData() {
@@ -157,7 +156,7 @@ export class ViewPostComponent implements OnInit {
 
   onCommentsScroll() {
     // Load comments if scrolled down to section.
-    if (!this.commentsLoading && (this.commentsPageUrl || !this.comments)) {
+    if (!this.commentsLoading && (this.commentsPageUrl || !this.comments.length)) {
       this.commentsLoading = true;
 
       this.commentService.getAll({
@@ -168,7 +167,7 @@ export class ViewPostComponent implements OnInit {
         .subscribe((response: PaginatedResponse<Comment>) => {
           this.commentsLoading = false;
           this.commentsPageUrl = response.next;
-          this.comments = (this.comments || []).concat(response.results);
+          this.comments = this.comments.concat(response.results);
         });
     }
 

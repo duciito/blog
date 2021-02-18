@@ -4,6 +4,9 @@
     display: flex;
     justify-content: space-between;
     width: 30rem;
+    border: 1px solid rgba($color: #595959, $alpha: 0.2);
+    border-radius: 4px;
+    padding: 0.6rem;
 }
 
 .post-info {
@@ -23,7 +26,6 @@
 }
 
 .post-author-category {
-    flex: 1;
     margin: 0;
 
     .author,
@@ -43,6 +45,10 @@
     }
 }
 
+.top-info {
+    flex: 1;
+}
+
 .bottom-info {
     flex: 0;
     font-size: 0.85rem;
@@ -57,5 +63,10 @@
 
 .post-thumbnail {
     max-width: 11rem;
+    max-height: 9.5rem;
     height: auto;
+}
+
+.post-title, .post-thumbnail {
+    cursor: pointer;
 }

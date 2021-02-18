@@ -50,6 +50,7 @@
         </app-create-comment>
         <h2 class="mat-title">Comments</h2>
         <div
+            *ngIf="comments; else emptyMessage"
             infiniteScroll
             [infiniteScrollDistance]="2"
             [infiniteScrollThrottle]="50"
@@ -61,6 +62,9 @@
                 [articleCreatorId]="post.id">
             </app-comment>
         </div>
+        <ng-template #emptyMessage>
+            <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
+        </ng-template>
         <mat-spinner *ngIf="commentsLoading"></mat-spinner>
     </div>
 </div>

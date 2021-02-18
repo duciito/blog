@@ -1,12 +1,26 @@
 <div class="main-container">
-    <h2 class="mat-headline">Popular posts</h2>
-    <div *ngIf="popularPosts$; else emptyMessage" class="condensed-posts">
-        <app-condensed-post-card
-            *ngFor="let post of popularPosts$ | async"
-            [post]="post">
-        </app-condensed-post-card>
+    <div class="popular-posts">
+        <h1 class="mat-display-1">Popular posts</h1>
+        <div *ngIf="popularPosts$; else emptyMessage" class="condensed-posts">
+            <app-condensed-post-card
+                *ngFor="let post of popularPosts$ | async"
+                [post]="post">
+            </app-condensed-post-card>
+        </div>
+        <ng-template #emptyMessage>
+            <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
+        </ng-template>
     </div>
-    <ng-template #emptyMessage>
-        <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
-    </ng-template>
+    <div class="popular-posts">
+        <h1 class="mat-display-1">Popular posts</h1>
+        <div *ngIf="popularPosts$; else emptyMessage" class="condensed-posts">
+            <app-condensed-post-card
+                *ngFor="let post of popularPosts$ | async"
+                [post]="post">
+            </app-condensed-post-card>
+        </div>
+        <ng-template #emptyMessage>
+            <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
+        </ng-template>
+    </div>
 </div>

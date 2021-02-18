@@ -183,7 +183,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
           this.temporaryContents = [];
           this.toastr.success("Successfully created a new blog post!");
           this.router.navigate([`posts/${data.id}`], {
-            state: {createdPost: data}
+            state: {post: data}
           });
         },
         error => {

@@ -107,11 +107,30 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
             '-num_voters'
         )
 
+        return self._paginate_custom_action(queryset)
+
+    @action(detail=False, methods=['get'])
+    def recent_from_following(self, request):
+        """Get recent articles from your subscriptions."""
+        last_seven_days = timezone.now() - timedelta(days=7)
+        followed_users = request.user.followed_users.all()
+        queryset = self.get_queryset()
+
+        queryset = queryset.filter(
+            creator__in=followed_users,
+            posted_at__gte=last_seven_days
+        ).order_by(
+            '-posted_at'
+        )
+
+        return self._paginate_custom_action(queryset)
+
+    def _paginate_custom_action(self, queryset):
         # Paginate and serialize new queryset using view's serializer.
         page = self.paginate_queryset(queryset)
         result = self.get_serializer(page,
                 many=True,
-                context={'request': request})
+                context={'request': self.request})
         return self.get_paginated_response(result.data)
 
 

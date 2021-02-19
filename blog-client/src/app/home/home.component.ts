@@ -13,15 +13,21 @@ import {PaginatedResponse} from '../shared/models/paginated-response';
 export class HomeComponent implements OnInit {
 
   popularPosts$: Observable<Post[]>;
+  postsFromFollowing$: Observable<Post[]>;
 
   constructor(
     private blogPostService: BlogPostService
   ) { }
 
   ngOnInit() {
-    this.popularPosts$ = this.blogPostService.hot({nested: true, page_size: '3'})
-      .pipe(map((response: PaginatedResponse<Post>) => {
-        return response.results;
-      }));
+    const customPostsObservable = (action: string) => {
+      return this.blogPostService[action]({nested: true, page_size: '3'})
+        .pipe(map((response: PaginatedResponse<Post>) => {
+          return response.results;
+        }));
+    };
+
+    this.popularPosts$ = customPostsObservable('hot');
+    this.postsFromFollowing$ = customPostsObservable('recentFromFollowing');
   }
 }

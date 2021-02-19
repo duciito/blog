@@ -11,11 +11,11 @@
             <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
         </ng-template>
     </div>
-    <div class="popular-posts">
-        <h1 class="mat-display-1">Popular posts</h1>
-        <div *ngIf="popularPosts$; else emptyMessage" class="condensed-posts">
+    <div class="posts-from-following">
+        <h1 class="mat-display-1">From your following</h1>
+        <div *ngIf="postsFromFollowing$; else emptyMessage" class="condensed-posts">
             <app-condensed-post-card
-                *ngFor="let post of popularPosts$ | async"
+                *ngFor="let post of postsFromFollowing$ | async"
                 [post]="post">
             </app-condensed-post-card>
         </div>

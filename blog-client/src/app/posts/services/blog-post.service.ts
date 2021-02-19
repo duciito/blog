@@ -37,6 +37,12 @@ export class BlogPostService extends VotableServiceMixin {
     return this.http.get<PaginatedResponse<Post>>(url);
   }
 
+  recentFromFollowing(extraParams?: any): Observable<PaginatedResponse<Post>> {
+    // Gets popular posts as determined by the API.
+    const url = addExtraParams(this.endpoint + 'recent_from_following/', extraParams);
+    return this.http.get<PaginatedResponse<Post>>(url);
+  }
+
   save(id: number) {
     return this.http.post(`${this.endpoint}${id}/save/`, null);
   }

@@ -45,6 +45,7 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
     serializer_class = ArticleSerializer
     # Actions that require only essential data.
     light_actions = ('list', 'hot', 'retrieve')
+    pagination_class =  StandardResultsSetPagination
 
     def get_queryset(self):
         queryset = self.queryset
@@ -92,8 +93,7 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def hot(self, request):
         """Get articles that have gained popularity quickly."""
-        last_three_days = timezone.now() - timedelta(days=3)
-        serializer = self.get_serializer_class()
+        last_seven_days = timezone.now() - timedelta(days=7)
         queryset = self.get_queryset()
 
         queryset = queryset.annotate(
@@ -102,12 +102,17 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
         ).filter(
             num_voters__gte=5,
             num_comments__gt=2,
-            posted_at__gte=last_three_days
+            posted_at__gte=last_seven_days
+        ).order_by(
+            '-num_voters'
         )
 
-        # Serialize new queryset using view's serializer.
-        result = serializer(queryset, many=True)
-        return response.Response(result.data)
+        # Paginate and serialize new queryset using view's serializer.
+        page = self.paginate_queryset(queryset)
+        result = self.get_serializer(page,
+                many=True,
+                context={'request': request})
+        return self.get_paginated_response(result.data)
 
 
 class ArticleContentsViewSet(viewsets.ModelViewSet):

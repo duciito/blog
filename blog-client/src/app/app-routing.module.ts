@@ -24,6 +24,11 @@ const routes: Routes = [
     loadChildren: () => import('src/app/posts/posts.module').then(m => m.PostsModule),
     canActivate: [AuthGuard]
   },
+  {
+    path: 'categories',
+    loadChildren: () => import('src/app/categories/categories.module').then(m => m.CategoriesModule),
+    canActivate: [AuthGuard]
+  },
   // Redirect to home for all undefined paths.
   {path: '**', redirectTo: ''}
 ];

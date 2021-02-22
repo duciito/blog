@@ -26,6 +26,11 @@ export class BlogPostService extends VotableServiceMixin {
     return this.http.post<Post>(this.endpoint, formData);
   }
 
+  getAll(extraParams?: any): Observable<PaginatedResponse<Post>> {
+    const url = addExtraParams(this.endpoint, extraParams);
+    return this.http.get<PaginatedResponse<Post>>(url);
+  }
+
   get(id: number, extraParams?: any): Observable<Post> {
     const url = addExtraParams(`${this.endpoint}${id}/`, extraParams);
     return this.http.get<Post>(url);

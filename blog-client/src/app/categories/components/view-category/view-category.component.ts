@@ -15,9 +15,13 @@ import {CategoryService} from '../../services/category.service';
 })
 export class ViewCategoryComponent implements OnInit {
 
-  category$: Observable<Category>;
-  latestPosts$: Observable<Post[]>;
-  popularPosts$: Observable<Post[]>;
+  category: Category;
+  latestPosts: Post[];
+  latestPostsUrl: string;
+  latestPostsLoading: boolean = false;
+  popularPosts: Post[];
+  popularPostsUrl: string;
+  popularPostsLoading: boolean = false;
 
   constructor(
     public categoryService: CategoryService,
@@ -29,16 +33,35 @@ export class ViewCategoryComponent implements OnInit {
     const id = this.route.snapshot.params['id'];
 
     if (id) {
-      this.category$ = this.categoryService.get(id)
-        .pipe(tap((category: Category) => {
-          this.popularPosts$ = this.blogPostService.hot({
-            nested: true,
-            category_id: category.id
-          }).pipe(map((response: PaginatedResponse<Post>) => {
-            return response.results;
-          }));
-        }));
+      this.categoryService.get(id)
+        .subscribe((category: Category) => {
+          this.category = category;
+
+          // Get popular posts for this category.
+          this.loadPopularPosts();
+        });
     }
+  }
+
+  loadPopularPosts() {
+    // The posts page could only be null if we have reached the end.
+    if (!this.popularPostsLoading && this.popularPostsUrl !== null) {
+      this.popularPostsLoading = true;
+
+      this.blogPostService.hot({
+        nested: true,
+        category_id: this.category.id
+      }).subscribe((response: PaginatedResponse<Post>) => {
+        this.popularPosts = (this.popularPosts || []).concat(response.results);
+        this.popularPostsUrl = response.next;
+        this.popularPostsLoading = false;
+      });
+    }
+  }
+
+  loadLatestPosts() {
+    // TODO: Get them with a custom URL like we do in comments.getAll
+
   }
 
 }

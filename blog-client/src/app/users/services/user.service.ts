@@ -3,37 +3,27 @@ import { Injectable } from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {User} from 'src/app/core/models/user';
+import {FollowableServiceMixin} from 'src/app/shared/mixins/followable-service-mixin';
 import {addExtraParams} from 'src/app/shared/utils/add-extra-params';
 import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
-  private usersEndpoint: string = `${environment.baseApiUrl}/users/`;
-
+export class UserService extends FollowableServiceMixin {
   constructor(
-    private http: HttpClient,
-    private router: Router
-  ) { }
+    http: HttpClient
+  ) {
+    super(http, `${environment.baseApiUrl}/users/`);
+  }
 
   getAll(extraParams?: any): Observable<User[]> {
-    let url = addExtraParams(this.usersEndpoint, extraParams);
-    return this.http.get<User[]>(this.usersEndpoint);
+    let url = addExtraParams(this.endpoint, extraParams);
+    return this.http.get<User[]>(url);
   }
 
   get(id: number, extraParams?: any): Observable<User> {
-    let url = addExtraParams(`${this.usersEndpoint}${id}/`, extraParams);
+    let url = addExtraParams(`${this.endpoint}${id}/`, extraParams);
     return this.http.get<User>(url);
-  }
-
-  follow(id: number) {
-    let url = `${this.usersEndpoint}${id}/follow/`;
-    return this.http.post(url, null);
-  }
-
-  unfollow(id: number) {
-    let url = `${this.usersEndpoint}${id}/unfollow/`;
-    return this.http.post(url, null);
   }
 }

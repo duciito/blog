@@ -1,25 +1,25 @@
 import {HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
+import {FollowableServiceMixin} from 'src/app/shared/mixins/followable-service-mixin';
 import {environment} from 'src/environments/environment';
 import {Category} from '../models/category';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryService {
-
-  private categoriesEndpoint: string = `${environment.baseApiUrl}/categories/`;
-
+export class CategoryService extends FollowableServiceMixin {
   constructor(
-    private http: HttpClient
-  ) { }
+    http: HttpClient
+  ) {
+    super(http, `${environment.baseApiUrl}/categories/`);
+  }
 
   getAll(): Observable<Category[]> {
-    return this.http.get<Category[]>(this.categoriesEndpoint);
+    return this.http.get<Category[]>(this.endpoint);
   }
 
   get(id: number): Observable<Category> {
-    return this.http.get<Category>(`${this.categoriesEndpoint}${id}/`);
+    return this.http.get<Category>(`${this.endpoint}${id}/`);
   }
 }

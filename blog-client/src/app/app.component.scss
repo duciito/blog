@@ -1,7 +1,10 @@
 @import '../../src/styles/globals/colors';
 
 mat-toolbar {
+    position: fixed;
+    top: 0;
     padding: 0 10vw;
+    z-index: 9999;
 
     h1 {
         cursor: pointer;
@@ -22,6 +25,7 @@ footer {
 }
 
 #main-container {
+    margin-top: 4rem;
     flex: 1;
 }
 

@@ -22,10 +22,6 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-    @action(detail=False)
-    def articles(self, request):
-        pass
-
     @action(detail=True, methods=['post'])
     def follow(self, request, pk=None):
         """Start following a category."""
@@ -40,6 +36,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
         followers = UserSerializer(category.followers, many=True)
         return response.Response(followers.data)
 
+
 class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
@@ -49,12 +46,16 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-
         category = self.request.query_params.get('category_id')
+        desc_order = self.request.query_params.get('desc_order')
+
         if category:
             queryset = queryset.filter(
                 category=category
             )
+
+        if desc_order:
+            queryset = queryset.order_by('-posted_at')
 
         return queryset
 
@@ -119,8 +120,6 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
         queryset = queryset.filter(
             creator__in=followed_users,
             posted_at__gte=last_seven_days
-        ).order_by(
-            '-posted_at'
         )
 
         return self._paginate_custom_action(queryset)

@@ -21,7 +21,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     const customPostsObservable = (action: string) => {
-      return this.blogPostService[action]({nested: true, page_size: '3'})
+      return this.blogPostService[action]({
+        nested: true,
+        page_size: '3',
+        desc_order: true
+      })
         .pipe(map((response: PaginatedResponse<Post>) => {
           return response.results;
         }));

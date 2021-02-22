@@ -32,6 +32,10 @@ class Category(models.Model):
         blank=True
     )
 
+    @property
+    def total_followers(self):
+        return self.followers.count()
+
     def __str__(self):
         return self.name
 

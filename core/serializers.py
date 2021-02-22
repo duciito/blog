@@ -28,10 +28,16 @@ class EditableModelSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     """Category serializer that also lists related articles."""
+    total_followers = serializers.ReadOnlyField()
+    followed = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
         exclude = ('followers',)
+
+    def get_followed(self, obj):
+        user = self.context['request'].user
+        return Category.objects.filter(id=obj.id, followers=user).exists()
 
     def create(self, validated_data):
         # Allow passing nested articles with category creation.

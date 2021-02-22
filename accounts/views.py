@@ -26,6 +26,7 @@ from accounts.utils import build_url
 from config import settings
 from services.aws_utils import ses_verify_email_address
 from core.serializers import LightArticleSerializer
+from core.mixins import FollowableContentMixin
 
 logger = logging.getLogger(__name__)
 
@@ -186,31 +187,9 @@ class AuthViewSet(viewsets.GenericViewSet):
         return f'http://{current_site}{confirm_link}'
 
 
-class UsersViewSet(viewsets.ModelViewSet):
+class UsersViewSet(viewsets.ModelViewSet, FollowableContentMixin):
     queryset = BlogUser.objects.all()
     serializer_class = UserSerializer
-
-    @action(detail=True, methods=['post'])
-    def follow(self, request, pk=None):
-        """Follow a user."""
-        user = self.get_object()
-        user.followers.add(request.user)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(detail=True, methods=['post'])
-    def unfollow(self, request, pk=None):
-        """Unfollow a user."""
-        user = self.get_object()
-        user.followers.remove(request.user)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(detail=True, methods=['get'])
-    def followers(self, request, pk=None):
-        """Get all followers for a user."""
-        user = self.get_object()
-        serializer = self.get_serializer_class()
-        followers = serializer(user.followers, many=True)
-        return Response(followers.data)
 
     @action(detail=True, methods=['get'])
     def saved_articles(self, request, pk=None):

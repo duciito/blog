@@ -11,30 +11,16 @@ from core.serializers import (
     LightArticleSerializer
 )
 from core.models import Article, ArticleContent, Category, Comment
-from core.mixins import VotableContentMixin
+from core.mixins import VotableContentMixin, FollowableContentMixin
 from core.search import filter_articles, filter_categories, filter_users
 from core.pagination import StandardResultsSetPagination
 from accounts.serializers import UserSerializer
 from accounts.models import BlogUser
 
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CategoriesViewSet(viewsets.ModelViewSet, FollowableContentMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-
-    @action(detail=True, methods=['post'])
-    def follow(self, request, pk=None):
-        """Start following a category."""
-        category = self.get_object()
-        category.followers.add(request.user)
-        return response.Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(detail=True, methods=['get'])
-    def followers(self, request, pk=None):
-        """Get all followers for a category."""
-        category = self.get_object()
-        followers = UserSerializer(category.followers, many=True)
-        return response.Response(followers.data)
 
 
 class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
@@ -94,16 +80,16 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def hot(self, request):
         """Get articles that have gained popularity quickly."""
-        last_seven_days = timezone.now() - timedelta(days=7)
+        last_month = timezone.now() - timedelta(days=30)
         queryset = self.get_queryset()
 
         queryset = queryset.annotate(
             num_voters=Count('voters'),
             num_comments=Count('comments')
         ).filter(
-            num_voters__gte=5,
-            num_comments__gt=2,
-            posted_at__gte=last_seven_days
+            num_voters__gte=1,
+            num_comments__gt=0,
+            # posted_at__gte=last_month
         ).order_by(
             '-num_voters'
         )
@@ -119,7 +105,7 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
 
         queryset = queryset.filter(
             creator__in=followed_users,
-            posted_at__gte=last_seven_days
+            # posted_at__gte=last_seven_days
         )
 
         return self._paginate_custom_action(queryset)

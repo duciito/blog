@@ -16,12 +16,12 @@ import {CategoryService} from '../../services/category.service';
 export class ViewCategoryComponent implements OnInit {
 
   category$: Observable<Category>;
-  popularPosts$: Observable<Post[]>;
   latestPosts$: Observable<Post[]>;
+  popularPosts$: Observable<Post[]>;
 
   constructor(
+    public categoryService: CategoryService,
     private route: ActivatedRoute,
-    private categoryService: CategoryService,
     private blogPostService: BlogPostService
   ) { }
 

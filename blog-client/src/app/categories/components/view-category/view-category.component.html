@@ -1,1 +1,11 @@
-<p>{{(category$ | async).name}}</p>
+<div *ngIf="(category$ | async) as cat" class="category-container">
+    <div class="category-info">
+        <h2 class="category-name">{{cat.name}}</h2>
+        <p class="category-followers mat-body">{{cat.total_followers}} follower(s)</p>
+        <app-follow-button [model]="cat" [service]="categoryService">
+        </app-follow-button>
+    </div>
+    <div class="category-posts">
+
+    </div>
+</div>

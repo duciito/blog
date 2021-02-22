@@ -1,0 +1,18 @@
+<div class="follow-button">
+    <button
+        class="follow-button"
+        *ngIf="!model.followed"
+        mat-flat-button
+        (click)="follow()"
+        color="primary">
+        Follow
+    </button>
+    <button
+        class="follow-button"
+        *ngIf="model.followed"
+        mat-stroked-button
+        (click)="follow()"
+        color="primary">
+        Following
+    </button>
+</div>

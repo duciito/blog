@@ -4,11 +4,13 @@ import { LikeSectionComponent } from './components/like-section/like-section.com
 import {MaterialModule} from './modules/material.module';
 import { CondensedPostCardComponent } from './components/condensed-post-card/condensed-post-card.component';
 import {RouterModule} from '@angular/router';
+import { FollowButtonComponent } from './components/follow-button/follow-button.component';
 
 @NgModule({
   declarations: [
     LikeSectionComponent,
-    CondensedPostCardComponent
+    CondensedPostCardComponent,
+    FollowButtonComponent
   ],
   imports: [
     CommonModule,
@@ -17,7 +19,8 @@ import {RouterModule} from '@angular/router';
   ],
   exports: [
     LikeSectionComponent,
-    CondensedPostCardComponent
+    CondensedPostCardComponent,
+    FollowButtonComponent
   ]
 })
 export class SharedModule { }

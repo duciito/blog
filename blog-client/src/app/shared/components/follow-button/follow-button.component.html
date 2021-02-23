@@ -1,7 +1,7 @@
 <div class="follow-button">
     <button
         class="follow-button"
-        *ngIf="!model.followed"
+        *ngIf="!model?.followed"
         mat-flat-button
         (click)="follow()"
         color="primary">
@@ -9,7 +9,7 @@
     </button>
     <button
         class="follow-button"
-        *ngIf="model.followed"
+        *ngIf="model?.followed"
         mat-stroked-button
         (click)="follow()"
         color="primary">

@@ -1,8 +1,11 @@
 <div class="category-container">
+    <ng-template #emptyMessage>
+        <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
+    </ng-template>
     <div class="category-info">
-        <h2 class="category-name">{{category.name}}</h2>
+        <h2 class="category-name">{{category?.name}}</h2>
         <p class="category-followers mat-body">
-            {{category.total_followers}} follower(s)
+            {{category?.total_followers}} follower(s)
         </p>
         <app-follow-button
             [model]="category"
@@ -10,6 +13,23 @@
         </app-follow-button>
     </div>
     <div class="category-posts">
-
+        <div class="category-latest-posts">
+            <h2>Latest posts</h2>
+            <div *ngIf="latestPosts?.length; else emptyMessage" class="condensed-posts">
+                <app-condensed-post-card
+                    *ngFor="let post of latestPosts"
+                    [post]="post">
+                </app-condensed-post-card>
+            </div>
+        </div>
+        <div class="category-popular-posts">
+            <h2>Popular posts</h2>
+            <div *ngIf="popularPosts?.length; else emptyMessage" class="condensed-posts">
+                <app-condensed-post-card
+                    *ngFor="let post of popularPosts"
+                    [post]="post">
+                </app-condensed-post-card>
+            </div>
+        </div>
     </div>
 </div>

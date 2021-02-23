@@ -26,8 +26,8 @@ export class BlogPostService extends VotableServiceMixin {
     return this.http.post<Post>(this.endpoint, formData);
   }
 
-  getAll(extraParams?: any): Observable<PaginatedResponse<Post>> {
-    const url = addExtraParams(this.endpoint, extraParams);
+  getAll(extraParams?: any, customUrl?: string): Observable<PaginatedResponse<Post>> {
+    const url = customUrl ?? addExtraParams(this.endpoint, extraParams);
     return this.http.get<PaginatedResponse<Post>>(url);
   }
 
@@ -36,9 +36,9 @@ export class BlogPostService extends VotableServiceMixin {
     return this.http.get<Post>(url);
   }
 
-  hot(extraParams?: any): Observable<PaginatedResponse<Post>> {
+  hot(extraParams?: any, customUrl?: string): Observable<PaginatedResponse<Post>> {
     // Gets popular posts as determined by the API.
-    const url = addExtraParams(this.endpoint + 'hot/', extraParams);
+    const url = customUrl ?? addExtraParams(this.endpoint + 'hot/', extraParams);
     return this.http.get<PaginatedResponse<Post>>(url);
   }
 

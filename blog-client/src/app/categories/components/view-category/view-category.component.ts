@@ -37,6 +37,8 @@ export class ViewCategoryComponent implements OnInit {
         .subscribe((category: Category) => {
           this.category = category;
 
+          // Get latest posts for this category.
+          this.loadLatestPosts();
           // Get popular posts for this category.
           this.loadPopularPosts();
         });
@@ -50,8 +52,9 @@ export class ViewCategoryComponent implements OnInit {
 
       this.blogPostService.hot({
         nested: true,
-        category_id: this.category.id
-      }).subscribe((response: PaginatedResponse<Post>) => {
+        category_id: this.category.id,
+        page_size: 3
+      }, this.popularPostsUrl).subscribe((response: PaginatedResponse<Post>) => {
         this.popularPosts = (this.popularPosts || []).concat(response.results);
         this.popularPostsUrl = response.next;
         this.popularPostsLoading = false;
@@ -60,8 +63,20 @@ export class ViewCategoryComponent implements OnInit {
   }
 
   loadLatestPosts() {
-    // TODO: Get them with a custom URL like we do in comments.getAll
+    if (!this.latestPostsLoading && this.latestPostsUrl !== null) {
+      this.latestPostsLoading = true;
 
+      this.blogPostService.getAll({
+        nested: true,
+        category_id: this.category.id,
+        desc_order: true,
+        page_size: 3
+      }, this.latestPostsUrl).subscribe((response: PaginatedResponse<Post>) => {
+        this.latestPosts = (this.latestPosts || []).concat(response.results);
+        this.latestPostsUrl = response.next;
+        this.latestPostsLoading = false;
+      });
+    }
   }
 
 }

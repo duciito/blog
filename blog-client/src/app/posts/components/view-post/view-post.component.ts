@@ -163,7 +163,7 @@ export class ViewPostComponent implements OnInit {
         article_id: this.post.id,
         nested: true,
         newest_first: true
-      }, this.commentsPageUrl || undefined)
+      }, this.commentsPageUrl)
         .subscribe((response: PaginatedResponse<Comment>) => {
           this.commentsLoading = false;
           this.commentsPageUrl = response.next;

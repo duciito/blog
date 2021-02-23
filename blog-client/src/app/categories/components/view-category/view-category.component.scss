@@ -15,7 +15,7 @@
     text-align: right;
     padding-right: 4%;
     border-right: 2px solid rgba($color: #595959, $alpha: 0.2);
-    flex: 1;
+    flex: 2;
     height: 68vh;
 
     .category-name {
@@ -29,5 +29,15 @@
 }
 
 .category-posts {
-    flex: 4;
+    flex: 5;
+    margin: 0 5vw;
+
+    app-condensed-post-card {
+        display: block;
+        margin: 0.75rem 0;
+    }
+
+    .category-popular-posts {
+        margin-top: 2.4rem;
+    }
 }

@@ -79,4 +79,13 @@ export class ViewCategoryComponent implements OnInit {
     }
   }
 
+  loadMore(type: 'latest' | 'popular') {
+    if (type == 'latest') {
+      this.loadLatestPosts();
+    }
+    else {
+      this.loadPopularPosts();
+    }
+  }
+
 }

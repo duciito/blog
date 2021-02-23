@@ -50,7 +50,7 @@
         </app-create-comment>
         <h2 class="mat-title">Comments</h2>
         <div
-            *ngIf="comments; else emptyMessage"
+            *ngIf="comments.length; else emptyMessage"
             infiniteScroll
             [infiniteScrollDistance]="2"
             [infiniteScrollThrottle]="50"

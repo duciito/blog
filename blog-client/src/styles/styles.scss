@@ -22,3 +22,9 @@ body {
 .empty-message {
     color: #595959;
 }
+
+.view-more {
+    color: $accent;
+    font-weight: 500;
+    cursor: pointer;
+}

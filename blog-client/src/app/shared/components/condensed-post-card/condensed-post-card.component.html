@@ -1,7 +1,9 @@
 <div *ngIf="$any(post.creator) as creator" class="condensed-post-card">
     <div class="post-info">
-        <div (click)="goToPost()" class="top-info">
-            <h2 class="post-title mat-title">{{post.title}}</h2>
+        <div class="top-info">
+            <h2 (click)="goToPost()" class="post-title mat-title">
+                {{post.title}}
+            </h2>
             <p class="post-author-category mat-body">
                 <a [routerLink]="'/users/' + creator.id" class="author">
                     {{creator.username}}

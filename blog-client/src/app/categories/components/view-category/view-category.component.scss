@@ -11,7 +11,7 @@
     flex-direction: column;
     justify-content: center;
     position: sticky;
-    top: 17vh;
+    top: 15vh;
     text-align: right;
     padding-right: 4%;
     border-right: 2px solid rgba($color: #595959, $alpha: 0.2);
@@ -39,5 +39,9 @@
 
     .category-popular-posts {
         margin-top: 2.4rem;
+    }
+
+    .view-more {
+        margin: 0.35rem 0.2rem 0;
     }
 }

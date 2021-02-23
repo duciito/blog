@@ -20,6 +20,12 @@
                     *ngFor="let post of latestPosts"
                     [post]="post">
                 </app-condensed-post-card>
+                <a
+                    *ngIf="!latestPostsLoading && latestPostsUrl !== null"
+                    (click)="loadMore('latest')"
+                    class="view-more mat-body">
+                    View more
+                </a>
             </div>
         </div>
         <div class="category-popular-posts">
@@ -29,6 +35,12 @@
                     *ngFor="let post of popularPosts"
                     [post]="post">
                 </app-condensed-post-card>
+                <a
+                    *ngIf="!popularPostsLoading && popularPostsUrl !== null"
+                    (click)="loadMore('popular')"
+                    class="view-more mat-body">
+                    View more
+                </a>
             </div>
         </div>
     </div>

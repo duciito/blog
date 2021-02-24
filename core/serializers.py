@@ -19,7 +19,8 @@ class EditableModelSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
 
         if request and request.query_params.get('nested'):
-            self.fields['creator'] = UserSerializer(read_only=True)
+            self.fields['creator'] = UserSerializer(read_only=True,
+                    context={'request': request})
 
     def get_voted(self, obj):
         user = self.context['request'].user

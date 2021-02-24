@@ -56,7 +56,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         user = self._get_and_auth_user(**serializer.validated_data)
-        success_data = AuthUserSerializer(user).data
+        success_data = AuthUserSerializer(user, context={'request': request}).data
         return Response(data=success_data)
 
     @action(methods=['POST'], detail=False)
@@ -70,7 +70,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         except:
             logger.warning(f'Could not verify {user}\'s email for SES handling.')
 
-        success_data = AuthUserSerializer(user).data
+        success_data = AuthUserSerializer(user, context={'request': request}).data
         return Response(data=success_data, status=status.HTTP_201_CREATED)
 
     @action(methods=['POST'], detail=False)
@@ -192,6 +192,16 @@ class UsersViewSet(viewsets.ModelViewSet, FollowableContentMixin):
     serializer_class = UserSerializer
 
     @action(detail=True, methods=['get'])
+    def followed_users(self, request, pk=None):
+        """Get all followed users for a user."""
+        user = self.get_object()
+        serializer = self.get_serializer_class()
+        followed_users = serializer(user.followed_users,
+                many=True,
+                context={'request': request})
+        return Response(followed_users.data)
+
+    @action(detail=True, methods=['get'])
     def saved_articles(self, request, pk=None):
         """Get all saved articles for the logged in user."""
         if request.user.id == int(pk):
@@ -218,5 +228,7 @@ class UsersViewSet(viewsets.ModelViewSet, FollowableContentMixin):
         )
 
         # Serialize new queryset using view's serializer.
-        result = serializer(queryset, many=True)
+        result = serializer(queryset,
+                many=True,
+                context={'request': request})
         return Response(result.data)

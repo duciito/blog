@@ -50,5 +50,7 @@ class FollowableContentMixin:
         """Get all followers for an obj."""
         obj = self.get_object()
         serializer = self.get_serializer_class()
-        followers = serializer(obj.followers, many=True)
+        followers = serializer(obj.followers,
+                many=True,
+                context={'request': request})
         return response.Response(followers.data)

@@ -29,6 +29,11 @@ const routes: Routes = [
     loadChildren: () => import('src/app/categories/categories.module').then(m => m.CategoriesModule),
     canActivate: [AuthGuard]
   },
+  {
+    path: 'profile',
+    loadChildren: () => import('src/app/profile/profile.module').then(m => m.ProfileModule),
+    canActivate: [AuthGuard]
+  },
   // Redirect to home for all undefined paths.
   {path: '**', redirectTo: ''}
 ];

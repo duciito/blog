@@ -1,4 +1,6 @@
-export interface User {
+import {FollowableModel} from 'src/app/shared/models/followable-model';
+
+export interface User extends FollowableModel {
   id?: number;
   username: string;
   password?: string;

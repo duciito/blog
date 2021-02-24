@@ -26,4 +26,14 @@ export class UserService extends FollowableServiceMixin {
     let url = addExtraParams(`${this.endpoint}${id}/`, extraParams);
     return this.http.get<User>(url);
   }
+
+  followers(id: number, extraParams?: any): Observable<User[]> {
+    let url = addExtraParams(`${this.endpoint}${id}/followers`, extraParams);
+    return this.http.get<User[]>(url);
+  }
+
+  followedUsers(id: number, extraParams?: any): Observable<User[]> {
+    let url = addExtraParams(`${this.endpoint}${id}/followed_users`, extraParams);
+    return this.http.get<User[]>(url);
+  }
 }

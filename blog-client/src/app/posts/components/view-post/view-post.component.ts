@@ -13,6 +13,7 @@ import {Post} from '../../models/post';
 import {BlogPostService} from '../../services/blog-post.service';
 import {Comment} from 'src/app/comments/models/comment';
 import {PaginatedResponse} from 'src/app/shared/models/paginated-response';
+import {ApiResourceLoader} from 'src/app/shared/utils/api-resource-loader';
 
 @Component({
   selector: 'app-view-post',
@@ -26,9 +27,7 @@ export class ViewPostComponent implements OnInit {
   category: Category;
   following$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   loggedUser: User;
-  comments: Comment[] = [];
-  commentsPageUrl: string;
-  commentsLoading: boolean = false;
+  commentsLoader: ApiResourceLoader<Comment>;
 
   constructor(
     private router: Router,
@@ -110,6 +109,15 @@ export class ViewPostComponent implements OnInit {
           }
         });
     }
+
+    // Initialize comments loader.
+    this.commentsLoader = new ApiResourceLoader<Comment>(
+      this.commentService.getAll.bind(this.commentService, {
+        article_id: this.post.id,
+        nested: true,
+        newest_first: true
+      })
+    );
   }
 
   followCreator() {
@@ -151,25 +159,6 @@ export class ViewPostComponent implements OnInit {
     if (typeof(comment.creator) !== 'object') {
       comment.creator = this.loggedUser;
     }
-    this.comments.unshift(comment);
-  }
-
-  onCommentsScroll() {
-    // Load comments if scrolled down to section.
-    if (!this.commentsLoading && (this.commentsPageUrl || !this.comments.length)) {
-      this.commentsLoading = true;
-
-      this.commentService.getAll({
-        article_id: this.post.id,
-        nested: true,
-        newest_first: true
-      }, this.commentsPageUrl)
-        .subscribe((response: PaginatedResponse<Comment>) => {
-          this.commentsLoading = false;
-          this.commentsPageUrl = response.next;
-          this.comments = this.comments.concat(response.results);
-        });
-    }
-
+    this.commentsLoader.insertAtStart(comment);
   }
 }

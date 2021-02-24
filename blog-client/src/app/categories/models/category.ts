@@ -1,6 +1,6 @@
-export interface Category {
+import {FollowableModel} from 'src/app/shared/models/followable-model';
+
+export interface Category extends FollowableModel {
   id?: number;
   name: string;
-  followed: boolean;
-  total_followers: number;
 }

@@ -21,6 +21,10 @@ class BlogUser(AbstractUser):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
+    @property
+    def total_followers(self):
+        return self.followers.count()
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ()
 

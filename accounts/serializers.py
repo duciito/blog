@@ -14,9 +14,10 @@ from rest_framework.exceptions import AuthenticationFailed
 from pytz import utc
 
 from accounts.models import BlogUser
+from common.serializers import FollowableModelSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(FollowableModelSerializer):
     """Base user serializer."""
 
     def __init__(self, *args, **kwargs):
@@ -41,7 +42,9 @@ class UserSerializer(serializers.ModelSerializer):
                 'is_active',
                 'email',
                 'profile_description',
-                'joined_at',)
+                'joined_at',
+                'followed',
+                'total_followers')
         read_only_fields = ('is_active', 'joined_at', )
 
 

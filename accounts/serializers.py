@@ -28,9 +28,11 @@ class UserSerializer(FollowableModelSerializer):
         if request:
             extra_info = request.query_params.get('extra_info')
             if extra_info:
+                self.fields['total_articles'] = serializers.ReadOnlyField();
                 self.Meta.fields = list(self.Meta.fields)
                 self.Meta.fields.extend([
-                    'followed_users'
+                    'followed_users',
+                    'total_articles'
                 ])
 
     class Meta:

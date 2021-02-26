@@ -25,6 +25,11 @@ class BlogUser(AbstractUser):
     def total_followers(self):
         return self.followers.count()
 
+    @property
+    def total_articles(self):
+        from core.models import Article
+        return Article.objects.filter(creator=self).count()
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ()
 

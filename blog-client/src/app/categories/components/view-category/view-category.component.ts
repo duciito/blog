@@ -41,13 +41,13 @@ export class ViewCategoryComponent implements OnInit {
 
           // Initialize post sections loaders.
           this.latestPostsLoader = new ApiResourceLoader<Post>(
-            this.blogPostService.getAll.bind(
-              this.blogPostService,
-              Object.assign(httpConfig, {desc_order: true})
+            pageUrl => this.blogPostService.getAll(
+              Object.assign(httpConfig, {desc_order: true}),
+              pageUrl
             )
           );
           this.popularPostsLoader = new ApiResourceLoader<Post>(
-            this.blogPostService.hot.bind(this.blogPostService, httpConfig)
+            pageUrl => this.blogPostService.hot(httpConfig, pageUrl)
           );
 
           // Get latest posts for this category.

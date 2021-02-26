@@ -112,11 +112,11 @@ export class ViewPostComponent implements OnInit {
 
     // Initialize comments loader.
     this.commentsLoader = new ApiResourceLoader<Comment>(
-      this.commentService.getAll.bind(this.commentService, {
+      pageUrl => this.commentService.getAll({
         article_id: this.post.id,
         nested: true,
         newest_first: true
-      })
+      }, pageUrl)
     );
   }
 

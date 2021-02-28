@@ -50,6 +50,9 @@ export class ProfileComponent implements OnInit {
         pageUrl
       )
     );
+    // Load the first batch since this is the default tab.
+    this.userPostsLoader.loadMore();
+
     // Get all followers for that user.
     this.followersLoader = new ApiResourceLoader<User>(
       pageUrl => this.userService.followers(
@@ -66,6 +69,18 @@ export class ProfileComponent implements OnInit {
         pageUrl
       )
     );
+  }
+
+  loadContent(tabIndex: number) {
+    const loadersArr = [
+      this.userPostsLoader,
+      this.followersLoader,
+      this.followedUsersLoader
+    ];
+
+    if (!loadersArr[tabIndex].resourceArr) {
+      loadersArr[tabIndex].loadMore();
+    }
   }
 
 }

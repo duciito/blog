@@ -47,4 +47,14 @@
         text-align: justify;
         max-width: 30vw;
     }
+
+    app-condensed-post-card {
+        display: block;
+        margin: 0.75rem 0;
+    }
+
+}
+
+::ng-deep.mat-tab-body-wrapper {
+    padding: 1.25rem 0;
 }

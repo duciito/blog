@@ -21,16 +21,28 @@
     <div class="profile-description mat-typography">
         {{user.profile_description}}
     </div>
-    <mat-tab-group mat-align-tabs="center" animationDuration="0ms">
-        <mat-tab label="Posts">
-            <ng-template
-                *ngIf="{
-                    arr: userPostsLoader?.resourceArr,
-                    loading: userPostsLoader?.resourceLoading,
-                    url: userPostsLoader?.resourceUrl
-                } as posts"
-                matTabContent>
-                Posts
+    <mat-tab-group
+        mat-align-tabs="center"
+        animationDuration="0ms"
+        (selectedIndexChange)="loadContent($event)">
+        <mat-tab
+            *ngIf="{
+                arr: userPostsLoader?.resourceArr,
+                loading: userPostsLoader?.resourceLoading,
+                url: userPostsLoader?.resourceUrl
+            } as posts"
+            label="Posts">
+            <ng-template matTabContent>
+                <app-condensed-post-card
+                    *ngFor="let post of posts.arr"
+                    [post]="post">
+                </app-condensed-post-card>
+                <a
+                    *ngIf="!posts.loading && posts.url !== null"
+                    (click)="userPostsLoader.loadMore()"
+                    class="view-more mat-body">
+                    View more
+                </a>
             </ng-template>
         </mat-tab>
         <mat-tab label="Followers">

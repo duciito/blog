@@ -1,2 +1,6 @@
 <div class="profile-container">
+    <div class="profile-section">
+        <img src="/assets/images/profile.png" alt="Profile icon">
+        <div *ngIf="(user$ | async) as user" class="user-info"></div>
+    </div>
 </div>

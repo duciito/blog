@@ -4,8 +4,9 @@ import {ProfileComponent} from './components/profile/profile.component';
 import {SavedPostsComponent} from './components/saved-posts/saved-posts.component';
 
 const routes: Routes = [
+  {path: '', component: ProfileComponent},
   {path: ':id', component: ProfileComponent},
-  {path: 'saved', component: SavedPostsComponent},
+  {path: 'saved', component: SavedPostsComponent}
 ];
 
 @NgModule({

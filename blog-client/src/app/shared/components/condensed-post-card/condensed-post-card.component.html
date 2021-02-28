@@ -5,7 +5,7 @@
                 {{post.title}}
             </h2>
             <p class="post-author-category mat-body">
-                <a [routerLink]="'/users/' + creator.id" class="author">
+                <a [routerLink]="'/profile/' + creator.id" class="author">
                     {{creator.username}}
                 </a> in
                 <a [routerLink]="'/categories/' + $any(post.category).id" class="category">

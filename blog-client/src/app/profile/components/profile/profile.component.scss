@@ -1,12 +1,50 @@
+@import 'src/styles/globals/colors';
+
 .profile-container {
-    display: flex;
     flex-direction: column;
+    align-items: center;
     padding: 8vh 4vw;
     margin: 0 auto;
     width: 75vw;
 
+    &, .profile-section {
+        display: flex;
+    }
+
     img {
         max-width: 7rem;
         height: auto;
+    }
+
+    h2, p {
+        margin: 0;
+    }
+
+    .mat-title {
+        color: $primary;
+    }
+
+    .user-info {
+        padding: 0.4rem 1.4rem;
+    }
+
+    .user-stats {
+        margin-top: 1.4rem;
+
+        .stats-section {
+            display: inline;
+            margin-right: 0.7rem;
+        }
+    }
+
+    mat-tab-group,
+    app-follow-button,
+    .profile-description {
+        margin-top: 2.3rem;
+    }
+
+    .profile-description {
+        text-align: justify;
+        max-width: 30vw;
     }
 }

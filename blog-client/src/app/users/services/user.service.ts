@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {User} from 'src/app/core/models/user';
 import {FollowableServiceMixin} from 'src/app/shared/mixins/followable-service-mixin';
+import {PaginatedResponse} from 'src/app/shared/models/paginated-response';
 import {addExtraParams} from 'src/app/shared/utils/add-extra-params';
 import {environment} from 'src/environments/environment';
 
@@ -17,9 +18,9 @@ export class UserService extends FollowableServiceMixin {
     super(http, `${environment.baseApiUrl}/users/`);
   }
 
-  getAll(extraParams?: any): Observable<User[]> {
+  getAll(extraParams?: any): Observable<PaginatedResponse<User>> {
     let url = addExtraParams(this.endpoint, extraParams);
-    return this.http.get<User[]>(url);
+    return this.http.get<PaginatedResponse<User>>(url);
   }
 
   get(id: number, extraParams?: any): Observable<User> {

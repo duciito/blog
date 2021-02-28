@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Subject} from 'rxjs';
 import {User} from 'src/app/core/models/user';
 import {AccountService} from 'src/app/core/services/account.service';
 import {Post} from 'src/app/posts/models/post';
@@ -14,45 +13,47 @@ import {UserService} from 'src/app/users/services/user.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  user$: Subject<User> = new Subject<User>();
+  user: User;
   userPostsLoader: ApiResourceLoader<Post>;
   followersLoader: ApiResourceLoader<User>;
   followedUsersLoader: ApiResourceLoader<User>;
 
   constructor(
+    public userService: UserService,
     private route: ActivatedRoute,
-    private userService: UserService,
     private blogPostService: BlogPostService,
     private accountService: AccountService
   ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.params['id'];
-    const loggedUser = this.accountService.getLoggedInUser();
-
-    this.user$.subscribe(this.setRelatedData);
-
-    if (!id || id == loggedUser.id) {
+    let id = this.route.snapshot.params['id'];
+    if (!id) {
       // Allow navigating to own profile with no ID.
-      this.user$.next(loggedUser);
+      id = this.accountService.getLoggedInUser().id;
     }
-    else if (id) {
-      this.userService.get(id).subscribe(this.user$);
-    }
+
+    this.userService.get(id, {extra_info: true}).subscribe(user => {
+      this.user = user;
+      this.setRelatedData();
+    });
   }
 
-  setRelatedData(user: User) {
+  setRelatedData() {
     // Get all user posts in descending order.
     this.userPostsLoader = new ApiResourceLoader<Post>(
       pageUrl => this.blogPostService.getAll(
-        {user_id: user.id, desc_order: true},
+        {
+          user_id: this.user.id,
+          desc_order: true,
+          page_size: 5
+        },
         pageUrl
       )
     );
     // Get all followers for that user.
     this.followersLoader = new ApiResourceLoader<User>(
       pageUrl => this.userService.followers(
-        user.id,
+        this.user.id,
         undefined,
         pageUrl
       )
@@ -60,7 +61,7 @@ export class ProfileComponent implements OnInit {
     // Get users they're following.
     this.followedUsersLoader = new ApiResourceLoader<User>(
       pageUrl => this.userService.followedUsers(
-        user.id,
+        this.user.id,
         undefined,
         pageUrl
       )

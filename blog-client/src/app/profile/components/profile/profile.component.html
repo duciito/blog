@@ -1,6 +1,47 @@
-<div class="profile-container">
+<div *ngIf="user" class="profile-container">
     <div class="profile-section">
         <img src="/assets/images/profile.png" alt="Profile icon">
-        <div *ngIf="(user$ | async) as user" class="user-info"></div>
+        <div class="user-info">
+            <h2 class="mat-title">{{user.username}}</h2>
+            <p class="info-text mat-body">{{user.first_name}} {{user.last_name}}</p>
+            <p class="user-stats info-text mat-body">
+                <span class="stats-section">
+                    {{user.total_articles}} post(s)
+                </span>
+                <span class="stats-section">
+                    {{user.total_followers}} follower(s)
+                </span>
+            </p>
+        </div>
     </div>
+    <app-follow-button
+        [model]="user"
+        [service]="userService">
+    </app-follow-button>
+    <div class="profile-description mat-typography">
+        {{user.profile_description}}
+    </div>
+    <mat-tab-group mat-align-tabs="center" animationDuration="0ms">
+        <mat-tab label="Posts">
+            <ng-template
+                *ngIf="{
+                    arr: userPostsLoader?.resourceArr,
+                    loading: userPostsLoader?.resourceLoading,
+                    url: userPostsLoader?.resourceUrl
+                } as posts"
+                matTabContent>
+                Posts
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Followers">
+            <ng-template matTabContent>
+                Followers
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Following">
+            <ng-template matTabContent>
+                Following
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
 </div>

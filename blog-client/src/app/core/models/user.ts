@@ -11,4 +11,5 @@ export interface User extends FollowableModel {
   joined_at?: Date;
   auth_token?: string;
   followed_users?: number[];
+  total_articles?: number;
 }

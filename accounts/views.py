@@ -27,6 +27,7 @@ from config import settings
 from services.aws_utils import ses_verify_email_address
 from core.serializers import LightArticleSerializer
 from core.mixins import FollowableContentMixin
+from core.pagination import StandardResultsSetPagination
 
 logger = logging.getLogger(__name__)
 
@@ -190,6 +191,7 @@ class AuthViewSet(viewsets.GenericViewSet):
 class UsersViewSet(viewsets.ModelViewSet, FollowableContentMixin):
     queryset = BlogUser.objects.all()
     serializer_class = UserSerializer
+    pagination_class =  StandardResultsSetPagination
 
     @action(detail=True, methods=['get'])
     def followed_users(self, request, pk=None):

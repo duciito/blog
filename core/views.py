@@ -32,13 +32,15 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-        category = self.request.query_params.get('category_id')
+        user_id = self.request.query_params.get('user_id')
+        category_id = self.request.query_params.get('category_id')
         desc_order = self.request.query_params.get('desc_order')
 
-        if category:
-            queryset = queryset.filter(
-                category=category
-            )
+        if user_id:
+            queryset = queryset.filter(creator=user_id)
+
+        if category_id:
+            queryset = queryset.filter(category=category_id)
 
         if desc_order:
             queryset = queryset.order_by('-posted_at')

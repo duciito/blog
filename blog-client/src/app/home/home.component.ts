@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     const customPostsObservable = (action: string) => {
+      // TODO: SOLVE two calls.
       return this.blogPostService[action]({
         nested: true,
         page_size: '3',

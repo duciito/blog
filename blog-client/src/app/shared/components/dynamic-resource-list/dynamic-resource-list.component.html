@@ -1,0 +1,31 @@
+<ng-container
+    *ngIf="infiniteScroll; then infiniteScrollList else manualScrollList">
+</ng-container>
+
+<ng-template
+    #infiniteScrollList
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="50"
+    (scrolled)="resourceLoader.loadMore()">
+    <div *ngIf="resourceLoader; else emptyMessage" class="resources">
+        <ng-content></ng-content>
+        <mat-spinner *ngIf="resourceLoader.resourceLoading"></mat-spinner>
+    </div>
+</ng-template>
+
+<ng-template #manualScrollList>
+    <div *ngIf="resourceLoader; else emptyMessage" class="resources">
+        <ng-content></ng-content>
+        <a
+            *ngIf="!resourceLoader.resourceLoading && resourceLoader.resourceUrl !== null"
+            (click)="resourceLoader.loadMore()"
+            class="view-more mat-body">
+            View more
+        </a>
+    </div>
+</ng-template>
+
+<ng-template #emptyMessage>
+    <app-empty-message></app-empty-message>
+</ng-template>

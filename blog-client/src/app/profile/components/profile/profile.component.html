@@ -26,11 +26,7 @@
         animationDuration="0ms"
         (selectedIndexChange)="loadContent($event)">
         <mat-tab
-            *ngIf="{
-                arr: userPostsLoader?.resourceArr,
-                loading: userPostsLoader?.resourceLoading,
-                url: userPostsLoader?.resourceUrl
-            } as posts"
+            *ngIf="userPostsLoader?.getSimplifiedObj() as posts"
             label="Posts">
             <ng-template matTabContent>
                 <app-condensed-post-card

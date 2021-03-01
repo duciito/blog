@@ -1,7 +1,4 @@
 <div class="category-container">
-    <ng-template #emptyMessage>
-        <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
-    </ng-template>
     <div class="category-info">
         <h2 class="category-name">{{category?.name}}</h2>
         <p class="category-followers mat-body">
@@ -13,47 +10,23 @@
         </app-follow-button>
     </div>
     <div class="category-posts">
-        <div
-            *ngIf="{
-                arr: latestPostsLoader?.resourceArr,
-                loading: latestPostsLoader?.resourceLoading,
-                url: latestPostsLoader?.resourceUrl
-            } as latestPosts"
-            class="category-latest-posts">
+        <div class="category-latest-posts">
             <h2>Latest posts</h2>
-            <div *ngIf="latestPosts.arr?.length; else emptyMessage" class="condensed-posts">
+            <app-dynamic-resource-list [resourceLoader]="latestPostsLoader">
                 <app-condensed-post-card
-                    *ngFor="let post of latestPosts.arr"
+                    *ngFor="let post of latestPostsLoader?.resourceArr"
                     [post]="post">
                 </app-condensed-post-card>
-                <a
-                    *ngIf="!latestPosts.loading && latestPosts.url !== null"
-                    (click)="latestPostsLoader.loadMore()"
-                    class="view-more mat-body">
-                    View more
-                </a>
-            </div>
+            </app-dynamic-resource-list>
         </div>
-        <div
-            *ngIf="{
-                arr: popularPostsLoader?.resourceArr,
-                loading: popularPostsLoader?.resourceLoading,
-                url: popularPostsLoader?.resourceUrl
-            } as popularPosts"
-            class="category-popular-posts">
+        <div class="category-popular-posts">
             <h2>Popular posts</h2>
-            <div *ngIf="popularPosts.arr?.length; else emptyMessage" class="condensed-posts">
+            <app-dynamic-resource-list [resourceLoader]="popularPostsLoader">
                 <app-condensed-post-card
-                    *ngFor="let post of popularPosts.arr"
+                    *ngFor="let post of popularPostsLoader?.resourceArr"
                     [post]="post">
                 </app-condensed-post-card>
-                <a
-                    *ngIf="!popularPosts.loading && popularPosts.url !== null"
-                    (click)="popularPostsLoader.loadMore()"
-                    class="view-more mat-body">
-                    View more
-                </a>
-            </div>
+            </app-dynamic-resource-list>
         </div>
     </div>
 </div>

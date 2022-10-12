@@ -49,26 +49,15 @@
             (commentCreated)="onCommentCreated($event)">
         </app-create-comment>
         <h2 class="mat-title">Comments</h2>
-        <div
-            *ngIf="{
-                arr: commentsLoader?.resourceArr,
-                loading: commentsLoader?.resourceLoading,
-                url: commentsLoader?.resourceUrl
-            } as comments; else emptyMessage"
-            infiniteScroll
-            [infiniteScrollDistance]="2"
-            [infiniteScrollThrottle]="50"
-            (scrolled)="commentsLoader.loadMore()">
+        <app-dynamic-resource-list
+            [infiniteScroll]="true"
+            [resourceLoader]="commentsLoader">
             <app-comment
-                *ngFor="let comment of comments.arr"
+                *ngFor="let comment of commentsLoader?.resourceArr"
                 [comment]="comment"
                 [loggedUserId]="loggedUser.id"
                 [articleCreatorId]="post.id">
             </app-comment>
-            <mat-spinner *ngIf="comments.loading"></mat-spinner>
-        </div>
-        <ng-template #emptyMessage>
-            <p class="empty-message mat-body"><em>Nothing here yet.</em></p>
-        </ng-template>
+        </app-dynamic-resource-list>
     </div>
 </div>

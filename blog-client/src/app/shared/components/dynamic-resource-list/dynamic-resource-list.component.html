@@ -2,13 +2,14 @@
     *ngIf="infiniteScroll; then infiniteScrollList else manualScrollList">
 </ng-container>
 
-<ng-template
-    #infiniteScrollList
-    infiniteScroll
-    [infiniteScrollDistance]="2"
-    [infiniteScrollThrottle]="50"
-    (scrolled)="resourceLoader.loadMore()">
-    <div *ngIf="resourceLoader; else emptyMessage" class="resources">
+<ng-template #infiniteScrollList>
+    <div 
+         *ngIf="resourceLoader; else emptyMessage"
+         infiniteScroll
+         [infiniteScrollDistance]="2"
+         [infiniteScrollThrottle]="50"
+         (scrolled)="resourceLoader.loadMore()"
+         class="resources">
         <ng-content></ng-content>
         <mat-spinner *ngIf="resourceLoader.resourceLoading"></mat-spinner>
     </div>

@@ -25,20 +25,14 @@
         mat-align-tabs="center"
         animationDuration="0ms"
         (selectedIndexChange)="loadContent($event)">
-        <mat-tab
-            *ngIf="userPostsLoader?.getSimplifiedObj() as posts"
-            label="Posts">
+        <mat-tab label="Posts">
             <ng-template matTabContent>
-                <app-condensed-post-card
-                    *ngFor="let post of posts.arr"
-                    [post]="post">
-                </app-condensed-post-card>
-                <a
-                    *ngIf="!posts.loading && posts.url !== null"
-                    (click)="userPostsLoader.loadMore()"
-                    class="view-more mat-body">
-                    View more
-                </a>
+                <app-dynamic-resource-list [resourceLoader]="userPostsLoader">
+                    <app-condensed-post-card
+                        *ngFor="let post of userPostsLoader?.resourceArr"
+                        [post]="post">
+                    </app-condensed-post-card>
+                </app-dynamic-resource-list>
             </ng-template>
         </mat-tab>
         <mat-tab label="Followers">

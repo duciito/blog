@@ -25,16 +25,4 @@ export class ApiResourceLoader<T> {
   insertAtStart(obj: T) {
     this.resourceArr.unshift(obj);
   }
-
-  getSimplifiedObj(): {
-    arr: T[],
-    url: string,
-    loading: boolean
-  } {
-    return {
-      arr: this.resourceArr,
-      url: this.resourceUrl,
-      loading: this.resourceLoading
-    };
-  }
 }

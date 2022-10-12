@@ -11,7 +11,6 @@ class ExpiringTokenAuthentication(TokenAuthentication):
     keyword = 'Bearer'
 
     def authenticate_credentials(self, key):
-        print(key)
         model = self.get_model()
         try:
             token = model.objects.get(key=key)

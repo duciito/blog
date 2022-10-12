@@ -160,5 +160,6 @@ export class ViewPostComponent implements OnInit {
       comment.creator = this.loggedUser;
     }
     this.commentsLoader.insertAtStart(comment);
+    console.log(this.commentsLoader);
   }
 }

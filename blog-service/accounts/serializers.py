@@ -111,7 +111,7 @@ class AuthUserSerializer(UserSerializer):
         return token.key
 
     class Meta(UserSerializer.Meta):
-        fields = UserSerializer.Meta.fields + ('auth_token',)
+        fields = UserSerializer.Meta.fields + ['auth_token']
 
 
 class PasswordChangeSerializer(serializers.Serializer):

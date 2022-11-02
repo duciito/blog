@@ -29,7 +29,6 @@ class UserSerializer(FollowableModelSerializer):
             extra_info = request.query_params.get('extra_info')
             if extra_info:
                 self.fields['total_articles'] = serializers.ReadOnlyField();
-                self.Meta.fields = list(self.Meta.fields)
                 self.Meta.fields.extend([
                     'followed_users',
                     'total_articles'
@@ -37,16 +36,16 @@ class UserSerializer(FollowableModelSerializer):
 
     class Meta:
         model = BlogUser
-        fields = ('id',
-                'username',
-                'first_name',
-                'last_name',
-                'is_active',
-                'email',
-                'profile_description',
-                'joined_at',
-                'followed',
-                'total_followers')
+        fields = ['id',
+                  'username',
+                  'first_name',
+                  'last_name',
+                  'is_active',
+                  'email',
+                  'profile_description',
+                  'joined_at',
+                  'followed',
+                  'total_followers']
         read_only_fields = ('is_active', 'joined_at', )
 
 
@@ -74,7 +73,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
         # `filter` instead of `get` to not get an exception.
         user = BlogUser.objects.filter(email=value)
-        if user:
+        if user.exists():
             raise serializers.ValidationError("Email already taken!")
         return BaseUserManager.normalize_email(value)
 

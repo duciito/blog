@@ -34,7 +34,6 @@ logger = logging.getLogger(__name__)
 
 class AuthViewSet(viewsets.GenericViewSet):
     queryset = BlogUser.objects.all()
-    serializer_class = serializers.Serializer
     permission_classes = (AllowAny,)
     serializer_classes = {
         'login': LoginSerializer,
@@ -49,7 +48,6 @@ class AuthViewSet(viewsets.GenericViewSet):
 
         if self.action in self.serializer_classes:
             return self.serializer_classes[self.action]
-        return super().get_serializer_class()
 
     @action(methods=['POST'], detail=False)
     def login(self, request):

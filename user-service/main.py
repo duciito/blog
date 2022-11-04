@@ -1,12 +1,10 @@
 from fastapi import FastAPI, APIRouter
 
+from database import init_db
+
 app = FastAPI(title="User service")
-api_router = APIRouter()
 
 
-@api_router.get('/')
-def root() -> str:
-    return 'Root'
-
-
-app.include_router(api_router)
+@app.on_event("startup")
+async def start_db():
+    await init_db()

@@ -3,8 +3,8 @@ from pydantic import BaseSettings, MongoDsn
 
 
 class Settings(BaseSettings):
-    mongo_host: MongoDsn
-    mongo_port: int = 27017
+    mongo_url: MongoDsn
+    password_salt: str
 
 
 @lru_cache

@@ -17,6 +17,8 @@ class User(Document):
 
     @validator('joined_at')
     def check_date_not_in_future(cls, val: datetime):
+        if val.tzinfo is None or val.tzinfo.utcoffset(val) is None:
+            val = val.replace(tzinfo=timezone.utc)
         assert val < datetime.now().replace(tzinfo=timezone.utc)
         return val
 

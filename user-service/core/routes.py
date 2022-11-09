@@ -4,7 +4,7 @@ from core.auth import create_access_token, create_tokens
 
 from core.models import User
 from core.schemas import LoginSchema, TokensSchema
-from core.utils import hash_password
+from core.utils import hash_password, ses_verify_email_address
 
 router = APIRouter(prefix='/auth', tags=["Auth"])
 
@@ -16,8 +16,9 @@ async def signup(user: User, auth: AuthJWT = Depends()):
     if existing_user:
         raise HTTPException(status_code=400, detail='Email already taken.')
     created_user = await user.create()
-    # TODO: ses email verify logic
 
+    # Verify user's email.
+    await ses_verify_email_address(created_user.email)
     return create_tokens(created_user, auth)
 
 
@@ -44,3 +45,5 @@ async def refresh(auth: AuthJWT = Depends()):
         access_token=create_access_token(user, auth),
         refresh_token=auth._token
     )
+
+# TODO: token invocation (sign out) with Redis denylist.

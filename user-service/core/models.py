@@ -25,7 +25,16 @@ class User(Document):
     def __repr__(self) -> str:
         return f"User: {self.email}"
 
+    def check_password(self, password):
+        return self.password == hash_password(password)
+
+    async def set_password(self, password, save=False):
+        self.password = hash_password(password)
+        if save:
+            await self.save()
+
     async def create(self, *args, **kwargs):
         # Override default create method to hash passwords for users.
-        self.password = hash_password(self.password)
+        # IMPORTANT: this assumes the password has not already been hashed.
+        await self.set_password(self.password)
         return await super().create(*args, **kwargs)

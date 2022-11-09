@@ -3,8 +3,8 @@ from fastapi_jwt_auth import AuthJWT
 from core.auth import create_access_token, create_tokens
 
 from core.models import User
-from core.schemas import LoginSchema, TokensSchema
-from core.utils import hash_password, ses_verify_email_address
+from core.schemas import LoginSchema, PasswordChangeSchema, TokensSchema
+from core.utils import ses_verify_email_address
 
 router = APIRouter(prefix='/auth', tags=["Auth"])
 
@@ -27,7 +27,7 @@ async def login(login: LoginSchema, auth: AuthJWT = Depends()):
     user = await User.find_one({'email': login.email})
     if not user:
         raise HTTPException(status_code=400, detail='No user exists with that email.')
-    if hash_password(login.password) != user.password:
+    if not user.check_password(login.password):
         raise HTTPException(status_code=400, detail='Invalid password.')
 
     return create_tokens(user, auth)
@@ -47,3 +47,16 @@ async def refresh(auth: AuthJWT = Depends()):
     )
 
 # TODO: token invocation (sign out) with Redis denylist.
+
+
+@router.post("/password_change", status_code=204)
+async def password_change(data: PasswordChangeSchema, auth: AuthJWT = Depends()):
+    auth.jwt_required()
+    user = await User.get(auth.get_jwt_subject())
+
+    if not user:
+        raise HTTPException(status_code=401, detail='No user associated with this token was found.')
+    if not user.check_password(data.current_password):
+        raise HTTPException(status_code=400, detail='Current password does not match.')
+
+    await user.set_password(data.new_password, save=True)

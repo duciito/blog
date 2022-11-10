@@ -23,3 +23,8 @@ class PasswordChangeSchema(BaseModel):
             raise ValueError('New password should not match the old one.')
 
         return values
+
+
+class PasswordResetSchema(BaseModel):
+    token: str
+    password: str

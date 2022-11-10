@@ -1,3 +1,6 @@
+import logging
+from fastapi.responses import RedirectResponse
+from redis import RedisError, asyncio as aioredis
 from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi_jwt_auth import AuthJWT
@@ -7,9 +10,11 @@ from config import get_email_config
 from core.auth import create_access_token, create_tokens
 
 from core.models import User
-from core.schemas import LoginSchema, PasswordChangeSchema, TokensSchema
-from core.utils import ses_verify_email_address
+from core.schemas import LoginSchema, PasswordChangeSchema, PasswordResetSchema, TokensSchema
+from core.utils import ses_verify_email_address, verify_reset_token
+from redis_conf import get_redis_client
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix='/auth', tags=["Auth"])
 
 
@@ -67,8 +72,11 @@ async def password_change(data: PasswordChangeSchema, auth: AuthJWT = Depends())
 
 
 @router.post("/password_reset", status_code=204)
-async def password_reset(email: EmailStr, redirect_url: str, req: Request):
-    user = User.find_one({'email': email})
+async def password_reset(email: EmailStr,
+                         redirect_url: str,
+                         req: Request,
+                         redis: aioredis.Redis = Depends(get_redis_client)):
+    user = await User.find_one({'email': email})
 
     if not user:
         raise HTTPException(status_code=400, detail='No user exists with that email.')
@@ -88,11 +96,36 @@ async def password_reset(email: EmailStr, redirect_url: str, req: Request):
     )
     fm = FastMail(get_email_config())
     try:
+    # Keep token associated with the user for 24h.
+        await redis.set(f'pw-reset:{token}', str(user.id), ex=86400)
         await fm.send_message(message)
+    except RedisError as e:
+        logger.error(f"Couldn't save reset token to Redis: {e}")
+        raise HTTPException(status_code=502, detail="Couldn't process request. Please try again.")
     except:
         raise HTTPException(status_code=400, detail="Couldn't send email. Check that it is verified.")
 
 
 @router.get("/password_reset_verify")
-async def password_reset_verify():
-    pass
+async def password_reset_verify(token: str,
+                                redirect_url: str,
+                                redis: aioredis.Redis = Depends(get_redis_client)):
+    token_valid, reason = await verify_reset_token(token, redis)
+    get_params = {
+        'token_valid': token_valid,
+        'token': token
+    }
+    if reason:
+        get_params['reason'] = reason
+
+    redirect_url += '?'
+    for param, value in get_params.items():
+        redirect_url += f'{param}={value}&'
+
+    return RedirectResponse(redirect_url)
+
+
+@router.post("/password_reset_data")
+async def password_reset_data(data: PasswordResetSchema,
+                              redis: aioredis.Redis = Depends(get_redis_client)):
+    token_valid, reason = await verify_reset_token(data.token, redis)

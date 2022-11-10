@@ -1,5 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from uuid import uuid4
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi_jwt_auth import AuthJWT
+from fastapi_mail import FastMail, MessageSchema, MessageType
+from pydantic import EmailStr
+from config import get_email_config
 from core.auth import create_access_token, create_tokens
 
 from core.models import User
@@ -60,3 +64,35 @@ async def password_change(data: PasswordChangeSchema, auth: AuthJWT = Depends())
         raise HTTPException(status_code=400, detail='Current password does not match.')
 
     await user.set_password(data.new_password, save=True)
+
+
+@router.post("/password_reset", status_code=204)
+async def password_reset(email: EmailStr, redirect_url: str, req: Request):
+    user = User.find_one({'email': email})
+
+    if not user:
+        raise HTTPException(status_code=400, detail='No user exists with that email.')
+    # Unique token associated with this reset attempt.
+    # We store this associated with the user id for 24h.
+    token = uuid4().hex
+    verify_url = req.url_for('password_reset_verify')
+    # Construct verify route url to redirect the user back to the API
+    # for link validity check.
+    absolute_url = f'{verify_url}?token={token}&redirect_url={redirect_url}'
+    # Send email to the user
+    message = MessageSchema(
+        subject='Reset your password',
+        recipients=[email],
+        body=f'Click the link below to reset password.\n{absolute_url}',
+        subtype=MessageType.plain
+    )
+    fm = FastMail(get_email_config())
+    try:
+        await fm.send_message(message)
+    except:
+        raise HTTPException(status_code=400, detail="Couldn't send email. Check that it is verified.")
+
+
+@router.get("/password_reset_verify")
+async def password_reset_verify():
+    pass

@@ -1,5 +1,6 @@
 from functools import lru_cache
-from pydantic import BaseSettings, MongoDsn
+from fastapi_mail import ConnectionConfig
+from pydantic import BaseSettings, EmailStr, MongoDsn
 
 
 class Settings(BaseSettings):
@@ -18,7 +19,32 @@ class Settings(BaseSettings):
     aws_secret_key: str
     aws_region: str
 
+    # Redis config
+    redis_host: str
+    redis_port: int
+
+    # SMTP credentials
+    mail_username: str
+    mail_password: str
+    mail_host: str
+    mail_port: int
+    mail_from: EmailStr
+
 
 @lru_cache
 def get_settings():
     return Settings()
+
+
+def get_email_config():
+    settings = get_settings()
+
+    return ConnectionConfig(
+        MAIL_USERNAME = settings.mail_username,
+        MAIL_PASSWORD = settings.mail_password,
+        MAIL_FROM = settings.mail_from,
+        MAIL_PORT = settings.mail_port,
+        MAIL_SERVER = settings.mail_host,
+        MAIL_STARTTLS = True,
+        MAIL_SSL_TLS = False,
+    )

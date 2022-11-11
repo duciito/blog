@@ -11,7 +11,7 @@ from core.auth import create_access_token, create_tokens
 
 from core.models import User
 from core.schemas import LoginSchema, PasswordChangeSchema, PasswordResetSchema, TokensSchema
-from core.utils import ses_verify_email_address, verify_reset_token
+from core.utils import ses_verify_email_address, get_user_from_reset_token
 from redis_conf import get_redis_client
 
 logger = logging.getLogger(__name__)
@@ -35,7 +35,8 @@ async def signup(user: User, auth: AuthJWT = Depends()):
 async def login(login: LoginSchema, auth: AuthJWT = Depends()):
     user = await User.find_one({'email': login.email})
     if not user:
-        raise HTTPException(status_code=400, detail='No user exists with that email.')
+        raise HTTPException(status_code=400,
+                            detail='No user exists with that email.')
     if not user.check_password(login.password):
         raise HTTPException(status_code=400, detail='Invalid password.')
 
@@ -48,7 +49,8 @@ async def refresh(auth: AuthJWT = Depends()):
     user = await User.get(auth.get_jwt_subject())
 
     if not user:
-        raise HTTPException(status_code=401, detail='No user associated with this token was found.')
+        raise HTTPException(status_code=401,
+                            detail='No user associated with this token was found.')
 
     return TokensSchema(
         access_token=create_access_token(user, auth),
@@ -64,9 +66,11 @@ async def password_change(data: PasswordChangeSchema, auth: AuthJWT = Depends())
     user = await User.get(auth.get_jwt_subject())
 
     if not user:
-        raise HTTPException(status_code=401, detail='No user associated with this token was found.')
+        raise HTTPException(status_code=401,
+                            detail='No user associated with this token was found.')
     if not user.check_password(data.current_password):
-        raise HTTPException(status_code=400, detail='Current password does not match.')
+        raise HTTPException(status_code=400,
+                            detail='Current password does not match.')
 
     await user.set_password(data.new_password, save=True)
 
@@ -79,13 +83,16 @@ async def password_reset(email: EmailStr,
     user = await User.find_one({'email': email})
 
     if not user:
-        raise HTTPException(status_code=400, detail='No user exists with that email.')
+        raise HTTPException(status_code=400,
+                            detail='No user exists with that email.')
     # Unique token associated with this reset attempt.
     # We store this associated with the user id for 24h.
     token = uuid4().hex
     verify_url = req.url_for('password_reset_verify')
     # Construct verify route url to redirect the user back to the API
     # for link validity check.
+    if not redirect_url.startswith('http://'):
+        redirect_url = f'http://{redirect_url}'
     absolute_url = f'{verify_url}?token={token}&redirect_url={redirect_url}'
     # Send email to the user
     message = MessageSchema(
@@ -101,18 +108,20 @@ async def password_reset(email: EmailStr,
         await fm.send_message(message)
     except RedisError as e:
         logger.error(f"Couldn't save reset token to Redis: {e}")
-        raise HTTPException(status_code=502, detail="Couldn't process request. Please try again.")
+        raise HTTPException(status_code=502,
+                            detail="Couldn't process request. Please try again.")
     except:
-        raise HTTPException(status_code=400, detail="Couldn't send email. Check that it is verified.")
+        raise HTTPException(status_code=400,
+                            detail="Couldn't send email. Check that it is verified.")
 
 
 @router.get("/password_reset_verify")
 async def password_reset_verify(token: str,
                                 redirect_url: str,
                                 redis: aioredis.Redis = Depends(get_redis_client)):
-    token_valid, reason = await verify_reset_token(token, redis)
+    user, reason = await get_user_from_reset_token(token, redis)
     get_params = {
-        'token_valid': token_valid,
+        'token_valid': bool(user),
         'token': token
     }
     if reason:
@@ -122,10 +131,14 @@ async def password_reset_verify(token: str,
     for param, value in get_params.items():
         redirect_url += f'{param}={value}&'
 
-    return RedirectResponse(redirect_url)
+    return RedirectResponse(redirect_url, status_code=303)
 
 
-@router.post("/password_reset_data")
+@router.post("/password_reset_data", status_code=204)
 async def password_reset_data(data: PasswordResetSchema,
                               redis: aioredis.Redis = Depends(get_redis_client)):
-    token_valid, reason = await verify_reset_token(data.token, redis)
+    user, reason = await get_user_from_reset_token(data.token, redis)
+    if not user:
+        raise HTTPException(status_code=400, detail=reason)
+
+    await user.set_password(data.password, save=True)

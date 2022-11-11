@@ -3,8 +3,8 @@ import logging
 import hashlib
 import redis.asyncio as aioredis
 
+import core.models
 from config import get_settings
-from core.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -33,18 +33,16 @@ async def ses_verify_email_address(email):
             logger.error(f"Unable to verify email '{email}': {e}")
 
 
-async def verify_reset_token(token: str, redis: aioredis.Redis):
-    user_id = await redis.getdel(f'pw-reset:{token}')
+async def get_user_from_reset_token(token: str, redis: aioredis.Redis):
+    user_id = await redis.get(f'pw-reset:{token}')
     reason = None
-    valid = False
+    user = None
 
     if not user_id:
         reason = 'Token is invalid or has expired'
     else:
-        user = await User.get(user_id)
+        user = await core.models.User.get(user_id)
         if not user:
             reason = 'User does not exist anymore.'
-        else:
-            valid = True
 
-    return valid, reason
+    return user, reason

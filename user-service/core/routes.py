@@ -7,7 +7,7 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_mail import FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 from config import get_email_config
-from core.auth import create_access_token, create_tokens
+from core.auth import DENYLIST_PREFIX, create_access_token, create_tokens
 
 from core.models import User
 from core.schemas import LoginSchema, PasswordChangeSchema, PasswordResetSchema, TokensSchema
@@ -57,12 +57,19 @@ async def refresh(auth: AuthJWT = Depends()):
         refresh_token=auth._token
     )
 
-# TODO: token invocation (sign out) with Redis denylist.
+
+@router.post("/logout", status_code=204)
+async def logout(auth: AuthJWT = Depends(),
+                 redis: aioredis.Redis = Depends(get_redis_client)):
+    await auth.jwt_required_async()
+    jwt = auth.get_raw_jwt()
+    token_id, expires_at = jwt['jti'], jwt['exp']
+    await redis.set(f'{DENYLIST_PREFIX}:{token_id}', 1, exat=expires_at)
 
 
 @router.post("/password_change", status_code=204)
 async def password_change(data: PasswordChangeSchema, auth: AuthJWT = Depends()):
-    auth.jwt_required()
+    await auth.jwt_required_async()
     user = await User.get(auth.get_jwt_subject())
 
     if not user:

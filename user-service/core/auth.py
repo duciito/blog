@@ -1,12 +1,17 @@
 import base64
 from datetime import timedelta
+from typing import Optional
+from fastapi import WebSocket
+from fastapi_jwt_auth.exceptions import RevokedTokenError
 
 from pydantic import BaseModel
 from fastapi_jwt_auth import AuthJWT
 from config import get_settings
 from core.models import User
 from core.schemas import TokensSchema
+from redis_conf import get_redis_client
 
+DENYLIST_PREFIX = 'token-denylist'
 settings = get_settings()
 
 
@@ -21,6 +26,25 @@ class AuthSettings(BaseModel):
 @AuthJWT.load_config
 def get_config():
     return AuthSettings()
+
+
+async def jwt_required_async(
+    self,
+    auth_from: str = "request",
+    token: Optional[str] = None,
+    websocket: Optional[WebSocket] = None,
+    csrf_token: Optional[str] = None,
+) -> None:
+    """Addition to AuthJWT so we can use redis asynchronously."""
+    self.jwt_required(auth_from,
+                      token,
+                      websocket,
+                      csrf_token)
+    token_id = self.get_raw_jwt()['jti']
+    redis = get_redis_client()
+
+    if await redis.exists(f'{DENYLIST_PREFIX}:{token_id}'):
+        raise RevokedTokenError(status_code=401, message="Token has been revoked")
 
 
 def create_access_token(user: User, auth: AuthJWT) -> str:

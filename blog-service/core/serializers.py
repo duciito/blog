@@ -2,7 +2,7 @@ from django.db import IntegrityError, transaction
 from rest_framework import serializers
 
 from core.models import Article, ArticleContent, Category, Comment, EditableModel
-from accounts.serializers import UserSerializer
+from users.serializers import UserSerializer
 from common.serializers import FollowableModelSerializer
 
 

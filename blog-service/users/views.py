@@ -5,8 +5,8 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from accounts.serializers import UserSerializer
-from accounts.models import BlogUser
+from users.serializers import UserSerializer
+from users.models import BlogUser
 from core.serializers import LightArticleSerializer
 from core.mixins import FollowableContentMixin
 from core.pagination import StandardResultsSetPagination

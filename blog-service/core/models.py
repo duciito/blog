@@ -5,7 +5,7 @@ from django.db.models.signals import pre_delete
 from django.conf import settings
 
 from core.utils import file_cleanup
-from accounts.models import BlogUser
+from users.models import BlogUser
 
 
 class EditableModel(models.Model):

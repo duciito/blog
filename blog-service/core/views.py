@@ -14,8 +14,8 @@ from core.models import Article, ArticleContent, Category, Comment
 from core.mixins import VotableContentMixin, FollowableContentMixin
 from core.search import filter_articles, filter_categories, filter_users
 from core.pagination import StandardResultsSetPagination
-from accounts.serializers import UserSerializer
-from accounts.models import BlogUser
+from users.serializers import UserSerializer
+from users.models import BlogUser
 
 
 class CategoriesViewSet(viewsets.ModelViewSet, FollowableContentMixin):

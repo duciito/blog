@@ -63,7 +63,6 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
-        'accounts.authentication.ExpiringTokenAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -128,8 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.BlogUser'
-# Auth token expiration time in seconds.
-TOKEN_EXPIRATION_TIME = 86400
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -150,8 +147,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 SITE_URL = 'http://localhost:8000'
-DEFAULT_FROM_EMAIL = 'duciito@gmail.com'
-# During development only
-EMAIL_BACKEND = 'django_ses.SESBackend'
 # Enable CORS for all
 CORS_ORIGIN_ALLOW_ALL = True

@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     password_salt: str
 
     # JWT auth related variables.
+    jwt_sig_kid: str
     jwt_public_key: str
     jwt_private_key: str
     jwt_algorithm: str

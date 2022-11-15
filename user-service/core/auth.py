@@ -50,7 +50,8 @@ async def jwt_required_async(
 def create_access_token(user: User, auth: AuthJWT) -> str:
     return auth.create_access_token(
         subject=str(user.id),
-        expires_time=timedelta(minutes=settings.access_token_expiration)
+        expires_time=timedelta(minutes=settings.access_token_expiration),
+        headers={'kid': settings.jwt_sig_kid}
     )
 
 

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 # AWS config per system/user. 
 # You need to have that file exluded from git.
@@ -41,11 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'corsheaders',
     'core',
     'users',
-    'rest_framework',
-    'rest_framework.authtoken',
     'storages'
 ]
 
@@ -63,6 +63,7 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
+        'users.authentication.JWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -127,3 +128,6 @@ STATIC_URL = '/static/'
 SITE_URL = 'http://localhost:8000'
 # Enable CORS for all
 CORS_ORIGIN_ALLOW_ALL = True
+
+USER_SERVICE_URL = os.getenv('USER_SERVICE_URL')
+USER_SERVICE_JWKS_URL = f'{USER_SERVICE_URL}/static/.well-known/jwks.json'

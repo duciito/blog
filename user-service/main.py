@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from core.auth import jwt_required_async
@@ -26,3 +27,4 @@ def auth_exception_handler(request: Request, exc: AuthJWTException):
 
 
 app.include_router(CoreRouter, prefix='/api')
+app.mount('/static', StaticFiles(directory='static'), name='static')

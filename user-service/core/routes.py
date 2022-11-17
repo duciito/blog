@@ -2,7 +2,7 @@ import logging
 from fastapi.responses import RedirectResponse
 from redis import RedisError, asyncio as aioredis
 from uuid import uuid4
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi_jwt_auth import AuthJWT
 from fastapi_mail import FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
@@ -10,6 +10,7 @@ from config import get_email_config
 from core.auth import DENYLIST_PREFIX, create_access_token, create_tokens
 
 from core.models import User
+from core.producers import add_user_to_stream
 from core.schemas import LoginSchema, PasswordChangeSchema, PasswordResetSchema, TokensSchema
 from core.utils import ses_verify_email_address, get_user_from_reset_token
 from redis_conf import get_redis_client
@@ -19,15 +20,20 @@ router = APIRouter(prefix='/auth', tags=["Auth"])
 
 
 @router.post("/signup", response_model=TokensSchema, status_code=201)
-async def signup(user: User, auth: AuthJWT = Depends()):
+async def signup(user: User,
+                 bg: BackgroundTasks,
+                 auth: AuthJWT = Depends(),
+                 redis: aioredis.Redis = Depends(get_redis_client)):
     # Check for email availability
     existing_user = await User.find_one({'email': user.email})
     if existing_user:
         raise HTTPException(status_code=400, detail='Email already taken.')
     created_user = await user.create()
 
-    # Verify user's email.
-    await ses_verify_email_address(created_user.email)
+    # Send verification email in the background
+    # and notify other services of new user creation.
+    bg.add_task(ses_verify_email_address, created_user.email)
+    bg.add_task(add_user_to_stream, created_user, redis)
     return create_tokens(created_user, auth)
 
 

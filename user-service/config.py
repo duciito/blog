@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     # Redis config
     redis_host: str
     redis_port: int
+    redis_new_users_stream: str = 'new-users'
 
     # SMTP credentials
     mail_username: str

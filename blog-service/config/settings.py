@@ -132,6 +132,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 USER_SERVICE_URL = os.getenv('USER_SERVICE_URL')
 USER_SERVICE_JWKS_URL = f'{USER_SERVICE_URL}/static/.well-known/jwks.json'
 
-REDIS_URL = f'{os.getenv("REDIS_HOST")}:{os.getenv("REDIS_PORT")}'
+REDIS_URL = f'redis://{os.getenv("REDIS_HOST")}:{os.getenv("REDIS_PORT")}'
 REDIS_NEW_USERS_STREAM = os.getenv('REDIS_NEW_USERS_STREAM', 'new-users')
 CELERY_BROKER_URL = REDIS_URL

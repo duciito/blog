@@ -26,7 +26,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
         try:
             sig_key = self.jwks_client.get_signing_key_from_jwt(raw_jwt)
             data = jwt.decode(raw_jwt, sig_key.key, algorithms=['RS256'])
-        except (jwt.DecodeError, jwt.PyJWKClientError, jwt.InvalidTokenError):
+        except (jwt.DecodeError, jwt.PyJWKClientError, jwt.InvalidTokenError) as e:
             raise exceptions.AuthenticationFailed("Bearer token is invalid.")
 
         UserModel = django_apps.get_model('users.BlogUser', require_ready=False)

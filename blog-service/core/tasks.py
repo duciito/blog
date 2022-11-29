@@ -24,8 +24,9 @@ def consume_new_users_stream():
                 block=5000
             )
             logger.info(response)
+            # [[b'new-users', [(b'1669744006942-0', {b'id': b'63864586e5db203fa4ba5840', b'email': b'daniel.ivanov+17@mentormate.com', b'first_name': b'string', b'last_name': b'string', b'profile_description': b'string', b'joined_at': b'2022-11-04T17:19:27.744000+00:00'})]]]
         except RedisError as e:
-            logger.error(str(e))
+            logger.error(f'Redis error: {str(e)}')
 
 
 @celeryd_init.connect

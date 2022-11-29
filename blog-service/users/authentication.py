@@ -29,7 +29,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
         except (jwt.DecodeError, jwt.PyJWKClientError, jwt.InvalidTokenError):
             raise exceptions.AuthenticationFailed("Bearer token is invalid.")
 
-        UserModel = django_apps.get_model(settings.AUTH_USER_MODEL, require_ready=False)
+        UserModel = django_apps.get_model('users.BlogUser', require_ready=False)
         user = UserModel.objects.filter(pk=data['sub'])
         if not user.exists():
             raise exceptions.AuthenticationFailed("No user associated with this token was found.")

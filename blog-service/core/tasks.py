@@ -38,5 +38,5 @@ def consume_new_users_stream():
 
 
 @celeryd_init.connect
-def start_users_consumer(sender=None, conf=None, **kwargs):
+def start_users_consumer(**kwargs):
     consume_new_users_stream.delay()

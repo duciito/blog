@@ -1,6 +1,8 @@
 from rest_framework.decorators import action
 from rest_framework import response, status
 
+from core.tasks import send_follow_event, send_like_event
+
 
 class VotableContentMixin:
     """
@@ -13,6 +15,7 @@ class VotableContentMixin:
         """Increment votes for an object."""
         obj = self.get_object()
         obj.voters.add(request.user)
+        send_like_event.delay(request.user, obj.pk, type(obj))
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])
@@ -36,6 +39,7 @@ class FollowableContentMixin:
         """Follow an object."""
         obj = self.get_object()
         obj.followers.add(request.user)
+        send_follow_event.delay(request.user, obj.pk, type(obj))
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])

@@ -1,13 +1,73 @@
 import logging
+from dataclasses import asdict, dataclass
+from typing import Literal, Type
 from django.conf import settings
-from django.db import IntegrityError
+from django.db import IntegrityError, models
 from redis import RedisError, Redis
 from celery import shared_task
 from celery.signals import celeryd_init
 from config.redis import get_redis_client
+from core.models import Article, Comment
 from users.models import BlogUser
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class LikeEvent:
+    user_id: str
+    obj_id: str
+    obj_type: Literal['article', 'comment']
+    creator_id: str
+
+
+@shared_task
+def send_like_event(user_id: str, obj_id: str, obj_type: Type[models.Model]):
+    """
+    Args:
+        user_id (str): User who liked the object
+        obj_id (str): The id of the object
+        obj_type (object): The type of the object
+    """
+    if obj_type not in (Article, Comment):
+        raise ValueError("Unsupported Django model for sending like events.")
+    redis_client = get_redis_client()
+    stream = settings.REDIS_LIKES_STREAM
+
+    try:
+        obj = obj_type.objects.select_related('creator').get(pk=obj_id)
+        user = BlogUser.objects.get(pk=user_id)
+        like_event = LikeEvent(
+            user_id=user.pk,
+            obj_id=obj.pk,
+            obj_type=obj_type.__name__.lower(),
+            creator_id=obj.creator.pk
+        )
+
+        redis_client.xadd(
+            name=stream,
+            fields=asdict(like_event),
+            id='*',
+            maxlen=200
+        )
+    except BlogUser.DoesNotExist:
+        logger.error(f"User: {user_id} doesn't exist anymore.")
+    except obj_type.DoesNotExist:
+        logger.error(f"Object ({obj_type.__name__}): {obj_id} doesn't exist or has been deleted at the time of the event.")
+    except RedisError as e:
+        logger.error(f'Redis error: {e}')
+
+
+
+@shared_task
+def send_follow_event(user_id: str, obj_id: str, obj_type: object):
+    """
+    Args:
+        user_id (str): User who followed the object
+        obj_id (str): The id of the object
+        obj_type (object): The type of the object
+    """
+    pass
 
 
 @shared_task
@@ -30,7 +90,6 @@ def consume_new_users_stream():
                 # entry id and data in a stream.
                 last_id, data = response[0][1][0]
                 BlogUser.objects.create_from_event(data)
-            # [[b'new-users', [(b'1669744006942-0', {b'id': b'63864586e5db203fa4ba5840', b'email': b'daniel.ivanov+17@mentormate.com', b'first_name': b'string', b'last_name': b'string', b'profile_description': b'string', b'joined_at': b'2022-11-04T17:19:27.744000+00:00'})]]]
         except RedisError as e:
             logger.error(f'Redis error: {e}')
         except IntegrityError as e:

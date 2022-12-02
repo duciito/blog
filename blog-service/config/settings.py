@@ -132,4 +132,6 @@ USER_SERVICE_JWKS_URL = f'http://{USER_SERVICE_URL}/static/.well-known/jwks.json
 
 REDIS_URL = f'redis://{os.getenv("REDIS_HOST")}:{os.getenv("REDIS_PORT")}'
 REDIS_NEW_USERS_STREAM = os.getenv('REDIS_NEW_USERS_STREAM', 'new-users')
+REDIS_LIKES_STREAM = 'likes-stream'
+REDIS_FOLLOWS_STREAM = 'follows-stream'
 CELERY_BROKER_URL = REDIS_URL

@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework.decorators import action
 from rest_framework import response, status
 
@@ -14,8 +15,11 @@ class VotableContentMixin:
     def vote(self, request, pk=None):
         """Increment votes for an object."""
         obj = self.get_object()
-        obj.voters.add(request.user)
-        send_like_event.delay(request.user, obj.pk, type(obj))
+        if request.user not in obj.voters.all():
+            obj.voters.add(request.user)
+            ct = ContentType.objects.get_for_model(obj)
+            send_like_event.delay(request.user.pk, obj.pk, f'{ct.app_label}.{ct.model}')
+
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])
@@ -39,7 +43,7 @@ class FollowableContentMixin:
         """Follow an object."""
         obj = self.get_object()
         obj.followers.add(request.user)
-        send_follow_event.delay(request.user, obj.pk, type(obj))
+        send_follow_event.delay(request.user.pk, obj.pk, type(obj))
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'])

@@ -1,8 +1,9 @@
 import logging
 from dataclasses import asdict, dataclass
-from typing import Literal, Type
+from django.apps import apps as django_apps
+from typing import Literal
 from django.conf import settings
-from django.db import IntegrityError, models
+from django.db import IntegrityError
 from redis import RedisError, Redis
 from celery import shared_task
 from celery.signals import celeryd_init
@@ -22,13 +23,14 @@ class LikeEvent:
 
 
 @shared_task
-def send_like_event(user_id: str, obj_id: str, obj_type: Type[models.Model]):
+def send_like_event(user_id: str, obj_id: str, content_type_str: str):
     """
     Args:
         user_id (str): User who liked the object
         obj_id (str): The id of the object
         obj_type (object): The type of the object
     """
+    obj_type = django_apps.get_model(content_type_str)
     if obj_type not in (Article, Comment):
         raise ValueError("Unsupported Django model for sending like events.")
     redis_client = get_redis_client()

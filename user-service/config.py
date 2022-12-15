@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     redis_host: str
     redis_port: int
     redis_new_users_stream: str = 'new-users'
+    redis_likes_stream: str = 'likes-stream'
 
     # SMTP credentials
     mail_username: str

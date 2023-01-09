@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from beanie import Document, Indexed
+from beanie import Document, Indexed, Link
 from pydantic import EmailStr, Field, validator
 
 from core.utils import hash_password
@@ -38,3 +38,10 @@ class User(Document):
         # IMPORTANT: this assumes the password has not already been hashed.
         await self.set_password(self.password)
         return await super().create(*args, **kwargs)
+
+
+class LikeEvent(Document):
+    creator: Indexed(Link[User])
+    user: Link[User]
+    obj_id: str
+    obj_type: str

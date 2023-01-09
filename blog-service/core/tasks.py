@@ -31,7 +31,7 @@ def send_like_event(user_id: str, obj_id: str, content_type_str: str):
         obj_type (object): The type of the object
     """
     obj_type = django_apps.get_model(content_type_str)
-    if obj_type not in (Article, Comment):
+    if not hasattr(obj_type, 'creator'):
         raise ValueError("Unsupported Django model for sending like events.")
     redis_client = get_redis_client()
     stream = settings.REDIS_LIKES_STREAM

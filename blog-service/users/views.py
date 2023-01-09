@@ -14,7 +14,7 @@ from core.pagination import StandardResultsSetPagination
 logger = logging.getLogger(__name__)
 
 
-class UsersViewSet(viewsets.ModelViewSet, FollowableContentMixin):
+class UsersViewSet(viewsets.ReadOnlyModelViewSet, FollowableContentMixin):
     queryset = BlogUser.objects.all()
     serializer_class = UserSerializer
     pagination_class =  StandardResultsSetPagination

@@ -24,13 +24,10 @@ class UserSerializer(FollowableModelSerializer):
     class Meta:
         model = BlogUser
         fields = ['id',
-                  'username',
+                  'email',
                   'first_name',
                   'last_name',
-                  'is_active',
-                  'email',
                   'profile_description',
                   'joined_at',
                   'followed',
                   'total_followers']
-        read_only_fields = ('is_active', 'joined_at', )

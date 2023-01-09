@@ -107,7 +107,7 @@ class ArticlesViewSet(VotableContentMixin, viewsets.ModelViewSet):
 
         queryset = queryset.filter(
             creator__in=followed_users,
-            # posted_at__gte=last_seven_days
+            posted_at__gte=last_seven_days
         )
 
         return self._paginate_custom_action(queryset)

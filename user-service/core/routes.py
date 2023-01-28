@@ -10,7 +10,7 @@ from config import get_email_config
 from core.auth import DENYLIST_PREFIX, create_access_token, create_tokens
 
 from core.models import User
-from core.bg_tasks import add_user_to_stream
+from core.tasks import add_user_to_stream
 from core.schemas import LoginSchema, PasswordChangeSchema, PasswordResetSchema, TokensSchema
 from core.utils import ses_verify_email_address, get_user_from_reset_token
 from redis_conf import get_redis_client

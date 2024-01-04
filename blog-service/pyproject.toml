@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "blog-service"
+version = "0.1.0"
+description = "A Django service responsible for main blog operations"
+authors = ["duciito <duciito@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "3.1.1"
+django-storages = "1.10.1"
+djangorestframework = "3.12.1"
+psycopg2-binary = "2.9.9"
+django-cors-headers = "3.6.0"
+pyjwt = "2.6.0"
+redis = "4.3.4"
+celery = "5.2.7"
+cryptography = "3.4.8"
+
+
+[tool.poetry.group.dev.dependencies]
+ipdb = "^0.13.13"
+ruff = "^0.1.11"
+
+[tool.ruff]
+select = [ "E", "F", "UP", "ISC", "I", "W", "B" ]
+target-version = "py311"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

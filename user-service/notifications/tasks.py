@@ -1,4 +1,5 @@
 import logging
+
 import redis.asyncio as aioredis
 
 from config import get_settings
@@ -13,11 +14,7 @@ async def consume_like_events(redis: aioredis.Redis):
 
     while True:
         try:
-            resp = await redis.xread(
-                {stream: last_id or '$'},
-                count = 1,
-                block=5000
-            )
+            resp = await redis.xread({stream: last_id or "$"}, count=1, block=5000)
             print(resp)
             if resp:
                 # We get a list of lists each containing name and one tuple of
@@ -25,4 +22,4 @@ async def consume_like_events(redis: aioredis.Redis):
                 last_id, data = resp[0][1][0]
                 logger.debug(data)
         except aioredis.RedisError as e:
-            logger.error(f'Redis error: {e}')
+            logger.error(f"Redis error: {e}")

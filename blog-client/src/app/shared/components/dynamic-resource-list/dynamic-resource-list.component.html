@@ -3,7 +3,7 @@
 </ng-container>
 
 <ng-template #infiniteScrollList>
-    <div 
+    <div
          *ngIf="resourceLoader; else emptyMessage"
          infiniteScroll
          [infiniteScrollDistance]="2"

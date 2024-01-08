@@ -1,4 +1,5 @@
 from beanie import Document, Indexed, Link
+
 from core.models import User
 
 

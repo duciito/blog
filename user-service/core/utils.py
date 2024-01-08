@@ -1,6 +1,7 @@
-import aioboto3
-import logging
 import hashlib
+import logging
+
+import aioboto3
 import redis.asyncio as aioredis
 
 import core.models
@@ -23,10 +24,10 @@ async def ses_verify_email_address(email):
     session = aioboto3.Session(
         region_name=settings.aws_region,
         aws_access_key_id=settings.aws_access_key,
-        aws_secret_access_key=settings.aws_secret_key
+        aws_secret_access_key=settings.aws_secret_key,
     )
 
-    async with session.client('ses') as ses:
+    async with session.client("ses") as ses:
         try:
             await ses.verify_email_identity(EmailAddress=email)
         except Exception as e:
@@ -34,15 +35,15 @@ async def ses_verify_email_address(email):
 
 
 async def get_user_from_reset_token(token: str, redis: aioredis.Redis):
-    user_id = await redis.get(f'pw-reset:{token}')
+    user_id = await redis.get(f"pw-reset:{token}")
     reason = None
     user = None
 
     if not user_id:
-        reason = 'Token is invalid or has expired'
+        reason = "Token is invalid or has expired"
     else:
         user = await core.models.User.get(user_id)
         if not user:
-            reason = 'User does not exist anymore.'
+            reason = "User does not exist anymore."
 
     return user, reason

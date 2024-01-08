@@ -20,7 +20,7 @@ class PasswordChangeSchema(BaseModel):
         cp, np = values.values()
 
         if cp == np:
-            raise ValueError('New password should not match the old one.')
+            raise ValueError("New password should not match the old one.")
 
         return values
 

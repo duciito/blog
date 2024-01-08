@@ -164,7 +164,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
       {thumbnail: this.thumbnailFile}
     );
 
-    const post = this.temporaryContents.length 
+    const post = this.temporaryContents.length
       ? Object.assign(
           // Asssign all images uploaded in editor
           // to associate with the newly created article

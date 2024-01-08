@@ -30,5 +30,5 @@ export class LoggedinGuard implements CanActivate {
           })
         );
   }
-  
+
 }

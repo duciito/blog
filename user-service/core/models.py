@@ -1,5 +1,4 @@
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from beanie import Document, Indexed
 from pydantic import EmailStr, Field, validator
@@ -12,14 +11,14 @@ class User(Document):
     password: str
     first_name: str = Field(max_length=150)
     last_name: str = Field(max_length=150)
-    profile_description: Optional[str]
+    profile_description: str | None
     joined_at: datetime = Field(default_factory=datetime.now)
 
-    @validator('joined_at')
+    @validator("joined_at")
     def check_date_not_in_future(cls, val: datetime):
         if val.tzinfo is None or val.tzinfo.utcoffset(val) is None:
-            val = val.replace(tzinfo=timezone.utc)
-        assert val < datetime.now().replace(tzinfo=timezone.utc)
+            val = val.replace(tzinfo=UTC)
+        assert val < datetime.now().replace(tzinfo=UTC)
         return val
 
     def __repr__(self) -> str:

@@ -1,15 +1,14 @@
-from typing import Dict
 from fastapi import APIRouter, Depends, Query, WebSocket, WebSocketDisconnect
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 
-router = APIRouter(prefix='/notifications', tags=["Notifications"])
+router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
 
 class NotificationsManager:
     def __init__(self):
         # User id to websocket associaton.
-        self.active_connections: Dict[str, WebSocket] = {}
+        self.active_connections: dict[str, WebSocket] = {}
 
     def add_connection(self, id: str, websocket: WebSocket):
         self.active_connections[id] = websocket
@@ -26,13 +25,13 @@ class NotificationsManager:
 manager = NotificationsManager()
 
 
-@router.websocket('/ws')
-async def notifications_websocket(websocket: WebSocket,
-                                  auth: AuthJWT = Depends(),
-                                  token: str = Query()):
+@router.websocket("/ws")
+async def notifications_websocket(
+    websocket: WebSocket, auth: AuthJWT = Depends(), token: str = Query()
+):
     await websocket.accept()
     try:
-        await auth.jwt_required_async('websocket', token=token)
+        await auth.jwt_required_async("websocket", token=token)
         sub = auth.get_jwt_subject()
         manager.add_connection(sub, websocket)
         await manager.send_text(sub, "Successful login!")

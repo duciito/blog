@@ -1,4 +1,5 @@
 from functools import lru_cache
+
 from fastapi_mail import ConnectionConfig
 from pydantic import BaseSettings, EmailStr, MongoDsn
 
@@ -23,8 +24,8 @@ class Settings(BaseSettings):
     # Redis config
     redis_host: str
     redis_port: int
-    redis_new_users_stream: str = 'new-users'
-    redis_likes_stream: str = 'likes-stream'
+    redis_new_users_stream: str = "new-users"
+    redis_likes_stream: str = "likes-stream"
 
     # SMTP credentials
     mail_username: str
@@ -43,11 +44,11 @@ def get_email_config():
     settings = get_settings()
 
     return ConnectionConfig(
-        MAIL_USERNAME = settings.mail_username,
-        MAIL_PASSWORD = settings.mail_password,
-        MAIL_FROM = settings.mail_from,
-        MAIL_PORT = settings.mail_port,
-        MAIL_SERVER = settings.mail_host,
-        MAIL_STARTTLS = True,
-        MAIL_SSL_TLS = False,
+        MAIL_USERNAME=settings.mail_username,
+        MAIL_PASSWORD=settings.mail_password,
+        MAIL_FROM=settings.mail_from,
+        MAIL_PORT=settings.mail_port,
+        MAIL_SERVER=settings.mail_host,
+        MAIL_STARTTLS=True,
+        MAIL_SSL_TLS=False,
     )

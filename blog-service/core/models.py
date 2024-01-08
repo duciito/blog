@@ -2,7 +2,6 @@ import uuid
 
 from django.db import models
 from django.db.models.signals import pre_delete
-from django.conf import settings
 
 from core.utils import file_cleanup
 from users.models import BlogUser
@@ -10,9 +9,7 @@ from users.models import BlogUser
 
 class EditableModel(models.Model):
     creator = models.ForeignKey(
-        BlogUser,
-        on_delete=models.CASCADE,
-        related_name='%(class)s'
+        BlogUser, on_delete=models.CASCADE, related_name="%(class)s"
     )
     text = models.TextField()
     posted_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -27,9 +24,7 @@ class EditableModel(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=200)
     followers = models.ManyToManyField(
-        BlogUser,
-        related_name='followed_categories',
-        blank=True
+        BlogUser, related_name="followed_categories", blank=True
     )
 
     @property
@@ -42,12 +37,9 @@ class Category(models.Model):
 
 class Article(EditableModel):
     category = models.ForeignKey(
-        Category,
-        related_name='articles',
-        null=True,
-        on_delete=models.SET_NULL
+        Category, related_name="articles", null=True, on_delete=models.SET_NULL
     )
-    voters = models.ManyToManyField(BlogUser, related_name='liked_articles', blank=True)
+    voters = models.ManyToManyField(BlogUser, related_name="liked_articles", blank=True)
     title = models.CharField(max_length=255)
     thumbnail = models.FileField(blank=True)
 
@@ -63,11 +55,13 @@ class ArticleContent(models.Model):
     # Content type choices.
     # The second attr provides readable name in django forms.
     CONTENT_TYPES = (
-        ('image', 'Image'),
-        ('video', 'Video'),
+        ("image", "Image"),
+        ("video", "Video"),
     )
 
-    article = models.ForeignKey(Article, null=True, related_name='contents', on_delete=models.CASCADE)
+    article = models.ForeignKey(
+        Article, null=True, related_name="contents", on_delete=models.CASCADE
+    )
     content_type = models.CharField(max_length=20, choices=CONTENT_TYPES)
     file = models.FileField()
     guid = models.UUIDField(null=True, default=uuid.uuid4, unique=True)
@@ -75,11 +69,9 @@ class ArticleContent(models.Model):
 
 class Comment(EditableModel):
     article = models.ForeignKey(
-        Article,
-        on_delete=models.CASCADE,
-        related_name='comments'
+        Article, on_delete=models.CASCADE, related_name="comments"
     )
-    voters = models.ManyToManyField(BlogUser, related_name='liked_comments', blank=True)
+    voters = models.ManyToManyField(BlogUser, related_name="liked_comments", blank=True)
 
     @property
     def total_votes(self):

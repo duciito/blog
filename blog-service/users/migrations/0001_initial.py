@@ -4,25 +4,42 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('core', '0001_initial'),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BlogUser',
+            name="BlogUser",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(max_length=254, unique=True)),
-                ('first_name', models.CharField(blank=True, max_length=150)),
-                ('last_name', models.CharField(blank=True, max_length=150)),
-                ('profile_description', models.TextField(blank=True)),
-                ('joined_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('followed_users', models.ManyToManyField(blank=True, related_name='followers', to='users.BlogUser')),
-                ('saved_articles', models.ManyToManyField(blank=True, related_name='users_saved', to='core.Article')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("email", models.EmailField(max_length=254, unique=True)),
+                ("first_name", models.CharField(blank=True, max_length=150)),
+                ("last_name", models.CharField(blank=True, max_length=150)),
+                ("profile_description", models.TextField(blank=True)),
+                ("joined_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "followed_users",
+                    models.ManyToManyField(
+                        blank=True, related_name="followers", to="users.BlogUser"
+                    ),
+                ),
+                (
+                    "saved_articles",
+                    models.ManyToManyField(
+                        blank=True, related_name="users_saved", to="core.Article"
+                    ),
+                ),
             ],
         ),
     ]

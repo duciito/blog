@@ -1,4 +1,5 @@
 import asyncio
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,7 +10,6 @@ from core.auth import jwt_required_async
 from core.routes import router as CoreRouter
 from database import init_db
 from notifications.tasks import consume_like_events
-
 from redis_conf import get_redis_client
 
 app = FastAPI(title="User service")
@@ -18,7 +18,7 @@ app = FastAPI(title="User service")
 @app.on_event("startup")
 async def startup():
     # Make jwt_required async so we can check token validity in Redis.
-    setattr(AuthJWT, 'jwt_required_async', jwt_required_async)
+    AuthJWT.jwt_required_async = jwt_required_async
     await init_db()
     # Start independent consumers in the background
     loop = asyncio.get_event_loop()
@@ -27,11 +27,8 @@ async def startup():
 
 @app.exception_handler(AuthJWTException)
 def auth_exception_handler(request: Request, exc: AuthJWTException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={'detail': exc.message}
-    )
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
 
 
-app.include_router(CoreRouter, prefix='/api')
-app.mount('/static', StaticFiles(directory='static'), name='static')
+app.include_router(CoreRouter, prefix="/api")
+app.mount("/static", StaticFiles(directory="static"), name="static")

@@ -15,9 +15,7 @@ def filter_articles(queryset, search_expression):
 def filter_categories(queryset, search_expression):
     """A utility that does a model-wide search for an expression in categories."""
     search_expression = search_expression.lower()
-    return queryset.filter(
-        name__icontains=search_expression
-    )
+    return queryset.filter(name__icontains=search_expression)
 
 
 def filter_users(queryset, search_expression):

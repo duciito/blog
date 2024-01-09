@@ -2,9 +2,9 @@ import uuid
 
 from django.db import models
 from django.db.models.signals import pre_delete
+from users.models import BlogUser
 
 from core.utils import file_cleanup
-from users.models import BlogUser
 
 
 class EditableModel(models.Model):

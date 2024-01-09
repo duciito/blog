@@ -4,6 +4,8 @@ from django.db.models import Count
 from django.utils import timezone
 from rest_framework import generics, response, status, viewsets
 from rest_framework.decorators import action
+from users.models import BlogUser
+from users.serializers import UserSerializer
 
 from core.mixins import FollowableContentMixin, VotableContentMixin
 from core.models import Article, ArticleContent, Category, Comment
@@ -16,8 +18,6 @@ from core.serializers import (
     CommentSerializer,
     LightArticleSerializer,
 )
-from users.models import BlogUser
-from users.serializers import UserSerializer
 
 
 class CategoriesViewSet(viewsets.ModelViewSet, FollowableContentMixin):

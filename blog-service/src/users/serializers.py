@@ -1,6 +1,6 @@
+from common.serializers import FollowableModelSerializer
 from rest_framework import serializers
 
-from common.serializers import FollowableModelSerializer
 from users.models import BlogUser
 
 

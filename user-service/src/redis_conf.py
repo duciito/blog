@@ -1,5 +1,4 @@
 import redis.asyncio as aioredis
-
 from config import get_settings
 
 redis_client = None

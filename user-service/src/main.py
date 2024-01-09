@@ -1,14 +1,13 @@
 import asyncio
 
+from core.auth import jwt_required_async
+from core.routes import router as CoreRouter
+from database import init_db
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
-
-from core.auth import jwt_required_async
-from core.routes import router as CoreRouter
-from database import init_db
 from notifications.tasks import consume_like_events
 from redis_conf import get_redis_client
 

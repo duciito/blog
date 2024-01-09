@@ -4,12 +4,11 @@ from typing import Literal
 
 from celery import shared_task
 from celery.signals import celeryd_init
+from config.redis import get_redis_client
 from django.apps import apps as django_apps
 from django.conf import settings
 from django.db import IntegrityError
 from redis import Redis, RedisError
-
-from config.redis import get_redis_client
 from users.models import BlogUser
 
 logger = logging.getLogger(__name__)

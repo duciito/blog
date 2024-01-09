@@ -1,9 +1,8 @@
 from datetime import UTC, datetime
 
 from beanie import Document, Indexed
-from pydantic import EmailStr, Field, validator
-
 from core.utils import hash_password
+from pydantic import EmailStr, Field, validator
 
 
 class User(Document):

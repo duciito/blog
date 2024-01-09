@@ -2,9 +2,8 @@ import hashlib
 import logging
 
 import aioboto3
-import redis.asyncio as aioredis
-
 import core.models
+import redis.asyncio as aioredis
 from config import get_settings
 
 logger = logging.getLogger(__name__)

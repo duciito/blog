@@ -1,9 +1,9 @@
+from common.serializers import FollowableModelSerializer
 from django.db import IntegrityError, transaction
 from rest_framework import serializers
-
-from common.serializers import FollowableModelSerializer
-from core.models import Article, ArticleContent, Category, Comment
 from users.serializers import UserSerializer
+
+from core.models import Article, ArticleContent, Category, Comment
 
 
 class EditableModelSerializer(serializers.ModelSerializer):

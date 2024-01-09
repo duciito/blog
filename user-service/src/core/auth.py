@@ -1,14 +1,13 @@
 import base64
 from datetime import timedelta
 
+from config import get_settings
+from core.models import User
+from core.schemas import TokensSchema
 from fastapi import WebSocket
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import RevokedTokenError
 from pydantic import BaseModel
-
-from config import get_settings
-from core.models import User
-from core.schemas import TokensSchema
 from redis_conf import get_redis_client
 
 DENYLIST_PREFIX = "token-denylist"

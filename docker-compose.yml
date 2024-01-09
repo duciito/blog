@@ -24,7 +24,6 @@ services:
             - ./blog-service/.env
         volumes:
             - ./blog-service:/code
-        working_dir: /code
         ports:
             - "8000:8000"
         depends_on:
@@ -60,7 +59,6 @@ services:
             - ./user-service/.env
         volumes:
             - ./user-service:/code
-        working_dir: /code
         ports:
             - "8001:8001"
         depends_on:
@@ -83,6 +81,8 @@ services:
             interval: 10s
             timeout: 5s
             retries: 3
+        networks:
+            - blog-network
 
 networks:
   blog-network:

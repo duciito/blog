@@ -31,7 +31,8 @@ USER blog
 ENV PATH="/app/.venv/bin:${PATH}"
 ENV VIRTUAL_ENV="/app/.venv"
 
-COPY src .
+COPY src ./src
 COPY start.sh .
+ENV PYTHONPATH="${PYTHONPATH}:/app/src/"
 
 ENTRYPOINT ["sh", "./start.sh"]

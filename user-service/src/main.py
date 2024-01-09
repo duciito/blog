@@ -30,4 +30,4 @@ def auth_exception_handler(request: Request, exc: AuthJWTException):
 
 
 app.include_router(CoreRouter, prefix="/api")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="src/static"), name="static")

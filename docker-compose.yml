@@ -56,7 +56,6 @@ services:
 
     user-service:
         build: ./user-service
-        command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
         env_file:
             - ./user-service/.env
         volumes:

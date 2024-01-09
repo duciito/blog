@@ -19,8 +19,7 @@ from fastapi_mail import FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 from redis import RedisError
 from redis import asyncio as aioredis
-
-from src.redis_conf import get_redis_client
+from redis_conf import get_redis_client
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Auth"])

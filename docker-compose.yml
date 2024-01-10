@@ -23,7 +23,7 @@ services:
         env_file:
             - ./blog-service/.env
         volumes:
-            - ./blog-service:/code
+            - ./blog-service:/app
         ports:
             - "8000:8000"
         depends_on:
@@ -58,7 +58,7 @@ services:
         env_file:
             - ./user-service/.env
         volumes:
-            - ./user-service:/code
+            - ./user-service:/app
         ports:
             - "8001:8001"
         depends_on:

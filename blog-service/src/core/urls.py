@@ -1,7 +1,4 @@
 # core/urls.py
-from django.conf.urls import url
-from rest_framework import routers
-
 from core.views import (
     ArticleContentsViewSet,
     ArticlesViewSet,
@@ -9,6 +6,8 @@ from core.views import (
     CommentsView,
     SearchView,
 )
+from django.urls import path
+from rest_framework import routers
 
 app_name = "core"
 
@@ -21,4 +20,4 @@ router.register(
 router.register("comments", CommentsView, basename="comments")
 
 urlpatterns = router.urls
-urlpatterns.extend([url("search", SearchView.as_view())])
+urlpatterns.extend([path("search", SearchView.as_view(), name="search")])

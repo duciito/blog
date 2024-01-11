@@ -14,7 +14,7 @@ async def consume_like_events(redis: aioredis.Redis):
     while True:
         try:
             resp = await redis.xread({stream: last_id or "$"}, count=1, block=5000)
-            print(resp)
+            # print(resp)
             if resp:
                 # We get a list of lists each containing name and one tuple of
                 # entry id and data in a stream.

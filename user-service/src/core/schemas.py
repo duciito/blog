@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, root_validator
+from pydantic import BaseModel, EmailStr, model_validator
 
 
 class TokensSchema(BaseModel):
@@ -15,14 +15,12 @@ class PasswordChangeSchema(BaseModel):
     current_password: str
     new_password: str
 
-    @root_validator
-    def check_passwords_are_not_equal(cls, values):
-        cp, np = values.values()
-
-        if cp == np:
+    @model_validator(mode="after")
+    def check_passwords_are_not_equal(self):
+        if self.current_password == self.new_password:
             raise ValueError("New password should not match the old one.")
 
-        return values
+        return self
 
 
 class PasswordResetSchema(BaseModel):

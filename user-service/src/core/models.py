@@ -1,19 +1,20 @@
 from datetime import UTC, datetime
+from typing import Annotated
 
 from beanie import Document, Indexed
 from core.utils import hash_password
-from pydantic import EmailStr, Field, validator
+from pydantic import EmailStr, Field, field_validator
 
 
 class User(Document):
-    email: Indexed(EmailStr, unique=True)
+    email: Annotated[EmailStr, Indexed(unique=True)]
     password: str
     first_name: str = Field(max_length=150)
     last_name: str = Field(max_length=150)
-    profile_description: str | None
+    profile_description: str | None = None
     joined_at: datetime = Field(default_factory=datetime.now)
 
-    @validator("joined_at")
+    @field_validator("joined_at")
     def check_date_not_in_future(cls, val: datetime):
         if val.tzinfo is None or val.tzinfo.utcoffset(val) is None:
             val = val.replace(tzinfo=UTC)

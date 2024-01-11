@@ -1,7 +1,8 @@
 from functools import lru_cache
 
 from fastapi_mail import ConnectionConfig
-from pydantic import BaseSettings, EmailStr, MongoDsn
+from pydantic import EmailStr, MongoDsn
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -40,6 +41,7 @@ def get_settings():
     return Settings()
 
 
+@lru_cache
 def get_email_config():
     settings = get_settings()
 

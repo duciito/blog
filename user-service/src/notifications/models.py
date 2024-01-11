@@ -1,9 +1,9 @@
-from beanie import Document, Indexed, Link
+from beanie import Document, Link
 from core.models import User
 
 
 class LikeEvent(Document):
-    creator: Indexed(Link[User])
+    creator: Link[User]
     user: Link[User]
     obj_id: str
     obj_type: str

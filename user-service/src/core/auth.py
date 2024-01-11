@@ -7,24 +7,25 @@ from core.schemas import TokensSchema
 from fastapi import WebSocket
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import RevokedTokenError
-from pydantic import BaseModel
 from redis_conf import get_redis_client
 
 DENYLIST_PREFIX = "token-denylist"
 settings = get_settings()
 
 
-class AuthSettings(BaseModel):
-    authjwt_algorithm: str = settings.jwt_algorithm
-    authjwt_public_key: str = base64.b64decode(settings.jwt_public_key).decode("utf-8")
-    authjwt_private_key: str = base64.b64decode(settings.jwt_private_key).decode(
-        "utf-8"
-    )
-
-
 @AuthJWT.load_config
 def get_config():
-    return AuthSettings()
+    return [
+        ("authjwt_algorithm", settings.jwt_algorithm),
+        (
+            "authjwt_public_key",
+            base64.b64decode(settings.jwt_public_key).decode("utf-8"),
+        ),
+        (
+            "authjwt_private_key",
+            base64.b64decode(settings.jwt_private_key).decode("utf-8"),
+        ),
+    ]
 
 
 async def jwt_required_async(

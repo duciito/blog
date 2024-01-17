@@ -1,6 +1,12 @@
 from pydantic import BaseModel, EmailStr, model_validator
 
 
+class AuthToken(BaseModel):
+    payload: dict
+    user_id: str
+    encoded: str
+
+
 class TokensSchema(BaseModel):
     access_token: str
     refresh_token: str

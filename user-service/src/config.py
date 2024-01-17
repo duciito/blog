@@ -1,19 +1,19 @@
+import base64
 from functools import lru_cache
 
 from fastapi_mail import ConnectionConfig
-from pydantic import EmailStr, MongoDsn
+from pydantic import EmailStr, field_validator
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    mongo_url: MongoDsn
+    mongo_url: str
     password_salt: str
 
     # JWT auth related variables.
     jwt_sig_kid: str
     jwt_public_key: str
     jwt_private_key: str
-    jwt_algorithm: str
     access_token_expiration: int
     refresh_token_expiration: int
 
@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     mail_host: str
     mail_port: int
     mail_from: EmailStr
+
+    @field_validator("jwt_private_key", "jwt_public_key", mode="before")
+    @classmethod
+    def transform_jwt_keys(cls, encoded_key: str):
+        return base64.b64decode(encoded_key)
 
 
 @lru_cache

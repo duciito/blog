@@ -1,10 +1,12 @@
 import logging
+from typing import Annotated
 from uuid import uuid4
 
 from config import get_email_config
-from core.auth import DENYLIST_PREFIX, create_access_token, create_tokens
+from core.auth import DENYLIST_PREFIX, AuthDep, create_access_token, create_tokens
 from core.models import User
 from core.schemas import (
+    AuthToken,
     LoginSchema,
     PasswordChangeSchema,
     PasswordResetSchema,
@@ -14,7 +16,6 @@ from core.tasks import add_user_to_stream
 from core.utils import get_user_from_reset_token, ses_verify_email_address
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
-from fastapi_jwt_auth import AuthJWT
 from fastapi_mail import FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 from redis import RedisError
@@ -29,7 +30,6 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 async def signup(
     user: User,
     bg: BackgroundTasks,
-    auth: AuthJWT = Depends(),
     redis: aioredis.Redis = Depends(get_redis_client),
 ):
     # Check for email availability
@@ -42,24 +42,25 @@ async def signup(
     # and notify other services of new user creation.
     bg.add_task(ses_verify_email_address, created_user.email)
     bg.add_task(add_user_to_stream, created_user, redis)
-    return create_tokens(created_user, auth)
+    return create_tokens(created_user)
 
 
 @router.post("/login", response_model=TokensSchema)
-async def login(login: LoginSchema, auth: AuthJWT = Depends()):
+async def login(login: LoginSchema):
     user = await User.find_one({"email": login.email})
     if not user:
         raise HTTPException(status_code=400, detail="No user exists with that email.")
     if not user.check_password(login.password):
         raise HTTPException(status_code=400, detail="Invalid password.")
 
-    return create_tokens(user, auth)
+    return create_tokens(user)
 
 
 @router.post("/refresh", response_model=TokensSchema)
-async def refresh(auth: AuthJWT = Depends()):
-    auth.jwt_refresh_token_required()
-    user = await User.get(auth.get_jwt_subject())
+async def refresh(
+    auth_token: Annotated[AuthToken, Depends(AuthDep(token_type="refresh"))],
+):
+    user = await User.get(auth_token.user_id)
 
     if not user:
         raise HTTPException(
@@ -67,24 +68,24 @@ async def refresh(auth: AuthJWT = Depends()):
         )
 
     return TokensSchema(
-        access_token=create_access_token(user, auth), refresh_token=auth._token
+        access_token=create_access_token(user), refresh_token=auth_token.encoded
     )
 
 
 @router.post("/logout", status_code=204)
 async def logout(
-    auth: AuthJWT = Depends(), redis: aioredis.Redis = Depends(get_redis_client)
+    auth_token: Annotated[AuthToken, Depends(AuthDep())],
+    redis: aioredis.Redis = Depends(get_redis_client),
 ):
-    await auth.jwt_required_async()
-    jwt = auth.get_raw_jwt()
-    token_id, expires_at = jwt["jti"], jwt["exp"]
+    token_id, expires_at = auth_token.payload["jti"], auth_token.payload["exp"]
     await redis.set(f"{DENYLIST_PREFIX}:{token_id}", 1, exat=expires_at)
 
 
 @router.post("/password_change", status_code=204)
-async def password_change(data: PasswordChangeSchema, auth: AuthJWT = Depends()):
-    await auth.jwt_required_async()
-    user = await User.get(auth.get_jwt_subject())
+async def password_change(
+    data: PasswordChangeSchema, auth_token: Annotated[AuthToken, Depends(AuthDep())]
+):
+    user = await User.get(auth_token.user_id)
 
     if not user:
         raise HTTPException(

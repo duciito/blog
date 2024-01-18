@@ -8,6 +8,7 @@ from core.models import User
 from core.schemas import AuthToken, TokensSchema
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from services.redis import get_redis_client
 
 DENYLIST_PREFIX = "token-denylist"
 
@@ -53,6 +54,7 @@ class AuthDep:
 
     def __init__(self, token_type: str = "access"):
         self.token_type = token_type
+        self.redis = get_redis_client()
 
     async def __call__(
         self, token: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)]
@@ -64,10 +66,12 @@ class AuthDep:
         except jwt.InvalidTokenError as e:
             raise credentials_exception from e
 
-        if not payload.get("type") == self.token_type:
+        if not payload.get("type") == self.token_type or not (
+            sub := payload.get("sub")
+        ):
             raise credentials_exception
 
-        if not (sub := payload.get("sub")):
+        if await self.redis.exists(f"{DENYLIST_PREFIX}:{payload['jti']}"):
             raise credentials_exception
 
         if not await User.get(sub):

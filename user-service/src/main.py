@@ -2,11 +2,11 @@ import asyncio
 from contextlib import asynccontextmanager
 
 from core.routes import router as CoreRouter
-from database import init_db
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from notifications.tasks import consume_like_events
-from redis_conf import get_redis_client
+from services.database import init_db
+from services.redis import get_redis_client
 
 
 @asynccontextmanager

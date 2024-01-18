@@ -13,14 +13,15 @@ from core.schemas import (
     TokensSchema,
 )
 from core.tasks import add_user_to_stream
-from core.utils import get_user_from_reset_token, ses_verify_email_address
+from core.utils import get_user_from_reset_token
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from fastapi_mail import FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 from redis import RedisError
 from redis import asyncio as aioredis
-from redis_conf import get_redis_client
+from services.aws import ses_verify_email_address
+from services.redis import get_redis_client
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Auth"])

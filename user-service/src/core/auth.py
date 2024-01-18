@@ -1,3 +1,4 @@
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 from uuid import uuid4
 
@@ -6,7 +7,7 @@ from config import get_settings
 from core.models import User
 from core.schemas import AuthToken, TokensSchema
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 DENYLIST_PREFIX = "token-denylist"
 
@@ -20,10 +21,11 @@ credentials_exception = HTTPException(
 
 
 def create_access_token(user: User) -> str:
+    exp = datetime.now(UTC) + timedelta(minutes=settings.access_token_expiration)
     data = {
         "sub": str(user.id),
-        "exp": settings.access_token_expiration,
         "jti": str(uuid4()),
+        "exp": exp,
         "type": "access",
     }
     return jwt.encode(
@@ -36,9 +38,10 @@ def create_access_token(user: User) -> str:
 
 def create_tokens(user: User) -> TokensSchema:
     access_token = create_access_token(user)
+    exp = datetime.now(UTC) + timedelta(minutes=settings.refresh_token_expiration)
     data = {
         "sub": str(user.id),
-        "exp": settings.refresh_token_expiration,
+        "exp": exp,
         "type": "refresh",
     }
     refresh_token = jwt.encode(data, settings.jwt_private_key, algorithm="RS256")
@@ -52,10 +55,12 @@ class AuthDep:
         self.token_type = token_type
 
     async def __call__(
-        self, token: Annotated[str, Depends(bearer_scheme)]
+        self, token: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)]
     ) -> AuthToken:
         try:
-            payload = jwt.decode(token, settings.jwt_public_key, algorithms=["RS256"])
+            payload = jwt.decode(
+                token.credentials, settings.jwt_public_key, algorithms=["RS256"]
+            )
         except jwt.InvalidTokenError as e:
             raise credentials_exception from e
 
@@ -65,7 +70,9 @@ class AuthDep:
         if not (sub := payload.get("sub")):
             raise credentials_exception
 
-        if not await User.find_one({"id": sub}):
+        if not await User.get(sub):
             raise credentials_exception
 
-        return AuthToken(payload=payload, user_id=payload["sub"], encoded=token)
+        return AuthToken(
+            payload=payload, user_id=payload["sub"], encoded=token.credentials
+        )

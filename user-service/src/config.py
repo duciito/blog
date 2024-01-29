@@ -18,9 +18,7 @@ class Settings(BaseSettings):
     refresh_token_expiration: int
 
     # AWS config
-    aws_access_key: str
-    aws_secret_key: str
-    aws_region: str
+    aws_region: str = "eu-west-1"
 
     # Redis config
     redis_host: str

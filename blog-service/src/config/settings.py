@@ -126,7 +126,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 USER_SERVICE_URL = os.getenv("USER_SERVICE_URL")
 USER_SERVICE_JWKS_URL = f"http://{USER_SERVICE_URL}/static/.well-known/jwks.json"
 
-REDIS_URL = f'redis://{os.getenv("REDIS_HOST")}:{os.getenv("REDIS_PORT")}'
+REDIS_URL = os.environ["REDIS_URL"]
 REDIS_NEW_USERS_STREAM = os.getenv("REDIS_NEW_USERS_STREAM", "new-users")
 REDIS_LIKES_STREAM = "likes-stream"
 REDIS_FOLLOWS_STREAM = "follows-stream"
